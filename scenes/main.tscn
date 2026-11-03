@@ -1,0 +1,78 @@
+[gd_scene format=3 uid="uid://b0rrtopwtg0k6"]
+
+[ext_resource type="Script" uid="uid://dj8tda1t4jscu" path="res://scripts/main.gd" id="1_o5qli"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0wfyh"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_sugp2"]
+sky_material = SubResource("ProceduralSkyMaterial_0wfyh")
+
+[sub_resource type="Environment" id="Environment_jyhfs"]
+background_mode = 2
+sky = SubResource("Sky_sugp2")
+glow_enabled = true
+
+[node name="Main" type="Node" unique_id=1070285452]
+script = ExtResource("1_o5qli")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1332265728]
+environment = SubResource("Environment_jyhfs")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1992047428]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="World" type="Node3D" parent="." unique_id=1981863584]
+
+[node name="Floor" type="CSGBox3D" parent="World" unique_id=59111730]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+use_collision = true
+size = Vector3(20, 1, 20)
+
+[node name="Crate" type="CSGBox3D" parent="World" unique_id=711298998]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0.5, 3)
+use_collision = true
+
+[node name="Players" type="Node3D" parent="World" unique_id=1009031655]
+
+[node name="PlayerSpawner" type="MultiplayerSpawner" parent="." unique_id=577313830]
+_spawnable_scenes = PackedStringArray("uid://bsq7ejy1p2nw6")
+spawn_path = NodePath("../World/Players")
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=707257813]
+
+[node name="Menu" type="VBoxContainer" parent="UI" unique_id=154981161]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="AddressInput" type="LineEdit" parent="UI/Menu" unique_id=677970089]
+unique_name_in_owner = true
+layout_mode = 2
+placeholder_text = "127.0.0.1"
+
+[node name="HostButton" type="Button" parent="UI/Menu" unique_id=1926559250]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Host"
+
+[node name="JoinButton" type="Button" parent="UI/Menu" unique_id=1513415616]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Join
+"
+
+[node name="StatusLabel" type="Label" parent="UI/Menu" unique_id=214250854]
+unique_name_in_owner = true
+layout_mode = 2

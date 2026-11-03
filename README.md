@@ -7,7 +7,9 @@ Two-player online co-op museum heist. Team: Eduardo, Alex Waisman, Jonathan Serr
 TBD
 
 ## Godot-provided systems
-- (fill in as used: rendering, physics, NavigationAgent3D, ENet/high-level multiplayer, MultiplayerSpawner/Synchronizer…)
+   - High-level multiplayer (ENetMultiplayerPeer, RPCs)
+   - MultiplayerSpawner / MultiplayerSynchronizer (player spawning and position/rotation sync)
+   - CharacterBody3D physics and CSG geometry
 
 ## Systems we wrote
 - (puzzle conditions, artifact ownership/scoring, guard logic, noise/distraction, timer, outcome logic)

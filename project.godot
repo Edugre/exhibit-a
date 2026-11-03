@@ -11,8 +11,13 @@ config_version=5
 [application]
 
 config/name="exhibit-a"
+run/main_scene="uid://b0rrtopwtg0k6"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
+
+[autoload]
+
+NetworkManager="*uid://cvxtr68ucg4vi"
 
 [display]
 
