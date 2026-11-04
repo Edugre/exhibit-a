@@ -70,7 +70,8 @@ func _physics_process(delta: float) -> void:
 		velocity.z = move_toward(velocity.z, 0.0, speed)
 
 	move_and_slide()
-	
+
+
 func _update_interact_target() -> void:
 	var new_target: Node = null
 
@@ -101,6 +102,15 @@ func _request_interact(target_path: NodePath) -> void:
 		return
 
 	target.interact(sender_id)
-	
 
-	
+
+## Host → owner: move this player (used on restart). The owner applies it,
+## and the synchronizer carries the new position to everyone.
+@rpc("any_peer", "call_local", "reliable")
+func teleport(to: Vector3) -> void:
+	if multiplayer.get_remote_sender_id() != 1:
+		return  # only the host may teleport players
+	global_position = to
+	velocity = Vector3.ZERO
+	rotation.y = 0.0
+	head.rotation.x = 0.0

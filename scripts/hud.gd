@@ -1,0 +1,73 @@
+extends CanvasLayer
+## Heads-up display: time, artifact, alert, waiting message, and the end screen.
+## Only reads GameState; the one thing it asks for is a restart.
+
+@onready var top_bar: Control = %TopBar
+@onready var time_label: Label = %TimeLabel
+@onready var artifact_label: Label = %ArtifactLabel
+@onready var alert_label: Label = %AlertLabel
+@onready var waiting_label: Label = %WaitingLabel
+@onready var end_panel: Control = %EndPanel
+@onready var result_label: Label = %ResultLabel
+@onready var reason_label: Label = %ReasonLabel
+@onready var restart_button: Button = %RestartButton
+
+var _last_phase: GameState.Phase = GameState.Phase.LOBBY
+
+
+func _ready() -> void:
+	restart_button.pressed.connect(GameState.request_restart)
+	GameState.phase_changed.connect(_on_phase_changed)
+	_on_phase_changed(GameState.phase)
+
+
+func _process(_delta: float) -> void:
+	visible = _is_connected()
+	if not visible:
+		return
+	top_bar.visible = GameState.phase != GameState.Phase.LOBBY
+	waiting_label.visible = GameState.phase == GameState.Phase.LOBBY
+	time_label.text = _format_time(GameState.time_left)
+	artifact_label.text = _artifact_text()
+	alert_label.text = "ALERT!" if GameState.guard_alerted else "Quiet"
+	alert_label.modulate = Color(1.0, 0.3, 0.3) if GameState.guard_alerted else Color.WHITE
+
+
+func _on_phase_changed(phase: GameState.Phase) -> void:
+	var ended := phase == GameState.Phase.WON or phase == GameState.Phase.LOST
+	end_panel.visible = ended
+	if ended:
+		result_label.text = "HEIST COMPLETE!" if phase == GameState.Phase.WON else "BUSTED"
+		reason_label.text = GameState.end_reason
+		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE  # so the Restart button can be clicked
+	elif phase == GameState.Phase.PLAYING and _last_phase != GameState.Phase.LOBBY:
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED  # coming back from a restart
+	_last_phase = phase
+
+
+func _is_connected() -> bool:
+	var peer := multiplayer.multiplayer_peer
+	if peer == null or peer is OfflineMultiplayerPeer:
+		return false
+	return peer.get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTED
+
+
+func _format_time(seconds: float) -> String:
+	var total := ceili(seconds)
+	return "%d:%02d" % [total / 60, total % 60]
+
+
+func _artifact_text() -> String:
+	match GameState.artifact_state:
+		GameState.ArtifactState.LOCKED:
+			return "Artifact: locked in the vault"
+		GameState.ArtifactState.AVAILABLE:
+			return "Artifact: vault open!"
+		GameState.ArtifactState.CARRIED:
+			var who := "you" if GameState.artifact_holder == multiplayer.get_unique_id() else "your partner"
+			return "Artifact: carried by %s" % who
+		GameState.ArtifactState.DROPPED:
+			return "Artifact: dropped!"
+		GameState.ArtifactState.DELIVERED:
+			return "Artifact: in the van"
+	return ""
