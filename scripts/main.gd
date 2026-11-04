@@ -13,6 +13,7 @@ const PLAYER_SCENE := preload("res://scenes/player.tscn")
 @onready var players_root: Node3D = $World/Players
 @onready var spawn_points: Array[Node] = $World/Museum/SpawnPoints.get_children()
 
+
 func _ready() -> void:
 	host_button.pressed.connect(_on_host_pressed)
 	join_button.pressed.connect(_on_join_pressed)
@@ -30,6 +31,7 @@ func _on_host_pressed() -> void:
 		return
 	multiplayer.peer_connected.connect(_spawn_player)
 	multiplayer.peer_disconnected.connect(_remove_player)
+	GameState.heist_reset.connect(_on_heist_reset)
 	_spawn_player(multiplayer.get_unique_id())  # the host is always peer 1
 	menu.hide()
 
@@ -71,12 +73,25 @@ func _spawn_player(peer_id: int) -> void:
 	var index := players_root.get_child_count()
 	player.position = spawn_points[index % spawn_points.size()].global_position
 	players_root.add_child(player, true)
+	if players_root.get_child_count() == 2:
+		GameState.start_heist()  # both players are in: the heist begins
 
 
 func _remove_player(peer_id: int) -> void:
 	var player := players_root.get_node_or_null(str(peer_id))
 	if player:
 		player.queue_free()
+	GameState.stop_heist()  # partner left: back to waiting
+
+
+func _on_heist_reset(respawn_players: bool) -> void:
+	if not respawn_players:
+		return
+	var index := 0
+	for player in players_root.get_children():
+		var spot: Vector3 = spawn_points[index % spawn_points.size()].global_position
+		player.teleport.rpc_id(player.name.to_int(), spot)  # the owner moves its own player
+		index += 1
 
 
 func _set_buttons_enabled(enabled: bool) -> void:
