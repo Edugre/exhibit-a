@@ -10,6 +10,10 @@ const MOUSE_SENSITIVITY := 0.002
 @onready var head: Node3D = $Head
 @onready var camera: Camera3D = $Head/Camera3D
 
+@onready var interact_ray: RayCast3D = $Head/Camera3D/InteractRay
+
+var current_interactable: Node = null
+
 
 func _enter_tree() -> void:
 	# Must run before _ready so the synchronizer knows who owns this node.
@@ -21,6 +25,7 @@ func _ready() -> void:
 	camera.current = is_multiplayer_authority()
 	if is_multiplayer_authority():
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+	interact_ray.add_exception(self)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -40,6 +45,8 @@ func _unhandled_input(event: InputEvent) -> void:
 func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority():
 		return
+		
+	_update_interact_target()
 
 	if not is_on_floor():
 		velocity += get_gravity() * delta
@@ -59,3 +66,18 @@ func _physics_process(delta: float) -> void:
 		velocity.z = move_toward(velocity.z, 0.0, speed)
 
 	move_and_slide()
+	
+func _update_interact_target() -> void:
+	var new_target: Node = null
+
+	if interact_ray.is_colliding():
+		var collider := interact_ray.get_collider() as Node
+		if collider and collider.is_in_group("interactable"):
+			new_target = collider
+
+	if new_target != current_interactable:
+		current_interactable = new_target
+		print("Looking at: ", current_interactable)
+	
+
+	
