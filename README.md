@@ -10,6 +10,7 @@ TBD
    - High-level multiplayer (ENetMultiplayerPeer, RPCs)
    - MultiplayerSpawner / MultiplayerSynchronizer (player spawning and position/rotation sync)
    - CharacterBody3D physics and CSG geometry
+   - RayCast3D (detecting what the player is looking at)
 
 ## Systems we wrote
 - (puzzle conditions, artifact ownership/scoring, guard logic, noise/distraction, timer, outcome logic)
