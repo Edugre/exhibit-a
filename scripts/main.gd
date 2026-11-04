@@ -11,7 +11,7 @@ const PLAYER_SCENE := preload("res://scenes/player.tscn")
 @onready var join_button: Button = %JoinButton
 @onready var status_label: Label = %StatusLabel
 @onready var players_root: Node3D = $World/Players
-
+@onready var spawn_points: Array[Node] = $World/Museum/SpawnPoints.get_children()
 
 func _ready() -> void:
 	host_button.pressed.connect(_on_host_pressed)
@@ -68,7 +68,8 @@ func _on_host_disconnected() -> void:
 func _spawn_player(peer_id: int) -> void:
 	var player := PLAYER_SCENE.instantiate()
 	player.name = str(peer_id)  # the name tells every peer who controls this player
-	player.position = Vector3(players_root.get_child_count() * 2.0, 0.5, 0.0)
+	var index := players_root.get_child_count()
+	player.position = spawn_points[index % spawn_points.size()].global_position
 	players_root.add_child(player, true)
 
 
