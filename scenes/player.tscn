@@ -45,3 +45,20 @@ target_position = Vector3(0, -1, -3)
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1964695254]
 replication_config = SubResource("SceneReplicationConfig_g2els")
+
+[node name="PromptLayer" type="CanvasLayer" parent="." unique_id=334947247]
+
+[node name="InteractPrompt" type="Label" parent="PromptLayer" unique_id=944333783]
+visible = false
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -70.0
+offset_top = -23.0
+offset_right = 70.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Press E to interact"
+horizontal_alignment = 1

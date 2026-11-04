@@ -6,11 +6,12 @@ const WALK_SPEED := 5.0
 const SNEAK_SPEED := 2.5
 const JUMP_VELOCITY := 4.5
 const MOUSE_SENSITIVITY := 0.002
+const INTERACT_RANGE := 4.0
 
 @onready var head: Node3D = $Head
 @onready var camera: Camera3D = $Head/Camera3D
-
 @onready var interact_ray: RayCast3D = $Head/Camera3D/InteractRay
+@onready var interact_prompt: Label = $PromptLayer/InteractPrompt
 
 var current_interactable: Node = null
 
@@ -36,6 +37,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		rotate_y(-event.relative.x * MOUSE_SENSITIVITY)
 		head.rotate_x(-event.relative.y * MOUSE_SENSITIVITY)
 		head.rotation.x = clampf(head.rotation.x, deg_to_rad(-89.0), deg_to_rad(89.0))
+	elif event.is_action_pressed("interact") and current_interactable != null:
+		_request_interact.rpc_id(1, current_interactable.get_path())
+		
 	elif event.is_action_pressed("ui_cancel"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE  # Esc frees the mouse
 	elif event is InputEventMouseButton and event.pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
@@ -77,7 +81,26 @@ func _update_interact_target() -> void:
 
 	if new_target != current_interactable:
 		current_interactable = new_target
-		print("Looking at: ", current_interactable)
+		interact_prompt.visible = current_interactable != null
+		
+@rpc("any_peer", "call_local", "reliable")
+func _request_interact(target_path: NodePath) -> void:
+	if not multiplayer.is_server():
+		return
+
+	var sender_id := multiplayer.get_remote_sender_id()
+	if sender_id != name.to_int():
+		return
+
+	var target := get_node_or_null(target_path)
+	if target == null or not target.is_in_group("interactable"):
+		return
+	if not target.has_method("interact"):
+		return
+	if global_position.distance_to(target.global_position) > INTERACT_RANGE:
+		return
+
+	target.interact(sender_id)
 	
 
 	
