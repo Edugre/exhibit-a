@@ -27,6 +27,7 @@ TBD
 
 ## Asset credits
 - Player and guard characters (`assets/characters/`): made for this project in Blender. Editable sources are in `assets/characters/source/`.
+- The statue plinths, their labels and the marble (`assets/plates/`): made for this project in Blender. Editable source is in `assets/plates/source/`.
 - The portrait door and its label (`assets/door/`): made for this project in Blender. Editable source is in `assets/door/source/`.
 - The Last Book of Alexandria and its display stand (`assets/artifact/`): made for this project in Blender. Editable source is in `assets/artifact/source/`.
 - Trojan Van, drop zone and road (`assets/getaway/`): made for this project in Blender. Editable source is in `assets/getaway/source/`.
