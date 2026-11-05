@@ -24,6 +24,7 @@ func _enter_tree() -> void:
 	# Must run before _ready so the synchronizer knows who owns this node.
 	# The host names each player after its peer id (e.g. "1", "1593872234").
 	set_multiplayer_authority(name.to_int())
+	add_to_group("players")
 
 
 func _ready() -> void:

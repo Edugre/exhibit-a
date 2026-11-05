@@ -1,0 +1,45 @@
+[gd_scene format=3 uid="uid://c7djabat5ogge"]
+
+[ext_resource type="Script" uid="uid://dnijbsx2pxlkm" path="res://scripts/guard.gd" id="1_m4fl1"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_y41jf"]
+radius = 0.4
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_y41jf"]
+radius = 0.4
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mwi3w"]
+albedo_color = Color(0.11764706, 0.16470589, 0.3529412, 1)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_ci2qi"]
+
+[node name="Guard" type="CharacterBody3D" unique_id=2080214681]
+script = ExtResource("1_m4fl1")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=498258460]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_y41jf")
+
+[node name="Body" type="MeshInstance3D" parent="." unique_id=1265041669]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_y41jf")
+surface_material_override/0 = SubResource("StandardMaterial3D_mwi3w")
+
+[node name="Eyes" type="Node3D" parent="." unique_id=1454823182]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+
+[node name="Flashlight" type="SpotLight3D" parent="Eyes" unique_id=483222866]
+light_energy = 3.0
+shadow_enabled = true
+spot_range = 12.0
+spot_angle = 35.0
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=1599407340]
+path_desired_distance = 0.5
+target_desired_distance = 0.6
+path_height_offset = 0.5
+avoidance_enabled = true
+radius = 0.4
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=241498691]
+replication_config = SubResource("SceneReplicationConfig_ci2qi")

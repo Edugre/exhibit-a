@@ -11,12 +11,14 @@ TBD
    - MultiplayerSpawner / MultiplayerSynchronizer (player spawning and position/rotation sync)
    - CharacterBody3D physics and CSG geometry
    - RayCast3D (detecting what the player is looking at)
+   - Area3D (detecting players on the pressure plates)
    - glTF scene import, Skeleton3D skinning and AnimationPlayer (player and guard models)
    - BoneAttachment3D, SpotLight3D and Tween (guard flashlight and lens glare)
    - GPUParticles3D and a second Camera3D (the van's exhaust and the getaway shot)
 
 ## Systems we wrote
 - (puzzle conditions, artifact ownership/scoring, guard logic, noise/distraction, timer, outcome logic)
+- Pressure plate puzzle condition (scripts/vault_puzzle.gd)
 
 ## Asset credits
 - Player and guard characters (`assets/characters/`): made for this project in Blender. Editable sources are in `assets/characters/source/`.

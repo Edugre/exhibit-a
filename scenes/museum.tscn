@@ -1,9 +1,18 @@
 [gd_scene format=3 uid="uid://che1vtkugi5t6"]
 
+[ext_resource type="Script" uid="uid://ted8vlxhtawt" path="res://scripts/vault_door.gd" id="1_cdb2s"]
+[ext_resource type="PackedScene" uid="uid://ddobajultcxkp" path="res://scenes/pressure_plate.tscn" id="2_5qjhm"]
+[ext_resource type="Script" uid="uid://dwf7uthkm8ajy" path="res://scripts/vault_puzzle.gd" id="3_kf0j1"]
+
 [sub_resource type="NavigationMesh" id="NavigationMesh_y41jf"]
 vertices = PackedVector3Array(-0.75, 0.5, -9, -0.75, 0.5, -11, -2, 0.5, -11, -2, 0.5, -6.75, 2.25, 0.5, -11, 0.75, 0.5, -11, 0.75, 0.5, -9, 2.25, 0.5, -6.75, -4.25, 0.5, 4.25, -5.75, 0.5, 4.25, -5.5, 0.5, 5.25, -1, 0.5, 5.25, -7, 0.5, 3.5, -6, 0.5, 3.75, -5.75, 0.5, 2, -7, 0.5, -5, -0.75, 0.5, 6, 1, 0.5, 6, 1.25, 0.5, 5.25, -3.75, 0.5, 2.25, -3.75, 0.5, 3.75, 7.25, 0.5, 5.25, 7.25, 0.5, -5, -7, 0.5, 5.25, 1.25, 0.5, 7, -1.5, 0.5, 7, -1.5, 0.5, 11.5, 2.5, 0.5, 11.5, 2.75, 0.5, 13.25, 5.5, 0.5, 13, 5.5, 0.5, 7, 5.5, 0.5, 15.5, 2.25, 0.5, 14.75, -2.25, 0.5, 14.75, -2.5, 0.5, 11.75, -5.5, 0.5, 15.5, -5.5, 0.5, 7, -1.5, 2.5, 12.5, -1.5, 2.5, 13.5, 1.5, 2.5, 13.5, 1.5, 2.5, 12.5, -1.25, 0.5, 12.75, -1.25, 0.5, 13.5, 1.5, 0.5, 13.5, 1.5, 0.5, 12.75)
 polygons = [PackedInt32Array(1, 0, 2), PackedInt32Array(2, 0, 3), PackedInt32Array(5, 4, 6), PackedInt32Array(6, 4, 7), PackedInt32Array(0, 6, 3), PackedInt32Array(3, 6, 7), PackedInt32Array(9, 8, 10), PackedInt32Array(10, 8, 11), PackedInt32Array(13, 12, 14), PackedInt32Array(14, 12, 15), PackedInt32Array(16, 11, 17), PackedInt32Array(17, 11, 18), PackedInt32Array(18, 11, 20), PackedInt32Array(18, 20, 19), PackedInt32Array(18, 19, 21), PackedInt32Array(21, 19, 22), PackedInt32Array(22, 19, 15), PackedInt32Array(11, 8, 20), PackedInt32Array(19, 14, 15), PackedInt32Array(13, 9, 12), PackedInt32Array(12, 9, 10), PackedInt32Array(12, 10, 23), PackedInt32Array(16, 17, 24), PackedInt32Array(16, 24, 25), PackedInt32Array(25, 24, 26), PackedInt32Array(26, 24, 27), PackedInt32Array(29, 28, 27), PackedInt32Array(24, 30, 27), PackedInt32Array(27, 30, 29), PackedInt32Array(28, 29, 32), PackedInt32Array(32, 29, 31), PackedInt32Array(35, 34, 33), PackedInt32Array(25, 26, 34), PackedInt32Array(25, 34, 36), PackedInt32Array(36, 34, 35), PackedInt32Array(32, 31, 33), PackedInt32Array(33, 31, 35), PackedInt32Array(40, 39, 37), PackedInt32Array(37, 39, 38), PackedInt32Array(44, 43, 41), PackedInt32Array(41, 43, 42)]
 agent_radius = 0.3
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_5qjhm"]
+properties/0/path = NodePath(".:is_open")
+properties/0/spawn = true
+properties/0/replication_mode = 2
 
 [node name="Museum" type="NavigationRegion3D" unique_id=810531496]
 navigation_mesh = SubResource("NavigationMesh_y41jf")
@@ -66,14 +75,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0.5, 3)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -6)
 use_collision = true
 size = Vector3(3, 4, 0.5)
+script = ExtResource("1_cdb2s")
 
-[node name="PlateA" type="CSGBox3D" parent="." unique_id=1899340749]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, -2)
-size = Vector3(2, 0.1, 2)
-
-[node name="PlateB" type="CSGBox3D" parent="." unique_id=148504163]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, -2)
-size = Vector3(2, 0.1, 2)
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="VaultDoor" unique_id=1180574879]
+replication_config = SubResource("SceneReplicationConfig_5qjhm")
 
 [node name="ArtifactPedestal" type="CSGCylinder3D" parent="." unique_id=791918405]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -10)
@@ -107,3 +112,15 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 4)
 
 [node name="Wp4" type="Marker3D" parent="GuardWaypoints" unique_id=1471175771]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 4)
+
+[node name="PlateA" parent="." unique_id=547405793 instance=ExtResource("2_5qjhm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, -2)
+
+[node name="PlateB" parent="." unique_id=167773779 instance=ExtResource("2_5qjhm")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, -2)
+
+[node name="VaultPuzzle" type="Node" parent="." unique_id=1484281285 node_paths=PackedStringArray("plate_a", "plate_b", "door")]
+script = ExtResource("3_kf0j1")
+plate_a = NodePath("../PlateA")
+plate_b = NodePath("../PlateB")
+door = NodePath("../VaultDoor")
