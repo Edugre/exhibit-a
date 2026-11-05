@@ -1,0 +1,9 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/test_guard.gd" id="1_test"]
+[ext_resource type="PackedScene" path="res://scenes/guard_model.tscn" id="2_model"]
+
+[node name="TestGuard" type="Node3D"]
+script = ExtResource("1_test")
+
+[node name="Model" parent="." instance=ExtResource("2_model")]
