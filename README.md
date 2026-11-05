@@ -11,9 +11,11 @@ TBD
    - MultiplayerSpawner / MultiplayerSynchronizer (player spawning and position/rotation sync)
    - CharacterBody3D physics and CSG geometry
    - RayCast3D (detecting what the player is looking at)
+   - Area3D (detecting players on the pressure plates)
 
 ## Systems we wrote
 - (puzzle conditions, artifact ownership/scoring, guard logic, noise/distraction, timer, outcome logic)
+- Pressure plate puzzle condition (scripts/vault_puzzle.gd)
 
 ## Asset credits
 - (none yet)
