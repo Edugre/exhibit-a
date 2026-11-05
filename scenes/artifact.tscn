@@ -1,0 +1,15 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/artifact.gd" id="1_artifact"]
+[ext_resource type="PackedScene" path="res://scenes/artifact_model.tscn" id="2_model"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_book"]
+size = Vector3(0.52, 0.24, 0.66)
+
+[node name="Artifact" type="StaticBody3D" groups=["artifact", "interactable"]]
+script = ExtResource("1_artifact")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_book")
+
+[node name="Model" parent="." instance=ExtResource("2_model")]
