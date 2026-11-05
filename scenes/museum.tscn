@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://ted8vlxhtawt" path="res://scripts/vault_door.gd" id="1_cdb2s"]
 [ext_resource type="PackedScene" uid="uid://ddobajultcxkp" path="res://scenes/pressure_plate.tscn" id="2_5qjhm"]
 [ext_resource type="Script" uid="uid://dwf7uthkm8ajy" path="res://scripts/vault_puzzle.gd" id="3_kf0j1"]
+[ext_resource type="PackedScene" uid="uid://boemyyhoc6dtn" path="res://scenes/throwable.tscn" id="4_4kxtc"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_y41jf"]
 vertices = PackedVector3Array(-0.75, 0.5, -9, -0.75, 0.5, -11, -2, 0.5, -11, -2, 0.5, -6.75, 2.25, 0.5, -11, 0.75, 0.5, -11, 0.75, 0.5, -9, 2.25, 0.5, -6.75, -4.25, 0.5, 4.25, -5.75, 0.5, 4.25, -5.5, 0.5, 5.25, -1, 0.5, 5.25, -7, 0.5, 3.5, -6, 0.5, 3.75, -5.75, 0.5, 2, -7, 0.5, -5, -0.75, 0.5, 6, 1, 0.5, 6, 1.25, 0.5, 5.25, -3.75, 0.5, 2.25, -3.75, 0.5, 3.75, 7.25, 0.5, 5.25, 7.25, 0.5, -5, -7, 0.5, 5.25, 1.25, 0.5, 7, -1.5, 0.5, 7, -1.5, 0.5, 11.5, 2.5, 0.5, 11.5, 2.75, 0.5, 13.25, 5.5, 0.5, 13, 5.5, 0.5, 7, 5.5, 0.5, 15.5, 2.25, 0.5, 14.75, -2.25, 0.5, 14.75, -2.5, 0.5, 11.75, -5.5, 0.5, 15.5, -5.5, 0.5, 7, -1.5, 2.5, 12.5, -1.5, 2.5, 13.5, 1.5, 2.5, 13.5, 1.5, 2.5, 12.5, -1.25, 0.5, 12.75, -1.25, 0.5, 13.5, 1.5, 0.5, 13.5, 1.5, 0.5, 12.75)
@@ -124,3 +125,6 @@ script = ExtResource("3_kf0j1")
 plate_a = NodePath("../PlateA")
 plate_b = NodePath("../PlateB")
 door = NodePath("../VaultDoor")
+
+[node name="Throwable" parent="." unique_id=1104381414 instance=ExtResource("4_4kxtc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0.5, 8)
