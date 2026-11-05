@@ -47,6 +47,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("interact") and current_interactable != null:
 		_request_interact.rpc_id(1, current_interactable.get_path())
 		
+	elif event.is_action_pressed("throw") and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
+		_request_throw.rpc_id(1)
+		
 	elif event.is_action_pressed("ui_cancel"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE  # Esc frees the mouse
 	elif event is InputEventMouseButton and event.pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
@@ -121,6 +124,19 @@ func _request_interact(target_path: NodePath) -> void:
 
 	target.interact(sender_id)
 
+@rpc("any_peer", "call_local", "reliable")
+func _request_throw() -> void:
+	if not multiplayer.is_server():
+		return
+
+	var sender_id := multiplayer.get_remote_sender_id()
+	if sender_id != name.to_int():
+		return
+
+	for throwable: Throwable in get_tree().get_nodes_in_group("throwables"):
+		if throwable.holder_id == sender_id:
+			throwable.throw(-head.global_basis.z)
+			return
 
 ## Host → owner: move this player (used on restart). The owner applies it,
 ## and the synchronizer carries the new position to everyone.
