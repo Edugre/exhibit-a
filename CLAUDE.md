@@ -1,7 +1,7 @@
 # Exhibit A — notes for Claude Code
 
 Two-player online co-op museum heist (stealth + puzzles) for a university game dev course.
-Team: Eduardo, Alex Waisman, Jonathan Serrano.
+Team: Eduardo Goncalvez, Alex Waisman, Jonathan Serrano.
 
 ## Engine
 - Godot **4.7.2 stable, Standard edition, GDScript only**. Never upgrade or convert the project.
