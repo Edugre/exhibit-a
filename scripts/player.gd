@@ -8,10 +8,14 @@ const JUMP_VELOCITY := 4.5
 const MOUSE_SENSITIVITY := 0.002
 const INTERACT_RANGE := 4.0
 
+## Accent colour, picked by the host and set before this node enters the tree.
+var variant: int = 0
+
 @onready var head: Node3D = $Head
 @onready var camera: Camera3D = $Head/Camera3D
 @onready var interact_ray: RayCast3D = $Head/Camera3D/InteractRay
 @onready var interact_prompt: Label = $PromptLayer/InteractPrompt
+@onready var model: Node3D = $Model
 
 var current_interactable: Node = null
 
@@ -25,6 +29,8 @@ func _enter_tree() -> void:
 
 func _ready() -> void:
 	camera.current = is_multiplayer_authority()
+	model.variant = variant
+	model.visible = not is_multiplayer_authority()  # the first-person camera sits inside this body
 	if is_multiplayer_authority():
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	interact_ray.add_exception(self)
@@ -45,6 +51,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE  # Esc frees the mouse
 	elif event is InputEventMouseButton and event.pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED  # click to recapture
+
+
+func _process(_delta: float) -> void:
+	# The host owns who holds the artifact; every peer just shows it.
+	var holding := GameState.artifact_state == GameState.ArtifactState.CARRIED and GameState.artifact_holder == name.to_int()
+	if holding != model.carrying:
+		model.carrying = holding
 
 
 func _physics_process(delta: float) -> void:

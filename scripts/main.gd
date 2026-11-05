@@ -12,9 +12,11 @@ const PLAYER_SCENE := preload("res://scenes/player.tscn")
 @onready var status_label: Label = %StatusLabel
 @onready var players_root: Node3D = $World/Players
 @onready var spawn_points: Array[Node] = $World/Museum/SpawnPoints.get_children()
+@onready var player_spawner: MultiplayerSpawner = $PlayerSpawner
 
 
 func _ready() -> void:
+	player_spawner.spawn_function = _create_player
 	host_button.pressed.connect(_on_host_pressed)
 	join_button.pressed.connect(_on_join_pressed)
 	NetworkManager.connected_to_host.connect(_on_connected_to_host)
@@ -65,16 +67,38 @@ func _on_host_disconnected() -> void:
 	get_tree().reload_current_scene()
 
 
-# --- Spawning (host only) -------------------------------------------------
+# --- Spawning (the host decides, every peer builds) -----------------------
 
 func _spawn_player(peer_id: int) -> void:
-	var player := PLAYER_SCENE.instantiate()
-	player.name = str(peer_id)  # the name tells every peer who controls this player
 	var index := players_root.get_child_count()
-	player.position = spawn_points[index % spawn_points.size()].global_position
-	players_root.add_child(player, true)
+	player_spawner.spawn({
+		"peer_id": peer_id,
+		"position": spawn_points[index % spawn_points.size()].global_position,
+		"variant": _next_free_variant(),
+	})
 	if players_root.get_child_count() == 2:
 		GameState.start_heist()  # both players are in: the heist begins
+
+
+## Runs on every peer with the data the host passed to spawn(), so all peers
+## build the same player. The spawner adds the returned node to World/Players.
+func _create_player(data: Dictionary) -> Node:
+	var player := PLAYER_SCENE.instantiate()
+	player.name = str(data.peer_id)  # the name tells every peer who controls this player
+	player.position = data.position
+	player.variant = data.variant
+	return player
+
+
+## Lowest colour no current player is using, so teammates never match.
+func _next_free_variant() -> int:
+	var taken: Array[int] = []
+	for player in players_root.get_children():
+		taken.append(player.variant)
+	var variant := 0
+	while variant in taken:
+		variant += 1
+	return variant
 
 
 func _remove_player(peer_id: int) -> void:
