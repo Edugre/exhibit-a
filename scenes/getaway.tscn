@@ -1,0 +1,82 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/trojan_van.tscn" id="1_van"]
+[ext_resource type="PackedScene" path="res://scenes/drop_zone.tscn" id="2_zone"]
+[ext_resource type="Texture2D" path="res://assets/getaway/road_albedo.png" id="3_road"]
+[ext_resource type="Texture2D" path="res://assets/getaway/barrier_albedo.png" id="4_barrier"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_road"]
+albedo_texture = ExtResource("3_road")
+roughness = 0.95
+uv1_scale = Vector3(8.5, 1, 1)
+texture_repeat = true
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_road"]
+material = SubResource("StandardMaterial3D_road")
+size = Vector2(102, 6)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_steel"]
+albedo_color = Color(0.2, 0.2, 0.19, 1)
+roughness = 0.8
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_post"]
+material = SubResource("StandardMaterial3D_steel")
+top_radius = 0.09
+bottom_radius = 0.1
+height = 1.1
+
+[sub_resource type="BoxMesh" id="BoxMesh_housing"]
+material = SubResource("StandardMaterial3D_steel")
+size = Vector3(0.34, 0.4, 0.34)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_arm"]
+albedo_texture = ExtResource("4_barrier")
+roughness = 0.85
+uv1_triplanar = true
+uv1_scale = Vector3(0.185, 1, 0.185)
+
+[sub_resource type="BoxMesh" id="BoxMesh_arm"]
+material = SubResource("StandardMaterial3D_arm")
+size = Vector3(0.07, 0.12, 5.4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_block"]
+size = Vector3(0.3, 2.4, 6.2)
+
+[node name="Getaway" type="Node3D"]
+
+[node name="Road" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 45, 0.006, 13)
+mesh = SubResource("PlaneMesh_road")
+
+[node name="ExitBarrier" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.75, 0, 9.9)
+
+[node name="Post" type="MeshInstance3D" parent="ExitBarrier"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+mesh = SubResource("CylinderMesh_post")
+
+[node name="Housing" type="MeshInstance3D" parent="ExitBarrier"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+mesh = SubResource("BoxMesh_housing")
+
+[node name="Hinge" type="Node3D" parent="ExitBarrier"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+
+[node name="Arm" type="MeshInstance3D" parent="ExitBarrier/Hinge"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.7)
+mesh = SubResource("BoxMesh_arm")
+
+[node name="Block" type="StaticBody3D" parent="ExitBarrier"]
+
+[node name="Shape" type="CollisionShape3D" parent="ExitBarrier/Block"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 1.2, 3.1)
+shape = SubResource("BoxShape3D_block")
+
+[node name="GetawayCamera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.2, 1.35, 8.4)
+fov = 58.0
+
+[node name="TrojanVan" parent="." instance=ExtResource("1_van")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 13)
+
+[node name="DropZone" parent="." instance=ExtResource("2_zone")]

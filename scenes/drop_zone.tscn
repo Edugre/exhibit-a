@@ -1,0 +1,11 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/drop_zone.gd" id="1_zone"]
+[ext_resource type="PackedScene" path="res://assets/getaway/drop_zone.glb" id="2_glb"]
+
+[node name="DropZone" type="Node3D"]
+script = ExtResource("1_zone")
+spot_path = NodePath("../../Museum/ExtractionSpot")
+players_path = NodePath("../../Players")
+
+[node name="Model" parent="." instance=ExtResource("2_glb")]

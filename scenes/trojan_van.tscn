@@ -1,0 +1,85 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/trojan_van.gd" id="1_van"]
+[ext_resource type="PackedScene" path="res://assets/getaway/trojan_van.glb" id="2_glb"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_shell"]
+size = Vector3(4.2, 3, 2.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ramp"]
+size = Vector3(1.3, 0.1, 1.32)
+
+[sub_resource type="Gradient" id="Gradient_fade"]
+offsets = PackedFloat32Array(0, 0.2, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_fade"]
+gradient = SubResource("Gradient_fade")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_puff"]
+direction = Vector3(-1, 0.25, 0)
+spread = 28.0
+initial_velocity_min = 0.8
+initial_velocity_max = 3.0
+gravity = Vector3(0, 0.8, 0)
+damping_min = 0.8
+damping_max = 2.0
+scale_min = 0.5
+scale_max = 1.6
+color = Color(0.07, 0.07, 0.07, 0.95)
+color_ramp = SubResource("GradientTexture1D_fade")
+
+[sub_resource type="Gradient" id="Gradient_round"]
+offsets = PackedFloat32Array(0, 0.55, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0.55, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_round"]
+gradient = SubResource("Gradient_round")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_puff"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = SubResource("GradientTexture2D_round")
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_puff"]
+material = SubResource("StandardMaterial3D_puff")
+size = Vector2(0.95, 0.95)
+
+[node name="TrojanVan" type="Node3D"]
+script = ExtResource("1_van")
+
+[node name="Model" parent="." instance=ExtResource("2_glb")]
+
+[node name="Body" type="StaticBody3D" parent="."]
+
+[node name="Shell" type="CollisionShape3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+shape = SubResource("BoxShape3D_shell")
+
+[node name="Ramp" type="CollisionShape3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 0.828, 0.561, 0, -0.561, 0.828, 0, 0.34, -1.806)
+shape = SubResource("BoxShape3D_ramp")
+
+[node name="Exhaust" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.28, 0.3, 0.62)
+emitting = false
+amount = 34
+lifetime = 1.3
+local_coords = false
+process_material = SubResource("ParticleProcessMaterial_puff")
+draw_pass_1 = SubResource("QuadMesh_puff")
+
+[node name="BayLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.05, 1.72, -0.25)
+light_color = Color(1, 0.76, 0.46, 1)
+light_energy = 1.1
+omni_range = 4.0
+omni_attenuation = 1.4
