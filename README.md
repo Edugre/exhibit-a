@@ -19,6 +19,11 @@ TBD
    - GPUParticles3D and a second Camera3D (the van's exhaust and the getaway shot)
    - RigidBody3D, continuous collision and contact monitoring (throwable physics and impacts)
    - AudioStreamPlayer3D (the heel's landing sound)
+   - StaticBody3D with box, cylinder and convex collision shapes (the museum exterior, including the smooth ramp under the stairs)
+   - Spatial and sky shaders, ShaderMaterial (the exterior's world-space limestone, carved stone and night sky)
+   - WorldEnvironment, tonemapping, SSAO, glow and fog (the exterior's night look)
+   - DirectionalLight3D and shadowed SpotLight3D (moonlight and floodlights on the exterior)
+   - Automatic mesh LOD from the glTF importer (carved stone at a distance)
 
 ## Systems we wrote
 - (puzzle conditions, artifact ownership/scoring, guard logic, noise/distraction, timer, outcome logic)
@@ -33,3 +38,4 @@ TBD
 - The portrait door and its label (`assets/door/`): made for this project in Blender. Editable source is in `assets/door/source/`.
 - The Last Book of Alexandria and its display stand (`assets/artifact/`): made for this project in Blender. Editable source is in `assets/artifact/source/`.
 - Trojan Van, drop zone and road (`assets/getaway/`): made for this project in Blender. Editable source is in `assets/getaway/source/`.
+- Museum exterior (`assets/exterior/`): made for this project in Blender. Editable source is in `assets/exterior/source/`.

@@ -1,0 +1,16 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://assets/exterior/ext_stone.gdshader" id="s"]
+[ext_resource type="Texture2D" path="res://assets/exterior/ext_stone_albedo.png" id="t0"]
+[ext_resource type="Texture2D" path="res://assets/exterior/ext_stone_normal.png" id="t1"]
+[ext_resource type="Texture2D" path="res://assets/exterior/ext_stone_rough.png" id="t2"]
+
+[resource]
+shader = ExtResource("s")
+shader_parameter/stone_albedo = ExtResource("t0")
+shader_parameter/stone_normal = ExtResource("t1")
+shader_parameter/stone_rough = ExtResource("t2")
+shader_parameter/tint = Vector3(0.86, 0.84, 0.8)
+shader_parameter/normal_strength = 3.0
+shader_parameter/metres_per_tile = 2.6
+shader_parameter/roughness_add = 0.05
