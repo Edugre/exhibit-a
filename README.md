@@ -1,5 +1,5 @@
 # Exhibit A
-Two-player online co-op museum heist. Team: Eduardo, Alex Waisman, Jonathan Serrano.
+Two-player online co-op museum heist. Team: Eduardo Goncalvez, Alex Waisman, Jonathan Serrano.
 
 **Engine:** Godot 4.7.2 (Standard, GDScript). Everyone must use this exact version.
 
