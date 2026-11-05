@@ -11,6 +11,7 @@ TBD
    - MultiplayerSpawner / MultiplayerSynchronizer (player spawning and position/rotation sync)
    - CharacterBody3D physics and CSG geometry
    - RayCast3D (detecting what the player is looking at)
+   - Physics ray queries (guard line of sight, stopping her flashlight beam at walls)
    - Area3D (detecting players on the pressure plates)
    - glTF scene import, Skeleton3D skinning and AnimationPlayer (player and guard models)
    - BoneAttachment3D, SpotLight3D and Tween (guard flashlight and lens glare)

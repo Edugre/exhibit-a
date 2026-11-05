@@ -1,21 +1,28 @@
 class_name Guard
 extends CharacterBody3D
 ## Museum guard. Every decision runs on the host; the MultiplayerSynchronizer
-## copies position, rotation and `alerted` to the client.
+## copies position, rotation, `alerted` and `model_state` to the client.
 ##
 ## PATROL      walk the GuardWaypoints loop, pausing at each one
 ## INVESTIGATE walk to a point (a noise, or where a player was last seen), look around
 ## CHASE       a player was seen long enough: follow them; catching one ends the heist
+## CAUGHT      she tackled a player; nothing more happens until the next heist
 
-enum State { PATROL, INVESTIGATE, CHASE }
+enum State { PATROL, INVESTIGATE, CHASE, CAUGHT }
+
+const GuardModel := preload("res://scripts/guard_model.gd")
 
 const PATROL_SPEED := 2.0
 const INVESTIGATE_SPEED := 3.0
 const CHASE_SPEED := 4.5          # slower than walking (5), faster than sneaking (2.5)
 const TURN_SPEED := 6.0
 
-const VIEW_DISTANCE := 12.0
-const VIEW_HALF_ANGLE := 35.0     # degrees; keep equal to the flashlight's Spot Angle
+# Spotting uses the beam players can see, so those numbers live with the beam.
+const VIEW_DISTANCE := GuardModel.BEAM_RANGE
+const VIEW_HALF_ANGLE := GuardModel.BEAM_ANGLE
+# No beam shows during a chase, so she can keep track of a player beyond it.
+const CHASE_VIEW_DISTANCE := 12.0
+const CHASE_VIEW_HALF_ANGLE := 35.0
 const DETECT_TIME := 0.6          # seconds of continuous sight before a chase starts
 const LOSE_SIGHT_TIME := 2.0      # seconds out of sight before the guard gives up
 const CATCH_DISTANCE := 1.2
@@ -23,7 +30,7 @@ const PATROL_PAUSE := 1.0
 const LOOK_AROUND_TIME := 3.0
 const LOOK_AROUND_SPEED := 1.5    # radians per second while searching
 
-const CALM_LIGHT := Color(1.0, 0.95, 0.8)
+const CALM_LIGHT := Color(1.0, 0.93, 0.74)
 const ALERT_LIGHT := Color(1.0, 0.2, 0.2)
 
 @export var waypoints_path: NodePath = ^"../Museum/GuardWaypoints"
@@ -35,9 +42,19 @@ const ALERT_LIGHT := Color(1.0, 0.2, 0.2)
 		if is_node_ready():
 			flashlight.light_color = ALERT_LIGHT if alerted else CALM_LIGHT
 
+## The clip she shows. The host picks it from what she's doing; every peer plays it.
+@export var model_state: GuardModel.State = GuardModel.State.IDLE:
+	set(value):
+		if value == model_state:
+			return  # replaying a clip that holds its last frame would restart it
+		model_state = value
+		if is_node_ready():
+			model.state = value
+
 @onready var agent: NavigationAgent3D = $NavigationAgent3D
 @onready var eyes: Node3D = $Eyes
-@onready var flashlight: SpotLight3D = $Eyes/Flashlight
+@onready var model: GuardModel = $Model
+@onready var flashlight: SpotLight3D = model.flashlight
 
 var state := State.PATROL
 var _waypoints: Array[Vector3] = []
@@ -58,8 +75,12 @@ func _ready() -> void:
 	GameState.heist_reset.connect(_on_heist_reset)  # only fires on the host
 
 
-func _physics_process(delta: float) -> void:			
-	if not multiplayer.is_server() or GameState.phase != GameState.Phase.PLAYING:
+func _physics_process(delta: float) -> void:
+	if not multiplayer.is_server():
+		return
+	if GameState.phase != GameState.Phase.PLAYING:
+		if state != State.CAUGHT:
+			model_state = GuardModel.State.IDLE  # the tackle holds; anything else stands still
 		return
 
 	var seen := _find_visible_player()
@@ -73,19 +94,24 @@ func _physics_process(delta: float) -> void:
 		else:
 			_suspicion = maxf(_suspicion - delta / DETECT_TIME, 0.0)
 
-	match state:
-		State.PATROL:
-			_patrol(delta)
-		State.INVESTIGATE:
-			_investigate(delta)
-		State.CHASE:
-			_chase(delta, seen)
+	if _suspicion > 0.0:
+		_stop(delta)  # she stops to look until she's sure, or has lost them
+	else:
+		match state:
+			State.PATROL:
+				_patrol(delta)
+			State.INVESTIGATE:
+				_investigate(delta)
+			State.CHASE:
+				_chase(delta, seen)
+
+	_update_model_state()
 
 
 # --- Public (host): Phase 7's noise system calls this ---------------------
 
 func hear_noise(at: Vector3) -> void:
-	if not multiplayer.is_server() or state == State.CHASE:
+	if not multiplayer.is_server() or state == State.CHASE or state == State.CAUGHT:
 		return
 	_investigate_at(at)
 
@@ -130,6 +156,7 @@ func _chase(delta: float, seen: Node3D) -> void:
 
 	if is_instance_valid(_target) and global_position.distance_to(_target.global_position) <= CATCH_DISTANCE:
 		_stop(delta)
+		state = State.CAUGHT
 		GameState.end_heist(false, "Caught by the guard!")
 		return
 
@@ -175,8 +202,25 @@ func _on_heist_reset(_respawn_players: bool) -> void:
 	_waypoint_index = 0
 	state = State.PATROL
 	alerted = false
+	model_state = GuardModel.State.IDLE
 	if not _waypoints.is_empty():
 		agent.target_position = _waypoints[0]
+
+
+# --- Model -----------------------------------------------------------------
+
+func _update_model_state() -> void:
+	var moving := Vector2(velocity.x, velocity.z).length() > 0.1
+	match state:
+		State.CAUGHT:
+			model_state = GuardModel.State.TACKLE
+		State.CHASE:
+			model_state = GuardModel.State.CHASE if moving else GuardModel.State.ALERT
+		_:
+			if _suspicion > 0.0:
+				model_state = GuardModel.State.ALERT
+			else:
+				model_state = GuardModel.State.PATROL if moving else GuardModel.State.IDLE
 
 
 # --- Vision ----------------------------------------------------------------
@@ -184,6 +228,9 @@ func _on_heist_reset(_respawn_players: bool) -> void:
 func _find_visible_player() -> Node3D:
 	var forward := -global_basis.z
 	var eye := eyes.global_position
+	var chasing := state == State.CHASE
+	var view_distance := CHASE_VIEW_DISTANCE if chasing else VIEW_DISTANCE
+	var view_half_angle := CHASE_VIEW_HALF_ANGLE if chasing else VIEW_HALF_ANGLE
 	var best: Node3D = null
 	var best_distance := INF
 
@@ -191,10 +238,10 @@ func _find_visible_player() -> Node3D:
 		var chest := player.global_position + Vector3.UP * 1.2
 		var to_player := chest - eye
 		var distance := to_player.length()
-		if distance > VIEW_DISTANCE or distance >= best_distance:
+		if distance > view_distance or distance >= best_distance:
 			continue
 		var flat := Vector3(to_player.x, 0.0, to_player.z)
-		if flat.length() > 0.01 and rad_to_deg(forward.angle_to(flat.normalized())) > VIEW_HALF_ANGLE:
+		if flat.length() > 0.01 and rad_to_deg(forward.angle_to(flat.normalized())) > view_half_angle:
 			continue  # outside the vision cone
 		if not _has_line_of_sight(eye, chest, player):
 			continue  # a wall or the door is in the way

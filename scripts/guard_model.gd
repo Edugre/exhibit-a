@@ -22,9 +22,13 @@ const MOVING_SPEED := 0.2
 ## Nobody covers this far on foot in one tick, so a jump this big is a respawn, not a step.
 const TELEPORT_DISTANCE := 1.0
 
-## Match these in the guard's detection logic so what players see is what catches them.
+## The guard's logic spots players with these same numbers: what players see is what catches them.
 const BEAM_RANGE := 9.0
 const BEAM_ANGLE := 16.0
+## The glow is a plain mesh, so it has to be stopped at walls. They're looked for at her eye line,
+## which is what her sight checks, so low cover like the crate doesn't cut the beam short.
+const WALL_CHECK_HEIGHT := 1.6
+const BEAM_SMOOTHING := 15.0
 
 const GLARE_TIME := 0.15
 const GLARE_ENERGY := 5.0
@@ -35,11 +39,15 @@ const GLARE_ENERGY := 5.0
 		state = value
 		_apply_state()
 
+## Created in _ready. The guard logic recolours it when she's alerted.
+var flashlight: SpotLight3D
+
 var _animation_player: AnimationPlayer
 var _lens_material: BaseMaterial3D
 var _lens_alpha: float = 1.0
 var _glare_tween: Tween
 var _beam: MeshInstance3D
+var _beam_reach: float = BEAM_RANGE
 var _face_light: OmniLight3D
 var _last_position: Vector3
 var _speed: float = 0.0
@@ -76,6 +84,28 @@ func _physics_process(delta: float) -> void:
 	else:
 		_animation_player.speed_scale = 1.0
 
+	if _beam.visible:
+		_trim_beam(delta)
+
+
+func _trim_beam(delta: float) -> void:
+	var aim := -flashlight.global_basis.z  # she tilts it down, so level it or it would stop at the floor
+	aim.y = 0.0
+	var from := flashlight.global_position
+	from.y = global_position.y + WALL_CHECK_HEIGHT
+
+	var query := PhysicsRayQueryParameters3D.create(from, from + aim.normalized() * BEAM_RANGE)
+	var players: Array[RID] = []
+	for player: CollisionObject3D in get_tree().get_nodes_in_group("players"):
+		players.append(player.get_rid())
+	query.exclude = players  # it lights players, it doesn't stop at them
+	var hit := get_world_3d().direct_space_state.intersect_ray(query)
+
+	var reach: float = BEAM_RANGE if hit.is_empty() else from.distance_to(hit["position"])
+	_beam_reach = lerpf(_beam_reach, reach, 1.0 - exp(-BEAM_SMOOTHING * delta))
+	_beam.scale = Vector3.ONE * (_beam_reach / BEAM_RANGE)  # uniform, so the cone keeps its angle
+	_beam.position.y = _beam_reach * 0.5
+
 
 func _apply_state() -> void:
 	if not _animation_player:
@@ -109,18 +139,18 @@ func _add_flashlight(skeleton: Skeleton3D) -> void:
 	skeleton.add_child(socket)
 	socket.bone_name = "flashlight_socket"
 
-	var light := SpotLight3D.new()
-	light.rotation_degrees.x = 90.0  # a spotlight shines along -Z, the socket points along +Y
-	light.light_color = Color(1.0, 0.93, 0.74)
-	light.light_energy = 4.0
-	light.spot_range = BEAM_RANGE
-	light.spot_angle = BEAM_ANGLE
-	light.shadow_enabled = true
-	socket.add_child(light)
+	flashlight = SpotLight3D.new()
+	flashlight.rotation_degrees.x = 90.0  # a spotlight shines along -Z, the socket points along +Y
+	flashlight.light_color = Color(1.0, 0.93, 0.74)
+	flashlight.light_energy = 4.0
+	flashlight.spot_range = BEAM_RANGE
+	flashlight.spot_angle = BEAM_ANGLE
+	flashlight.shadow_enabled = true
+	socket.add_child(flashlight)
 
 	_face_light = OmniLight3D.new()
 	_face_light.position.y = 0.04  # just past the lens, which sits under her chin
-	_face_light.light_color = light.light_color
+	_face_light.light_color = flashlight.light_color
 	_face_light.light_energy = 0.8
 	_face_light.omni_range = 0.5
 	socket.add_child(_face_light)
