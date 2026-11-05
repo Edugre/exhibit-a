@@ -53,6 +53,10 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _process(_delta: float) -> void:
+	# You only vanish from your own view while you're looking out through this body.
+	if is_multiplayer_authority():
+		model.visible = not camera.current
+
 	# The host owns who holds the artifact; every peer just shows it.
 	var holding := GameState.artifact_state == GameState.ArtifactState.CARRIED and GameState.artifact_holder == name.to_int()
 	if holding != model.carrying:

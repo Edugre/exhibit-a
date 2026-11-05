@@ -83,13 +83,8 @@ height = 1.0
 [node name="ArtifactSpot" type="Marker3D" parent="." unique_id=362484363]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, -10)
 
-[node name="Van" type="CSGBox3D" parent="." unique_id=1835442413]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 13)
-use_collision = true
-size = Vector3(4, 2, 2)
-
 [node name="ExtractionSpot" type="Marker3D" parent="." unique_id=195882650]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10.5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 9.7)
 
 [node name="SpawnPoints" type="Node3D" parent="." unique_id=611241144]
 

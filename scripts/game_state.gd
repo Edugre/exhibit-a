@@ -138,3 +138,5 @@ func _unhandled_input(event: InputEvent) -> void:
 			end_heist(false, "Debug: caught by the guard.")
 		KEY_F3:
 			set_alert(not guard_alerted)
+		KEY_F4:
+			set_artifact(ArtifactState.CARRIED, multiplayer.get_unique_id())  # lets you try the drop zone

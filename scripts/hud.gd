@@ -13,6 +13,7 @@ extends CanvasLayer
 @onready var restart_button: Button = %RestartButton
 
 var _last_phase: GameState.Phase = GameState.Phase.LOBBY
+var _watching_getaway: bool = false
 
 
 func _ready() -> void:
@@ -25,7 +26,7 @@ func _process(_delta: float) -> void:
 	visible = _is_connected()
 	if not visible:
 		return
-	top_bar.visible = GameState.phase != GameState.Phase.LOBBY
+	top_bar.visible = GameState.phase != GameState.Phase.LOBBY and not _watching_getaway
 	waiting_label.visible = GameState.phase == GameState.Phase.LOBBY
 	time_label.text = _format_time(GameState.time_left)
 	artifact_label.text = _artifact_text()
@@ -35,14 +36,25 @@ func _process(_delta: float) -> void:
 
 func _on_phase_changed(phase: GameState.Phase) -> void:
 	var ended := phase == GameState.Phase.WON or phase == GameState.Phase.LOST
-	end_panel.visible = ended
+	end_panel.visible = false
 	if ended:
 		result_label.text = "HEIST COMPLETE!" if phase == GameState.Phase.WON else "BUSTED"
 		reason_label.text = GameState.end_reason
+		if phase == GameState.Phase.WON:
+			await _watch_getaway()
+			if GameState.phase != phase:
+				return  # the host left while the van was driving off
+		end_panel.visible = true
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE  # so the Restart button can be clicked
 	elif phase == GameState.Phase.PLAYING and _last_phase != GameState.Phase.LOBBY:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED  # coming back from a restart
 	_last_phase = phase
+
+
+func _watch_getaway() -> void:
+	_watching_getaway = true
+	await get_tree().create_timer(TrojanVan.SCENE_TIME).timeout
+	_watching_getaway = false
 
 
 func _is_connected() -> bool:
