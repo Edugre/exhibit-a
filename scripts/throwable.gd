@@ -4,8 +4,9 @@ extends RigidBody3D
 ## the MultiplayerSynchronizer copies its position and holder to the client.
 
 const HOLD_OFFSET := Vector3(0.4, -0.3, -0.8)  # right, down and forward from the head
-const FALL_LIMIT := -10.0  # below this, the box has left the map
+const FALL_LIMIT := -10.0  # below this, the heel has left the map
 const THROW_SPEED := 12.0
+const TUMBLE_SPEED := 7.0  # end over end, so it doesn't fly like it's on a wire
 const NOISE_RADIUS := 8.0
 
 ## Peer id of the player holding this, 0 if nobody. Replicated to the client.
@@ -16,6 +17,7 @@ const NOISE_RADIUS := 8.0
 			collision_shape.set_deferred("disabled", holder_id != 0)
 
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D
+@onready var thud: AudioStreamPlayer3D = $Thud
 
 var _start_transform: Transform3D
 var _thrown := false
@@ -70,6 +72,7 @@ func interact(peer_id: int) -> void:
 func throw(direction: Vector3) -> void:
 	_release()
 	linear_velocity = direction * THROW_SPEED
+	angular_velocity = direction.cross(Vector3.UP).normalized() * -TUMBLE_SPEED
 	_thrown = true
 
 
@@ -98,5 +101,12 @@ func _on_body_entered(_body: Node) -> void:
 	if _thrown:
 		_thrown = false
 		NoiseSystem.emit_noise(global_position, NOISE_RADIUS)
+		_play_thud.rpc()
+
+
+## Host → everyone: the players hear what the guard just heard.
+@rpc("authority", "call_local", "reliable")
+func _play_thud() -> void:
+	thud.play()
 		
 	
