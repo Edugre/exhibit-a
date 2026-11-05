@@ -68,6 +68,7 @@ var _start_transform: Transform3D
 
 
 func _ready() -> void:
+	add_to_group("guards")
 	_start_transform = global_transform
 	for marker in get_node(waypoints_path).get_children():
 		_waypoints.append((marker as Node3D).global_position)
@@ -293,4 +294,4 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_4:
 		var host_player := get_node_or_null("../Players/1") as Node3D
 		if host_player:
-			hear_noise(host_player.global_position)
+			NoiseSystem.emit_noise(host_player.global_position, 8.0)

@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 NetworkManager="*uid://cvxtr68ucg4vi"
 GameState="*res://scripts/game_state.gd"
+NoiseSystem="*uid://d2rq5ex18vyaa"
 
 [display]
 
