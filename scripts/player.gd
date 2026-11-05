@@ -71,6 +71,16 @@ func _process(_delta: float) -> void:
 	if holding != model.carrying:
 		model.carrying = holding
 
+	# Every peer can see for itself who's on a plinth, so being a statue needs no network traffic.
+	model.statue = not holding and _is_on_plinth()
+
+
+func _is_on_plinth() -> bool:
+	for plate: PressurePlate in get_tree().get_nodes_in_group("plates"):
+		if plate.overlaps_body(self):
+			return true
+	return false
+
 
 func _physics_process(delta: float) -> void:
 	if not is_multiplayer_authority():

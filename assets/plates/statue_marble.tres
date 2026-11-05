@@ -1,0 +1,9 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/plates/marble.png" id="1_marble"]
+
+[resource]
+albedo_texture = ExtResource("1_marble")
+roughness = 0.38
+uv1_scale = Vector3(1.3, 1.3, 1.3)
+uv1_triplanar = true

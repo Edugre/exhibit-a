@@ -13,6 +13,8 @@ const WALK_STOP_SPEED := 0.3
 const SPEED_SMOOTHING := 12.0
 ## Nobody covers this far on foot in one tick, so a jump this big is a respawn, not a step.
 const TELEPORT_DISTANCE := 1.0
+const MARBLE := preload("res://assets/plates/statue_marble.tres")
+const STATUE_POSE := &"carry"
 
 ## All eight share the same perceived lightness, so no colour is easier to spot than another.
 ## The host hands these out in order, so neighbours in this list should look the most
@@ -38,6 +40,16 @@ const ACCENT_COLORS: Array[Color] = [
 @export var carrying: bool = false:
 	set(value):
 		carrying = value
+		_apply_pose()
+
+## True while they're standing in for a statue on a plinth: frozen, and white marble all over.
+var statue: bool = false:
+	set(value):
+		if value == statue:
+			return
+		statue = value
+		for mesh_name: String in ["PlayerBody", "PlayerAccent"]:
+			(find_child(mesh_name, true, false) as MeshInstance3D).material_override = MARBLE if statue else null
 		_apply_pose()
 
 ## Follows the carry_socket bone, so a carried object stays in this player's arms.
@@ -95,7 +107,11 @@ func _apply_variant() -> void:
 func _apply_pose() -> void:
 	if not _animation_player:
 		return
-	if carrying:
+	if statue:
+		_animation_player.play(STATUE_POSE, 0.0)
+		_animation_player.advance(0.0)
+		_animation_player.pause()
+	elif carrying:
 		_animation_player.play(&"carry_walk" if _walking else &"carry", BLEND_TIME)
 	else:
 		_animation_player.play(&"walk" if _walking else &"idle", BLEND_TIME)

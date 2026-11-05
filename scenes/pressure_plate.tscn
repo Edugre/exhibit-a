@@ -1,24 +1,60 @@
 [gd_scene format=3 uid="uid://ddobajultcxkp"]
 
 [ext_resource type="Script" uid="uid://bp86107xxvcbk" path="res://scripts/pressure_plate.gd" id="1_ct5vs"]
+[ext_resource type="PackedScene" path="res://assets/plates/plinth.glb" id="2_plinth"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_wccwa"]
-size = Vector3(2, 1, 2)
+size = Vector3(1, 0.7, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_stone"]
+size = Vector3(1.12, 0.6, 1.12)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gem"]
+emission_enabled = true
+emission_energy_multiplier = 2.5
+
+[sub_resource type="SphereMesh" id="SphereMesh_gem"]
+material = SubResource("StandardMaterial3D_gem")
+radius = 0.03
+height = 0.06
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_plaque"]
+metallic = 0.45
+roughness = 0.5
+emission_enabled = true
+emission_energy_multiplier = 0.4
+
+[sub_resource type="QuadMesh" id="QuadMesh_plaque"]
+material = SubResource("StandardMaterial3D_plaque")
+size = Vector2(0.78, 0.335)
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_xtofl"]
 properties/0/path = NodePath(".:is_pressed")
 properties/0/spawn = true
 properties/0/replication_mode = 2
 
-[node name="PressurePlate" type="Area3D" unique_id=547405793]
+[node name="PressurePlate" type="Area3D" groups=["plates"] unique_id=547405793]
 script = ExtResource("1_ct5vs")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1238716923]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)
 shape = SubResource("BoxShape3D_wccwa")
 
-[node name="Visual" type="CSGBox3D" parent="." unique_id=1184290351]
-size = Vector3(2, 0.1, 2)
+[node name="Model" parent="." instance=ExtResource("2_plinth")]
+
+[node name="Stone" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Stone"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+shape = SubResource("BoxShape3D_stone")
+
+[node name="Plaque" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.275, 0.504)
+mesh = SubResource("QuadMesh_plaque")
+
+[node name="Gem" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0.565)
+mesh = SubResource("SphereMesh_gem")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=270744168]
 replication_config = SubResource("SceneReplicationConfig_xtofl")
