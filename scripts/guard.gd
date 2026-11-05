@@ -284,14 +284,3 @@ func _stop(delta: float) -> void:
 func _apply_gravity(delta: float) -> void:
 	if not is_on_floor():
 		velocity += get_gravity() * delta
-
-
-# --- Debug (host): press 4 to make a noise at the host's position. Remove in Phase 7.
-
-func _unhandled_input(event: InputEvent) -> void:
-	if not OS.is_debug_build() or not multiplayer.is_server() or GameState.phase != GameState.Phase.PLAYING:
-		return
-	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_4:
-		var host_player := get_node_or_null("../Players/1") as Node3D
-		if host_player:
-			NoiseSystem.emit_noise(host_player.global_position, 8.0)

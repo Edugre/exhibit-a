@@ -16,10 +16,12 @@ TBD
    - glTF scene import, Skeleton3D skinning and AnimationPlayer (player and guard models)
    - BoneAttachment3D, SpotLight3D and Tween (guard flashlight and lens glare)
    - GPUParticles3D and a second Camera3D (the van's exhaust and the getaway shot)
+   - RigidBody3D and contact monitoring (throwable physics and impacts)
 
 ## Systems we wrote
 - (puzzle conditions, artifact ownership/scoring, guard logic, noise/distraction, timer, outcome logic)
 - Pressure plate puzzle condition (scripts/vault_puzzle.gd)
+- Noise system and throw impact rule (scripts/noise_system.gd, scripts/throwable.gd)
 
 ## Asset credits
 - Player and guard characters (`assets/characters/`): made for this project in Blender. Editable sources are in `assets/characters/source/`.
