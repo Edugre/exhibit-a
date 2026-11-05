@@ -2,7 +2,7 @@ extends SceneTree
 ## One-off tool: lifts each mesh out of the imported models that are drawn in instanced batches, into
 ## plain mesh resources a MultiMesh in a scene can point straight at. Run in the throwaway copy after import.
 
-const MODELS: Array[String] = ["res://assets/exterior/pigeon.glb", "res://assets/exterior/trees.glb", "res://assets/exterior/cars.glb"]
+const MODELS: Array[String] = ["res://assets/exterior/pigeon.glb", "res://assets/exterior/trees.glb", "res://assets/exterior/cars.glb", "res://assets/exterior/doors.glb"]
 
 
 func _init() -> void:

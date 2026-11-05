@@ -20,6 +20,12 @@
 [ext_resource type="AudioStream" path="res://assets/exterior/pigeon_coo.wav" id="snd_pigeon_coo"]
 [ext_resource type="AudioStream" path="res://assets/exterior/car_horn.wav" id="snd_car_horn"]
 [ext_resource type="AudioStream" path="res://assets/exterior/car_engine.wav" id="snd_car_engine"]
+[ext_resource type="AudioStream" path="res://assets/exterior/door_groan.wav" id="snd_door_groan"]
+[ext_resource type="Script" path="res://scripts/exterior_doors.gd" id="doors"]
+[ext_resource type="ArrayMesh" path="res://assets/exterior/meshes/doorl_ext_door.res" id="leaf_L_door"]
+[ext_resource type="ArrayMesh" path="res://assets/exterior/meshes/doorl_ext_bronze.res" id="leaf_L_bronze"]
+[ext_resource type="ArrayMesh" path="res://assets/exterior/meshes/doorr_ext_door.res" id="leaf_R_door"]
+[ext_resource type="ArrayMesh" path="res://assets/exterior/meshes/doorr_ext_bronze.res" id="leaf_R_bronze"]
 [ext_resource type="PackedScene" path="res://assets/exterior/fountain_jets.glb" id="jets"]
 [ext_resource type="PackedScene" path="res://assets/exterior/capital.glb" id="capital"]
 [ext_resource type="PackedScene" path="res://assets/exterior/exterior_context.glb" id="context"]
@@ -1865,6 +1871,27 @@ omni_attenuation = 1.2
 shadow_enabled = false
 light_specular = 0.2
 
+[node name="CurbSpill" type="SpotLight3D" parent="Lights"]
+transform = Transform3D(-1.00000, 0.00000, -0.00000, 0.00000, 0.71749, 0.69657, 0.00000, 0.69657, -0.71749, -13, 7, 25)
+light_color = Color(1.0, 0.82, 0.62, 1)
+light_energy = 8.0
+spot_range = 34
+spot_angle = 40
+spot_angle_attenuation = 2.0
+spot_attenuation = 0.8
+shadow_enabled = false
+shadow_blur = 1.2
+light_specular = 0.25
+
+[node name="PassageLamp" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.3, 7)
+light_color = Color(1.0, 0.8, 0.58, 1)
+light_energy = 0.9
+omni_range = 8
+omni_attenuation = 1.2
+shadow_enabled = false
+light_specular = 0.2
+
 [node name="CartGlow" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.1, -2.4, 32.6)
 light_color = Color(1.0, 0.78, 0.5, 1)
@@ -2060,6 +2087,41 @@ transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -6.5, 3.0500000000000003, 5
 mesh = SubResource("sign_quad")
 surface_material_override/0 = SubResource("sign_walk")
 cast_shadow = 0
+
+[node name="FrontDoors" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8.8)
+script = ExtResource("doors")
+left_hinge = NodePath("HingeL")
+right_hinge = NodePath("HingeR")
+groan = NodePath("Groan")
+
+[node name="Groan" type="AudioStreamPlayer3D" parent="FrontDoors"]
+stream = ExtResource("snd_door_groan")
+volume_db = -4.0
+unit_size = 7.0
+max_distance = 60.0
+
+[node name="HingeL" type="Node3D" parent="FrontDoors"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6, 0, -0.1)
+
+[node name="door" type="MeshInstance3D" parent="FrontDoors/HingeL"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 0, -8.700000000000001)
+mesh = ExtResource("leaf_L_door")
+
+[node name="bronze" type="MeshInstance3D" parent="FrontDoors/HingeL"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 0, -8.700000000000001)
+mesh = ExtResource("leaf_L_bronze")
+
+[node name="HingeR" type="Node3D" parent="FrontDoors"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 0, -0.1)
+
+[node name="door" type="MeshInstance3D" parent="FrontDoors/HingeR"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6, 0, -8.700000000000001)
+mesh = ExtResource("leaf_R_door")
+
+[node name="bronze" type="MeshInstance3D" parent="FrontDoors/HingeR"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6, 0, -8.700000000000001)
+mesh = ExtResource("leaf_R_bronze")
 
 [node name="Flags" type="Node3D" parent="."]
 

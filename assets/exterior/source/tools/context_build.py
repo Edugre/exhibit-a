@@ -55,13 +55,19 @@ def loft(mat, x, z, rings, segs=12):
 
 
 def extrude(mat, outline, y0, y1, walls=True, cap=True):
-    """A wall ring and roof from a footprint."""
+    """A wall ring and roof from a footprint. The wall behind the centre arch keeps a way in for the doors."""
     n = len(outline)
     v = [(x, y0, z) for x, z in outline] + [(x, y1, z) for x, z in outline]
     f = []
     if walls:
         for i in range(n):
             j = (i + 1) % n
+            a, b = outline[i], outline[j]
+            if a[1] == b[1] == 5.9 and min(a[0], b[0]) < 0 < max(a[0], b[0]):
+                k = 1.8 if a[0] > 0 else -1.8
+                for x0, x1, q0, q1 in ((a[0], k, y0, y1), (k, -k, 3.9, y1), (-k, b[0], y0, y1)):
+                    parts[mat].add([(x0, q0, 5.9), (x1, q0, 5.9), (x1, q1, 5.9), (x0, q1, 5.9)], [(0, 1, 2, 3)])
+                continue
             f.append((i, j, j + n, i + n))
     if cap:
         f.append(tuple(range(n, 2 * n)))

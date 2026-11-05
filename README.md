@@ -28,13 +28,15 @@ TBD
    - MultiMeshInstance3D (the pigeons, plaza trees and traffic, drawn in batches)
    - AudioStreamPlayer and AudioStreamPlayer3D (the city's soundscape, fountains, crickets, pigeons and car horns)
    - Automatic mesh LOD from the glTF importer (carved stone at a distance)
+   - ReflectionProbe with custom ambient light (the rooms' dim indoor air at night)
+   - NavigationServer3D baking from collision shapes (the guard's map, out through the doors to the curb)
 
 ## Systems we wrote
 - (puzzle conditions, artifact ownership/scoring, guard logic, noise/distraction, timer, outcome logic)
 - Pressure plate puzzle condition (scripts/vault_puzzle.gd)
 - Noise system and throw impact rule (scripts/noise_system.gd, scripts/throwable.gd)
 - Artifact pickup, carrying and dropping (scripts/artifact.gd)
-- Cosmetic exterior life: pigeons that scatter from runners, flickering lanterns, and traffic that obeys the signal and honks at people in the road (scripts/exterior_pigeons.gd, scripts/exterior_flicker.gd, scripts/exterior_traffic.gd). Each peer runs its own and none touches game state
+- Cosmetic exterior life: pigeons that scatter from runners, flickering lanterns, front doors that open for anyone near them, and traffic that obeys the signal and honks at people in the road (scripts/exterior_pigeons.gd, scripts/exterior_flicker.gd, scripts/exterior_doors.gd, scripts/exterior_traffic.gd). Each peer runs its own and none touches game state
 
 ## Asset credits
 - Player and guard characters (`assets/characters/`): made for this project in Blender. Editable sources are in `assets/characters/source/`.

@@ -1,0 +1,60 @@
+extends Node
+## Test-only autoload for the throwaway copy: bakes the guard's walkable map from the real game's collision,
+## across the rooms, the doorway, the steps and the plaza out to the curb, and writes it to a text file.
+
+func _ready() -> void:
+	while get_tree().current_scene == null or not get_tree().current_scene.is_node_ready():
+		await get_tree().process_frame
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	print("START ", Time.get_ticks_msec())
+	var world: Node = get_tree().current_scene.get_node("World")
+	var mesh := NavigationMesh.new()
+	mesh.agent_radius = 0.3
+	mesh.agent_height = 1.6
+	mesh.agent_max_climb = 0.3
+	mesh.agent_max_slope = 40.0
+	mesh.cell_size = 0.25
+	mesh.cell_height = 0.1
+	mesh.geometry_parsed_geometry_type = NavigationMesh.PARSED_GEOMETRY_STATIC_COLLIDERS
+	mesh.geometry_source_geometry_mode = NavigationMesh.SOURCE_GEOMETRY_ROOT_NODE_CHILDREN
+	mesh.filter_baking_aabb = AABB(Vector3(-34.0, -5.5, -13.0), Vector3(68.0, 11.0, 48.5))
+	var source := NavigationMeshSourceGeometryData3D.new()
+	NavigationServer3D.parse_source_geometry_data(mesh, source, world)
+	print("PARSED ", Time.get_ticks_msec(), " verts ", source.get_vertices().size() / 3, " tris ", source.get_indices().size() / 3)
+	NavigationServer3D.bake_from_source_geometry_data(mesh, source)
+	var verts := mesh.get_vertices()
+	print("BAKED verts ", verts.size(), " polys ", mesh.get_polygon_count())
+	var lo := Vector3.INF
+	var hi := -Vector3.INF
+	var points: Array[String] = []
+	for v in verts:
+		lo = lo.min(v)
+		hi = hi.max(v)
+		points.append("%.3f, %.3f, %.3f" % [v.x, v.y, v.z])
+	print("BOUNDS ", lo, " ", hi)
+	var polys: Array[String] = []
+	for i in mesh.get_polygon_count():
+		var items: Array[String] = []
+		for k in mesh.get_polygon(i):
+			items.append(str(k))
+		polys.append("PackedInt32Array(%s)" % ", ".join(items))
+	var file := FileAccess.open("res://guard_map.txt", FileAccess.WRITE)
+	file.store_string("vertices = PackedVector3Array(%s)\npolygons = [%s]\nagent_height = 1.6\nagent_radius = 0.3\nagent_max_climb = 0.3\ncell_height = 0.1\n" % [", ".join(points), ", ".join(polys)])
+	file.close()
+	# Does a path really run from the vault to the curb across this map?
+	var map := NavigationServer3D.map_create()
+	NavigationServer3D.map_set_active(map, true)
+	NavigationServer3D.map_set_cell_height(map, 0.1)
+	var region := NavigationServer3D.region_create()
+	NavigationServer3D.region_set_map(region, map)
+	NavigationServer3D.region_set_navigation_mesh(region, mesh)
+	await get_tree().physics_frame
+	NavigationServer3D.map_force_update(map)
+	await get_tree().physics_frame
+	var route := NavigationServer3D.map_get_path(map, Vector3(0, 0, -3), Vector3(-9, -4.5, 33), true)
+	var length := 0.0
+	for i in range(1, route.size()):
+		length += route[i].distance_to(route[i - 1])
+	print("ROUTE points ", route.size(), " length ", snappedf(length, 0.1), " ends ", route[route.size() - 1] if route.size() else Vector3.ZERO)
+	get_tree().quit()

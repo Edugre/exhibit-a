@@ -101,6 +101,14 @@ coo = np.sin(2 * np.pi * np.cumsum(pitch) / SR) + 0.35 * np.sin(4 * np.pi * np.c
 envelope = np.clip(np.sin(np.pi * t / 1.3), 0, 1) ** 0.6 * (0.5 + 0.5 * np.sin(2 * np.pi * 2.3 * t) ** 2)
 write("pigeon_coo", low(coo * envelope, 1400))
 
+# The bronze doors: a low grinding swing that settles with a soft thud
+n = int(1.5 * SR)
+t = np.arange(n) / SR
+grind = band(rng.standard_normal(n), 60, 420) * np.clip(np.sin(np.pi * t / 1.25), 0, 1) ** 0.7
+creak = np.sin(2 * np.pi * np.cumsum(118 + 34 * np.sin(2 * np.pi * 2.1 * t) + 40 * t) / SR) * np.clip(np.sin(np.pi * t / 1.25), 0, 1)
+thud = low(rng.standard_normal(n), 160) * np.exp(-np.maximum(t - 1.22, 0) * 22) * (t > 1.22)
+write("door_groan", grind + 0.42 * low(creak, 900) + thud * 1.8)
+
 # A cab's horn, and an engine going by
 n = int(0.7 * SR)
 t = np.arange(n) / SR

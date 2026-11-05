@@ -18,6 +18,7 @@ Blender jobs run in the background: `blender -b --factory-startup --python <scri
 - `make_props_art.py`, `props_build.py`: the one texture all street props share, then the props and cars.
 - `make_sounds.py`: every sound in the street, generated from noise and maths.
 - `make_instance_meshes.gd.txt`: saves the meshes drawn in instanced batches as plain mesh resources in `assets/exterior/meshes/`. Rename to .gd and run with `godot --headless --script`.
+- `bake_guard_map.gd.txt`: bakes the guard's walkable map from the real game's collision. Add it as a temporary autoload, run the game headless, then paste `guard_map.txt` into the NavigationMesh in `scenes/museum.tscn`. Rebake whenever walkable ground changes.
 - `gen_front.py`, `gen_street.py`: take all of that and write the textures' import files, the materials, and `scenes/exterior.tscn` with its lights, traffic, life, sound and collision.
 
 `scenes/exterior.tscn` is the block on its own; `scenes/exterior_night.tscn` wraps it in the night sky and moon. Tune the lights in the list near the middle of `gen_front.py`, not in the scene, or the next run overwrites them.

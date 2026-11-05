@@ -317,13 +317,25 @@ def ring_pull(x, y, z):
     tube([(x + 0.085 * math.cos(q), y + 0.085 * math.sin(q), z + 0.075) for q in a], 0.018, 6, ref=(0.0, 0.0, 1.0))
 
 
+LEAVES = ({m: Part() for m in MATS}, {m: Part() for m in MATS})
+
+
 def bronze_doors(cx, z):
-    """A pair of bronze doors in eight panels: the story of the Book, read top left to bottom right."""
+    """A pair of bronze doors in eight panels: the story of the Book, read top left to bottom right.
+    The centre pair are built apart from the rest, so they can swing on their hinges."""
+    global parts
     w, h = D.DOOR_W / 2, D.DOOR_H
-    box("ext_bronze", cx - w - 0.1, cx + w + 0.1, 0, h + 0.1, z - 0.05, z)
+    main = parts
+    if cx != 0:
+        box("ext_bronze", cx - w - 0.1, cx + w + 0.1, 0, h + 0.1, z - 0.05, z)
     panels = LAYOUT["door_panels"]
     pw, ph = (w - 0.20) / 2 * 2, (h - 0.5) / 4
     for leaf, sx in enumerate((-1, 1)):
+        if cx == 0:
+            parts = LEAVES[leaf]
+            a, b = sorted((0.0, sx * (w + 0.1)))
+            box("ext_bronze", a, b, 0.0, h + 0.1, z - 0.05, z)
+            box("ext_bronze", a, b, 0.0, 0.09, z, z + 0.08)
         x0 = cx - w + 0.08 if sx < 0 else cx + 0.06
         for row in range(4):
             y1 = h - 0.14 - row * (ph + 0.06)
@@ -340,9 +352,24 @@ def bronze_doors(cx, z):
                 for ys in (y0 - 0.025, y1 + 0.025):
                     stud(xs, ys, z + 0.05, 0.03, 0.03)
         ring_pull(cx + sx * 0.27, 0.945, z + 0.05)
+        if cx == 0 and sx > 0:
+            box("ext_bronze", -0.04, 0.04, 0, h - 0.02, z, z + 0.075)
+    parts = main
     # The meeting stile where the leaves close, and the sill
-    box("ext_bronze", cx - 0.04, cx + 0.04, 0, h - 0.02, z, z + 0.075)
-    box("ext_bronze", cx - w - 0.1, cx + w + 0.1, 0, 0.09, z, z + 0.08)
+    if cx != 0:
+        box("ext_bronze", cx - 0.04, cx + 0.04, 0, h - 0.02, z, z + 0.075)
+        box("ext_bronze", cx - w - 0.1, cx + w + 0.1, 0, 0.09, z, z + 0.08)
+    else:
+        door_passage()
+
+
+def door_passage():
+    """The short stone passage from the doors into the building."""
+    x, top, z0, z1 = 1.8, 3.9, 5.6, D.DOOR_Z - 0.2
+    box("ext_paving", -x, x, -0.5, 0.0, z0, z1, skip=("w", "e", "d", "n", "s"))
+    box("ext_ashlar", -x - 0.6, -x, 0.0, top, z0, z1, skip=("w", "d", "u", "n", "s"))
+    box("ext_ashlar", x, x + 0.6, 0.0, top, z0, z1, skip=("e", "d", "u", "n", "s"))
+    box("ext_stone", -x, x, top, top + 0.5, z0, z1, skip=("w", "e", "u", "n", "s"))
 
 
 def banner(cx, tag):
@@ -892,4 +919,5 @@ def export(sections, filename):
 if __name__ == "__main__":
     build_all()
     export({"Front": parts}, "front")
+    export({"DoorL": LEAVES[0], "DoorR": LEAVES[1]}, "doors")
     print("DONE", flush=True)

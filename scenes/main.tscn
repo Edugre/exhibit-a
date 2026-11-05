@@ -6,34 +6,19 @@
 [ext_resource type="PackedScene" uid="uid://c7djabat5ogge" path="res://scenes/guard.tscn" id="4_jyhfs"]
 [ext_resource type="PackedScene" path="res://scenes/getaway.tscn" id="5_getaway"]
 [ext_resource type="PackedScene" path="res://scenes/artifact.tscn" id="6_artifact"]
-
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0wfyh"]
-sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
-ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
-
-[sub_resource type="Sky" id="Sky_sugp2"]
-sky_material = SubResource("ProceduralSkyMaterial_0wfyh")
-
-[sub_resource type="Environment" id="Environment_jyhfs"]
-background_mode = 2
-sky = SubResource("Sky_sugp2")
-glow_enabled = true
+[ext_resource type="PackedScene" path="res://scenes/exterior_night.tscn" id="7_exterior"]
 
 [node name="Main" type="Node" unique_id=1070285452]
 script = ExtResource("1_o5qli")
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1332265728]
-environment = SubResource("Environment_jyhfs")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1992047428]
-transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
-shadow_enabled = true
 
 [node name="World" type="Node3D" parent="." unique_id=1981863584]
 
 [node name="Museum" parent="World" unique_id=810531496 instance=ExtResource("2_0wfyh")]
 
+[node name="Exterior" parent="World" instance=ExtResource("7_exterior")]
+
 [node name="Getaway" parent="World" instance=ExtResource("5_getaway")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, -4.65, 24.6)
 
 [node name="Artifact" parent="World" instance=ExtResource("6_artifact")]
 

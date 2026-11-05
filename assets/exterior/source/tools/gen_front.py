@@ -12,7 +12,7 @@ from PIL import Image, ImageDraw, ImageFilter
 
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
 import ext_dims as D
-SOUNDS = ["amb_city", "amb_fountain", "amb_crickets", "pigeons_flap", "pigeon_coo", "car_horn", "car_engine"]
+SOUNDS = ["amb_city", "amb_fountain", "amb_crickets", "pigeons_flap", "pigeon_coo", "car_horn", "car_engine", "door_groan"]
 
 WT = pathlib.Path(__file__).resolve().parent
 for up in (WT, *WT.parents):
@@ -127,6 +127,7 @@ compress/mode=2
 shutil.copy(CAP / "capital.glb", A / "capital.glb")
 shutil.copy(FRONT / "front.glb", A / "front.glb")
 shutil.copy(FRONT / "wings.glb", A / "wings.glb")
+shutil.copy(FRONT / "doors.glb", A / "doors.glb")
 MATS = ["ext_shaft", "ext_ashlar", "ext_stone", "ext_granite", "ext_riser", "ext_rough", "ext_trim", "ext_bronze", "ext_glass", "ext_paving", "ext_carved",
         "ext_relief", "ext_door", "ext_banner", "ext_lantern", "ext_rail", "ext_wing_wall", "ext_wing_trim", "ext_wing_glass"]
 
@@ -166,6 +167,7 @@ gltf/texture_map_mode=1
 glb_import("capital", ["ext_carved"])
 glb_import("front", MATS)
 glb_import("wings", MATS)
+glb_import("doors", MATS)
 glb_import("exterior_context", {"BO_Stone": "ext_context", "BO_StoneDark": "ext_context_dark", "BO_Paving": "ext_plaza", "BO_City": "ext_city", "BO_Lamp": "ext_lantern", "BO_Road": "ext_road", "BO_Line": "ext_road_line", "BO_Water": "ext_water"})
 shutil.copy(FRONT / "trees.glb", A / "trees.glb")
 shutil.copy(FRONT / "props.glb", A / "props.glb")
@@ -511,6 +513,8 @@ for i, (x, wall, z) in enumerate(wash):
         LIGHTS.append(dict(name=f"WingWash{i}{'W' if sx < 0 else 'E'}", pos=[sx * x, -3.7, z], target=[sx * x, 9.0, wall], energy=3.0, angle=48, range=30, soft=2.0, atten=0.7, color=[1.0, 0.8, 0.6], shadow=False))
 for sx, tag in ((-1, "W"), (1, "E")):
     LIGHTS.append(dict(name=f"FountainGlow{tag}", omni=True, pos=[sx * D.FOUNTAIN_X, D.PLAZA_Y + 1.4, D.FOUNTAIN_Z], target=[0, 0, 0], energy=1.6, range=11, color=[1.0, 0.86, 0.68], shadow=False))
+LIGHTS.append(dict(name="CurbSpill", pos=[-13.0, 7.0, 25.0], target=[-13.0, D.ROAD_Y, 37.0], energy=8.0, angle=40, range=34, soft=2.0, atten=0.8, color=[1.0, 0.82, 0.62], shadow=False))
+LIGHTS.append(dict(name="PassageLamp", omni=True, pos=[0.0, 3.3, 7.0], target=[0, 0, 0], energy=0.9, range=8, color=[1.0, 0.8, 0.58], shadow=False))
 LIGHTS.append(dict(name="CartGlow", omni=True, pos=[19.1, D.PLAZA_Y + 2.1, 32.6], target=[0, 0, 0], energy=1.3, range=8, color=[1.0, 0.78, 0.5], shadow=False))
 LIGHTS.append(dict(name="TerraceBounce", omni=True, pos=[0.0, 1.2, 13.0], target=[0, 0, 0], energy=0.5, range=15, color=[1.0, 0.76, 0.52], shadow=False))
 

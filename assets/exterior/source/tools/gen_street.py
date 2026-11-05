@@ -117,6 +117,17 @@ for tag, z, turn, oz in (("Near", 34.2, "Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1,"
     for sign_name, mat in (("Hand", "sign_hand"), ("Walk", "sign_walk")):
         n.append(f'[node name="{sign_name}{tag}" type="MeshInstance3D" parent="Traffic"]\ntransform = {turn} -6.5, {y + 2.9}, {z + oz})\nmesh = SubResource("sign_quad")\nsurface_material_override/0 = SubResource("{mat}")\ncast_shadow = 0\n')
 
+# The centre doors, on their hinges
+STREET_RES += '[ext_resource type="Script" path="res://scripts/exterior_doors.gd" id="doors"]\n'
+n.append(f'[node name="FrontDoors" type="Node3D" parent="."]\ntransform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, {D.DOOR_Z})\nscript = ExtResource("doors")\nleft_hinge = NodePath("HingeL")\nright_hinge = NodePath("HingeR")\ngroan = NodePath("Groan")\n')
+n.append(f'[node name="Groan" type="AudioStreamPlayer3D" parent="FrontDoors"]\nstream = ExtResource("snd_door_groan")\nvolume_db = -4.0\nunit_size = 7.0\nmax_distance = 60.0\n')
+for tag, sx in (("L", -1), ("R", 1)):
+    hx = sx * (D.DOOR_W / 2 + 0.1)
+    n.append(f'[node name="Hinge{tag}" type="Node3D" parent="FrontDoors"]\ntransform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, {hx}, 0, -0.1)\n')
+    for part in ("door", "bronze"):
+        STREET_RES += f'[ext_resource type="ArrayMesh" path="res://assets/exterior/meshes/door{tag.lower()}_ext_{part}.res" id="leaf_{tag}_{part}"]\n'
+        n.append(f'[node name="{part}" type="MeshInstance3D" parent="FrontDoors/Hinge{tag}"]\ntransform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, {-hx}, 0, {-D.DOOR_Z + 0.1})\nmesh = ExtResource("leaf_{tag}_{part}")\n')
+
 # Flags on the two tall poles
 n.append('[node name="Flags" type="Node3D" parent="."]\n')
 for sx, tag in ((-1, "West"), (1, "East")):
