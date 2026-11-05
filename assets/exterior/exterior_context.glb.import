@@ -3,7 +3,7 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://b74ce8wguk404"
+uid="uid://hva6jnffelqj"
 path="res://.godot/imported/exterior_context.glb-9e550dc41574f2ca816b670fef49c469.scn"
 
 [deps]
@@ -43,17 +43,28 @@ _subresources={
 "materials": {
 "BO_City": {
 "use_external/enabled": true,
-"use_external/fallback_path": "res://assets/exterior/ext_context_dark.tres",
-"use_external/path": "res://assets/exterior/ext_context_dark.tres"
+"use_external/fallback_path": "res://assets/exterior/ext_city.tres",
+"use_external/path": "res://assets/exterior/ext_city.tres"
+},
+"BO_Lamp": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://assets/exterior/ext_lantern.tres",
+"use_external/path": "res://assets/exterior/ext_lantern.tres"
+},
+"BO_Line": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://assets/exterior/ext_road_line.tres",
+"use_external/path": "res://assets/exterior/ext_road_line.tres"
 },
 "BO_Paving": {
 "use_external/enabled": true,
-"use_external/fallback_path": "res://assets/exterior/ext_paving.tres",
-"use_external/path": "res://assets/exterior/ext_paving.tres"
+"use_external/fallback_path": "res://assets/exterior/ext_plaza.tres",
+"use_external/path": "res://assets/exterior/ext_plaza.tres"
 },
-"BO_Steps": {
+"BO_Road": {
 "use_external/enabled": true,
-"use_external/path": "res://assets/exterior/ext_granite.tres"
+"use_external/fallback_path": "res://assets/exterior/ext_road.tres",
+"use_external/path": "res://assets/exterior/ext_road.tres"
 },
 "BO_Stone": {
 "use_external/enabled": true,
@@ -64,6 +75,11 @@ _subresources={
 "use_external/enabled": true,
 "use_external/fallback_path": "res://assets/exterior/ext_context_dark.tres",
 "use_external/path": "res://assets/exterior/ext_context_dark.tres"
+},
+"BO_Water": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://assets/exterior/ext_water.tres",
+"use_external/path": "res://assets/exterior/ext_water.tres"
 }
 }
 }

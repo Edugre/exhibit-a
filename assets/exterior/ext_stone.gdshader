@@ -21,6 +21,11 @@ uniform float grime = 0.0;
 uniform float grime_top = 19.0;
 uniform float grime_length = 9.0;
 
+// A century of weather, laid across the whole front like a stencil, so nothing repeats
+uniform sampler2D stain_map : hint_default_white, filter_linear_mipmap;
+uniform float stain_amount = 0.0;
+uniform vec4 stain_rect = vec4(-32.0, -5.0, 64.0, 36.0);
+
 varying vec3 world_pos;
 varying vec3 world_nor;
 
@@ -74,12 +79,14 @@ void fragment() {
 		float dx = min(f.x, block_length - f.x);
 		float dy = min(f.y, course_height - f.y);
 		float d = min(dx, dy);
-		float groove = 1.0 - smoothstep(joint_width, joint_width * 2.2, d);
+		// Joints narrower than a pixel are faded out, or a far wall breaks into a pattern of dots
+		float fine = 1.0 - smoothstep(0.015, 0.05, length(fwidth(c)));
+		float groove = (1.0 - smoothstep(joint_width, joint_width * 2.2, d)) * fine;
 		float tone = hash(vec2(column, row)) - 0.5;
 		albedo *= 1.0 + tone * block_tone * wall;
 		albedo *= 1.0 - 0.36 * groove * wall;
 		// Each block's edge rolls away a little into the joint, and catches raking light
-		float edge = (1.0 - smoothstep(joint_width, joint_width * 4.0, d)) * wall;
+		float edge = (1.0 - smoothstep(joint_width, joint_width * 4.0, d)) * wall * fine;
 		vec3 up_axis = vec3(0.0, 1.0, 0.0);
 		vec3 along = abs(n.z) > abs(n.x) ? vec3(1.0, 0.0, 0.0) : vec3(0.0, 0.0, 1.0);
 		vec3 bend = dy < dx ? up_axis * (f.y < course_height * 0.5 ? -1.0 : 1.0) : along * (f.x < block_length * 0.5 ? -1.0 : 1.0);
@@ -91,6 +98,12 @@ void fragment() {
 		streak = smoothstep(0.52, 0.70, streak);
 		float fall = 1.0 - clamp((grime_top - world_pos.y) / grime_length, 0.0, 1.0);
 		albedo *= 1.0 - grime * fall * (0.35 + 0.65 * streak) * wall;
+	}
+
+	if (stain_amount > 0.0) {
+		vec2 s = (world_pos.xy - stain_rect.xy) / stain_rect.zw;
+		float weather = texture(stain_map, vec2(s.x, 1.0 - s.y)).r * 1.5;
+		albedo *= mix(1.0, weather, stain_amount);
 	}
 
 	ALBEDO = albedo * tint;

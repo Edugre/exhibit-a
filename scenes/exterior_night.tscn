@@ -1,0 +1,52 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/exterior.tscn" id="exterior"]
+[ext_resource type="Shader" path="res://assets/exterior/ext_night_sky.gdshader" id="sky_shader"]
+
+[sub_resource type="ShaderMaterial" id="sky_mat"]
+shader = ExtResource("sky_shader")
+
+[sub_resource type="Sky" id="sky"]
+sky_material = SubResource("sky_mat")
+radiance_size = 2
+
+[sub_resource type="Environment" id="env"]
+background_mode = 2
+sky = SubResource("sky")
+ambient_light_source = 3
+ambient_light_sky_contribution = 1.0
+ambient_light_energy = 0.22
+reflected_light_source = 1
+tonemap_mode = 3
+tonemap_white = 6.0
+ssao_enabled = true
+ssao_radius = 1.4
+ssao_intensity = 2.2
+ssao_power = 1.6
+ssao_detail = 0.6
+glow_enabled = true
+glow_intensity = 0.6
+glow_strength = 0.9
+glow_bloom = 0.04
+glow_blend_mode = 1
+glow_hdr_threshold = 1.1
+fog_enabled = true
+fog_light_color = Color(0.09, 0.12, 0.2, 1)
+fog_density = 0.0016
+fog_sky_affect = 0.0
+
+[node name="ExteriorNight" type="Node3D"]
+
+[node name="Environment" type="WorldEnvironment" parent="."]
+environment = SubResource("env")
+
+[node name="Moon" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.853, 0.4275, -0.2996, 0, 0.5738, 0.819, 0.522, -0.6986, 0.4894, 0, 60, 0)
+light_color = Color(0.66, 0.74, 0.95, 1)
+light_energy = 0.12
+light_specular = 0.0
+shadow_enabled = true
+shadow_opacity = 0.55
+directional_shadow_max_distance = 260.0
+
+[node name="Exterior" parent="." instance=ExtResource("exterior")]

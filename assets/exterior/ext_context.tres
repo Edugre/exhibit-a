@@ -11,3 +11,6 @@ shader_parameter/stone_albedo = ExtResource("t0")
 shader_parameter/stone_normal = ExtResource("t1")
 shader_parameter/stone_rough = ExtResource("t2")
 shader_parameter/tint = Vector3(0.72, 0.71, 0.69)
+shader_parameter/grime = 0.3
+shader_parameter/grime_top = 18.0
+shader_parameter/grime_length = 14.0

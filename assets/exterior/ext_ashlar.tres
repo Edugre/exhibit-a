@@ -4,17 +4,17 @@
 [ext_resource type="Texture2D" path="res://assets/exterior/ext_stone_albedo.png" id="t0"]
 [ext_resource type="Texture2D" path="res://assets/exterior/ext_stone_normal.png" id="t1"]
 [ext_resource type="Texture2D" path="res://assets/exterior/ext_stone_rough.png" id="t2"]
+[ext_resource type="Texture2D" path="res://assets/exterior/ext_stain.png" id="t3"]
 
 [resource]
 shader = ExtResource("s")
 shader_parameter/stone_albedo = ExtResource("t0")
 shader_parameter/stone_normal = ExtResource("t1")
 shader_parameter/stone_rough = ExtResource("t2")
+shader_parameter/stain_map = ExtResource("t3")
 shader_parameter/joints = true
 shader_parameter/course_height = 0.74
 shader_parameter/block_length = 2.46
 shader_parameter/joint_width = 0.01
 shader_parameter/block_tone = 0.05
-shader_parameter/grime = 0.32
-shader_parameter/grime_top = 19.0
-shader_parameter/grime_length = 10.0
+shader_parameter/stain_amount = 1.0

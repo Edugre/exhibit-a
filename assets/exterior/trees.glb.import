@@ -1,0 +1,58 @@
+[remap]
+
+importer="scene"
+importer_version=1
+type="PackedScene"
+uid="uid://bo3s0m57dw04a"
+path="res://.godot/imported/trees.glb-fc60615e5e1a7ac6c4c0fb701ac7c7a1.scn"
+
+[deps]
+
+source_file="res://assets/exterior/trees.glb"
+dest_files=["res://.godot/imported/trees.glb-fc60615e5e1a7ac6c4c0fb701ac7c7a1.scn"]
+
+[params]
+
+nodes/root_type=""
+nodes/root_name=""
+nodes/root_script=null
+mesh_library/use_node_names_as_mesh_names=false
+array_mesh/deduplicate_surfaces=true
+nodes/apply_root_scale=true
+nodes/root_scale=1.0
+nodes/import_as_skeleton_bones=false
+nodes/use_name_suffixes=true
+nodes/use_node_type_suffixes=true
+meshes/ensure_tangents=true
+meshes/generate_lods=true
+meshes/create_shadow_meshes=true
+meshes/light_baking=1
+meshes/lightmap_texel_size=0.2
+meshes/force_disable_compression=false
+skins/use_named_skins=true
+animation/import=true
+animation/fps=30
+animation/trimming=false
+animation/remove_immutable_tracks=true
+animation/import_rest_as_RESET=false
+import_script/path=""
+materials/extract=0
+materials/extract_format=0
+materials/extract_path=""
+_subresources={
+"materials": {
+"ext_bark": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://assets/exterior/ext_bark.tres",
+"use_external/path": "res://assets/exterior/ext_bark.tres"
+},
+"ext_leaf": {
+"use_external/enabled": true,
+"use_external/fallback_path": "res://assets/exterior/ext_leaf.tres",
+"use_external/path": "res://assets/exterior/ext_leaf.tres"
+}
+}
+}
+gltf/naming_version=2
+gltf/embedded_image_handling=1
+gltf/texture_map_mode=1

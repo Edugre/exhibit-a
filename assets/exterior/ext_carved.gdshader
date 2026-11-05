@@ -12,6 +12,11 @@ uniform float soot_wide = 0.55;
 uniform float soot_tight = 0.8;
 uniform float normal_depth = 1.0;
 
+// A century of weather, laid across the whole front like a stencil, so nothing repeats
+uniform sampler2D stain_map : hint_default_white, filter_linear_mipmap;
+uniform float stain_amount = 0.0;
+uniform vec4 stain_rect = vec4(-32.0, -5.0, 64.0, 36.0);
+
 varying vec3 world_pos;
 varying vec3 world_nor;
 
@@ -34,6 +39,12 @@ void fragment() {
 	vec2 ao = texture(carved_ao, UV).rg;
 	// City dirt settles where the rain can't wash it: recesses go darker and a little cooler
 	albedo *= mix(1.0, ao.g, soot_tight) * mix(1.0, ao.r, soot_wide);
+	if (stain_amount > 0.0) {
+		vec2 s = (world_pos.xy - stain_rect.xy) / stain_rect.zw;
+		float weather = texture(stain_map, vec2(s.x, 1.0 - s.y)).r * 1.5;
+		albedo *= mix(1.0, weather, stain_amount);
+	}
+
 	ALBEDO = albedo * tint;
 	ROUGHNESS = rough;
 	SPECULAR = 0.3;

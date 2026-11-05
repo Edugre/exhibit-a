@@ -207,6 +207,123 @@ def keystone():
     return acc.arrays()
 
 
+# --- The crest along the roofline ---------------------------------------------------------------
+def crest_base(acc):
+    """A palmette fan and two scrolls, which link each mask to the next along the roofline.
+    Local space: x across, y up from the attic, z outwards."""
+    acc.add(*blob((0, 0.12, 0.08), (0.24, 0.10, 0.09), 32))
+    for i in range(11):
+        a = math.radians(-60 + i * 12)
+        length = 1.08 - abs(i - 5) * 0.05
+        c = (math.sin(a) * length * 0.52, 0.22 + math.cos(a) * length * 0.52, -0.05)
+        v, f = blob((0, 0, 0), (0.058, length * 0.52, 0.04), 24)
+        ca, sa = math.cos(a), math.sin(a)
+        x, y = v[:, 0].copy(), v[:, 1].copy()
+        v[:, 0], v[:, 1] = ca * x + sa * y, -sa * x + ca * y
+        acc.add(v + np.array(c), f)
+    for sx in (-1, 1):
+        tube_path(acc, [(sx * 0.16, 0.10, 0.13), (sx * 0.40, 0.04, 0.14), (sx * 0.62, 0.07, 0.10), (sx * 0.78, 0.20, 0.06)], 0.05, 0.03, 40, 14)
+        ang = np.linspace(0, 2.2 * TAU, 120)
+        rho = 0.13 * np.exp(-0.22 * ang)
+        x = sx * (0.67 + rho * np.cos(ang + 0.6))
+        y = 0.20 + rho * np.sin(ang + 0.6)
+        path = np.stack([x, y, np.full_like(x, 0.07)], -1)
+        tang = normalize(np.gradient(path, axis=0))
+        side = np.tile(np.array([0.0, 0.0, 1.0]), (len(x), 1))
+        up = normalize(np.cross(tang, side))
+        acc.add(*sweep(path, side, up, [(-1, -1), (-1, 1), (1, 1), (1, -1)], np.full_like(x, 0.05), np.linspace(0.03, 0.012, len(x))))
+
+
+def face_height(x, y):
+    """A calm classical face as one surface, so the brow runs into the nose the way carved stone does."""
+    u, v = x / 0.20, y / 0.285
+
+    def g(cu, cv, su, sv):
+        return np.exp(-((u - cu) / su) ** 2 - ((v - cv) / sv) ** 2)
+
+    def sstep(e0, e1, t):
+        k = np.clip((t - e0) / (e1 - e0), 0, 1)
+        return k * k * (3 - 2 * k)
+
+    h = np.sqrt(np.clip(1 - u ** 2 - (v / (1.0 + 0.10 * (v < 0))) ** 2, 0, 1)) * 0.135
+    h -= 0.021 * (g(-0.43, 0.17, 0.25, 0.11) + g(0.43, 0.17, 0.25, 0.11))     # sockets
+    h += 0.017 * (g(-0.43, 0.145, 0.18, 0.055) + g(0.43, 0.145, 0.18, 0.055))  # lids
+    h += 0.016 * g(0, 0.33, 0.66, 0.075)                                        # brow
+    t = np.clip((0.30 - v) / 0.62, 0, 1)
+    h += 0.074 * t ** 0.7 * np.exp(-(u / (0.085 + 0.09 * t)) ** 2) * (1 - sstep(0.30, 0.42, -v))   # nose
+    h += 0.012 * (g(-0.17, -0.36, 0.09, 0.06) + g(0.17, -0.36, 0.09, 0.06))    # the wings of the nose
+    h -= 0.008 * g(0, -0.47, 0.06, 0.06)                                        # the groove under it
+    h += 0.020 * g(0, -0.54, 0.25, 0.05)                                        # upper lip
+    h -= 0.016 * g(0, -0.605, 0.31, 0.016)                                      # the line of the mouth
+    h += 0.024 * g(0, -0.67, 0.20, 0.055)                                       # lower lip
+    h -= 0.016 * g(0, -0.77, 0.18, 0.04)                                        # the dip above the chin
+    h += 0.030 * g(0, -0.89, 0.25, 0.10)                                        # chin
+    h += 0.010 * (g(-0.56, -0.1, 0.26, 0.2) + g(0.56, -0.1, 0.26, 0.2))        # cheekbones
+    return h
+
+
+def crest_face(acc, cy=0.66):
+    """One smooth surface, closed with a shallow back so the voxel fuse keeps its volume."""
+    z = 0.30
+    xs = np.linspace(-0.25, 0.25, 130)
+    ys = np.linspace(-0.37, 0.33, 180)
+    X, Y = np.meshgrid(xs, ys)
+    h = face_height(X, Y)
+    h[0, :] = h[-1, :] = 0
+    h[:, 0] = h[:, -1] = 0
+    ny, nx = h.shape
+    top = np.stack([X, Y + cy, z + h], -1).reshape(-1, 3)
+    bottom = np.stack([X, Y + cy, z - 0.07 * np.clip(h / 0.02, 0, 1)], -1).reshape(-1, 3)
+    i = np.arange(ny - 1)[:, None] * nx + np.arange(nx - 1)[None, :]
+    i = i.ravel()
+    quads = np.stack([i, i + 1, i + nx + 1, i + nx], -1)
+    tris_top = np.concatenate([quads[:, [0, 1, 2]], quads[:, [0, 2, 3]]])
+    tris_bottom = tris_top[:, ::-1] + nx * ny
+    acc.add(np.concatenate([top, bottom]), np.concatenate([tris_top, tris_bottom]))
+
+
+def mask_athena():
+    acc = Acc()
+    crest_base(acc)
+    crest_face(acc)
+    cy, z = 0.66, 0.30
+    acc.add(*blob((0, cy + 0.17, z - 0.03), (0.255, 0.24, 0.20), 44))                 # helmet
+    tube_path(acc, [(-0.24, cy + 0.06, z + 0.03), (-0.14, cy + 0.26, z + 0.17), (0.14, cy + 0.26, z + 0.17), (0.24, cy + 0.06, z + 0.03)], 0.033, 0.033, 40, 14)  # visor
+    tube_path(acc, [(0, cy + 0.24, z + 0.14), (0, cy + 0.44, z + 0.10), (0, cy + 0.48, z - 0.12), (0, cy + 0.30, z - 0.24)], 0.056, 0.04, 40, 14)                  # crest
+    for sx in (-1, 1):
+        acc.add(*blob((sx * 0.196, cy - 0.05, z + 0.01), (0.03, 0.125, 0.06), 28))  # cheek guard
+    for i in range(5):
+        a = math.radians(-50 + i * 25)
+        acc.add(*blob((math.sin(a) * 0.15, cy + 0.335 + math.cos(a) * 0.05, z + 0.115), (0.026, 0.032, 0.022), 14))  # beads on the visor
+    return acc.arrays()
+
+
+def mask_shush():
+    """The librarian, hidden among the goddesses: spectacles, a bun, and one finger to her lips."""
+    acc = Acc()
+    crest_base(acc)
+    crest_face(acc)
+    cy, z = 0.66, 0.30
+    acc.add(*blob((0, cy + 0.15, z - 0.05), (0.235, 0.225, 0.17), 44))                # hair
+    acc.add(*blob((0, cy + 0.40, z - 0.08), (0.125, 0.125, 0.12), 32))                # bun
+    tube_path(acc, [(-0.10, cy + 0.40, z + 0.04), (-0.03, cy + 0.44, z + 0.05), (0.03, cy + 0.44, z + 0.05), (0.10, cy + 0.40, z + 0.04)], 0.012, 0.012, 20, 10)   # a pencil through it
+    for sx in (-1, 1):
+        cx = sx * 0.085
+        ang = np.linspace(0, TAU, 40)
+        path = np.stack([cx + 0.062 * np.cos(ang), cy + 0.022 + 0.05 * np.sin(ang), np.full_like(ang, z + 0.122)], -1)
+        tang = normalize(np.gradient(path, axis=0))
+        side = np.tile(np.array([0.0, 0.0, 1.0]), (40, 1))
+        up = normalize(np.cross(tang, side))
+        a2 = np.linspace(0, TAU, 10, endpoint=False)
+        acc.add(*sweep(path, side, up, np.stack([np.cos(a2), np.sin(a2)], -1), np.full(40, 0.011), np.full(40, 0.011)))
+        tube_path(acc, [(sx * 0.147, cy + 0.03, z + 0.115), (sx * 0.17, cy + 0.04, z + 0.09), (sx * 0.19, cy + 0.04, z + 0.05), (sx * 0.20, cy + 0.04, z + 0.01)], 0.009, 0.009, 16, 8)
+    tube_path(acc, [(-0.023, cy + 0.02, z + 0.135), (0, cy + 0.03, z + 0.14), (0, cy + 0.03, z + 0.14), (0.023, cy + 0.02, z + 0.135)], 0.009, 0.009, 10, 8)
+    # the finger, and the fist below it
+    acc.add(*blob((0, cy - 0.10, z + 0.165), (0.034, 0.135, 0.032), 24))
+    acc.add(*blob((0, cy - 0.285, z + 0.15), (0.115, 0.085, 0.08), 28))
+    return acc.arrays()
+
+
 # --- Game mesh, UVs, bakes ----------------------------------------------------------------------
 def game_mesh(hp, name, tris, voxel, mirror):
     me = hp.data.copy()
@@ -354,6 +471,18 @@ def main():
     log("keystone sculpt", len(hp.data.polygons))
     lp = game_mesh(hp, "Keystone", 2000, 0.010, mirror=True)
     bake_one(lp, hp, "keystone", 0.30, 0.05)
+    bpy.data.objects.remove(hp)
+    bpy.data.objects.remove(lp)
+
+    for tag, fn in (("mask_athena", mask_athena), ("mask_shush", mask_shush)):
+        v, f = fn()
+        hp = fused("HP_" + tag, v, f, VOX * 0.8)
+        apply_mod(hp, "SMOOTH", factor=0.6, iterations=7)
+        log(tag, "sculpt", len(hp.data.polygons))
+        lp = game_mesh(hp, tag, 720, 0.011, mirror=True)
+        bake_one(lp, hp, tag, 0.24, 0.04)
+        bpy.data.objects.remove(hp)
+        bpy.data.objects.remove(lp)
     log("done")
 
 
@@ -410,6 +539,18 @@ def preview():
     v, f = modillion()
     b = fused("M", v, f, VOX)
     b.data.materials.append(m)
+    v, f = mask_athena()
+    ma = fused("MA", v, f, VOX)
+    apply_mod(ma, "SMOOTH", factor=0.6, iterations=7)
+    ma.data.materials.append(m)
+    ma.rotation_euler = (math.radians(90), 0, 0)
+    v, f = mask_shush()
+    ms = fused("MS", v, f, VOX)
+    apply_mod(ms, "SMOOTH", factor=0.6, iterations=7)
+    ms.data.materials.append(m)
+    ms.rotation_euler = (math.radians(90), 0, 0)
+    shot(ma, "mask_athena", (0.9, -5.0, -1.6), (0, 0, 0.62), (1.5, -5, -3))
+    shot(ms, "mask_shush", (0.9, -5.0, -1.6), (0, 0, 0.62), (1.5, -5, -3))
     shot(k, "keystone_front", (0.0, -6.5, 0.4), (0, 0, 0.4), (1.5, -5, -3))
     shot(k, "keystone_below", (2.0, -5.0, -3.5), (0, -0.3, 0.3), (1.5, -5, -3))
     shot(b, "modillion_below", (1.3, 1.6, -2.4), (0, 0.5, -0.2), (1, 0.5, -3.0))

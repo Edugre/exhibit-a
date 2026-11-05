@@ -1,0 +1,24 @@
+extends SceneTree
+## One-off tool: lifts each mesh out of the imported models that are drawn in instanced batches, into
+## plain mesh resources a MultiMesh in a scene can point straight at. Run in the throwaway copy after import.
+
+const MODELS: Array[String] = ["res://assets/exterior/pigeon.glb", "res://assets/exterior/trees.glb", "res://assets/exterior/cars.glb"]
+
+
+func _init() -> void:
+	DirAccess.make_dir_recursive_absolute("res://assets/exterior/meshes")
+	for path in MODELS:
+		if not FileAccess.file_exists(path):
+			continue
+		var scene: PackedScene = load(path)
+		var root := scene.instantiate()
+		var stack: Array[Node] = [root]
+		while not stack.is_empty():
+			var n: Node = stack.pop_back()
+			stack.append_array(n.get_children())
+			if n is MeshInstance3D:
+				var mesh: Mesh = (n as MeshInstance3D).mesh
+				var out := "res://assets/exterior/meshes/%s.res" % n.name.to_lower()
+				print("SAVED ", out, " ", ResourceSaver.save(mesh, out), " ", mesh.get_faces().size() / 3)
+		root.free()
+	quit()
