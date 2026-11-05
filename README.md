@@ -15,6 +15,7 @@ TBD
    - Area3D (detecting players on the pressure plates)
    - glTF scene import, Skeleton3D skinning and AnimationPlayer (player and guard models)
    - BoneAttachment3D, SpotLight3D and Tween (guard flashlight and lens glare)
+   - GPUParticles3D and OmniLight3D (smoke, sparks and ember glow on the artifact)
    - GPUParticles3D and a second Camera3D (the van's exhaust and the getaway shot)
    - RigidBody3D and contact monitoring (throwable physics and impacts)
 
@@ -22,7 +23,9 @@ TBD
 - (puzzle conditions, artifact ownership/scoring, guard logic, noise/distraction, timer, outcome logic)
 - Pressure plate puzzle condition (scripts/vault_puzzle.gd)
 - Noise system and throw impact rule (scripts/noise_system.gd, scripts/throwable.gd)
+- Artifact pickup, carrying and dropping (scripts/artifact.gd)
 
 ## Asset credits
 - Player and guard characters (`assets/characters/`): made for this project in Blender. Editable sources are in `assets/characters/source/`.
+- The Last Book of Alexandria and its display stand (`assets/artifact/`): made for this project in Blender. Editable source is in `assets/artifact/source/`.
 - Trojan Van, drop zone and road (`assets/getaway/`): made for this project in Blender. Editable source is in `assets/getaway/source/`.

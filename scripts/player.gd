@@ -7,6 +7,8 @@ const SNEAK_SPEED := 2.5
 const JUMP_VELOCITY := 4.5
 const MOUSE_SENSITIVITY := 0.002
 const INTERACT_RANGE := 4.0
+const INTERACT_PROMPT := "Press E to interact"
+const DROP_PROMPT := "Press E to drop"
 
 ## Accent colour, picked by the host and set before this node enters the tree.
 var variant: int = 0
@@ -18,6 +20,7 @@ var variant: int = 0
 @onready var model: Node3D = $Model
 
 var current_interactable: Node = null
+var holding: bool = false
 
 
 func _enter_tree() -> void:
@@ -44,6 +47,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		rotate_y(-event.relative.x * MOUSE_SENSITIVITY)
 		head.rotate_x(-event.relative.y * MOUSE_SENSITIVITY)
 		head.rotation.x = clampf(head.rotation.x, deg_to_rad(-89.0), deg_to_rad(89.0))
+	elif event.is_action_pressed("interact") and holding:
+		get_tree().get_first_node_in_group("artifact").request_drop()
 	elif event.is_action_pressed("interact") and current_interactable != null:
 		_request_interact.rpc_id(1, current_interactable.get_path())
 		
@@ -62,7 +67,7 @@ func _process(_delta: float) -> void:
 		model.visible = not camera.current
 
 	# The host owns who holds the artifact; every peer just shows it.
-	var holding := GameState.artifact_state == GameState.ArtifactState.CARRIED and GameState.artifact_holder == name.to_int()
+	holding = GameState.artifact_state == GameState.ArtifactState.CARRIED and GameState.artifact_holder == name.to_int()
 	if holding != model.carrying:
 		model.carrying = holding
 
@@ -101,9 +106,9 @@ func _update_interact_target() -> void:
 		if collider and collider.is_in_group("interactable"):
 			new_target = collider
 
-	if new_target != current_interactable:
-		current_interactable = new_target
-		interact_prompt.visible = current_interactable != null
+	current_interactable = new_target
+	interact_prompt.visible = holding or current_interactable != null
+	interact_prompt.text = DROP_PROMPT if holding else INTERACT_PROMPT
 		
 @rpc("any_peer", "call_local", "reliable")
 func _request_interact(target_path: NodePath) -> void:
@@ -113,6 +118,8 @@ func _request_interact(target_path: NodePath) -> void:
 	var sender_id := multiplayer.get_remote_sender_id()
 	if sender_id != name.to_int():
 		return
+	if holding:
+		return  # hands full: put the book down first
 
 	var target := get_node_or_null(target_path)
 	if target == null or not target.is_in_group("interactable"):

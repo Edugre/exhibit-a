@@ -25,6 +25,7 @@ func _on_plate_changed(_pressed: bool) -> void:
 	if plate_a.is_pressed  && plate_b.is_pressed:
 		is_solved = true
 		door.is_open = true
+		GameState.set_artifact(GameState.ArtifactState.AVAILABLE)
 		solved.emit()
 
 func _on_heist_reset(_respawn_players: bool) -> void:

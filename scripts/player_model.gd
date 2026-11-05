@@ -40,6 +40,9 @@ const ACCENT_COLORS: Array[Color] = [
 		carrying = value
 		_apply_pose()
 
+## Follows the carry_socket bone, so a carried object stays in this player's arms.
+var carry_anchor: BoneAttachment3D
+
 var _accent_material: BaseMaterial3D
 var _animation_player: AnimationPlayer
 var _last_position: Vector3
@@ -55,6 +58,10 @@ func _ready() -> void:
 	_animation_player = find_child("AnimationPlayer", true, false) as AnimationPlayer
 	for clip: StringName in [&"idle", &"walk", &"carry", &"carry_walk"]:
 		_animation_player.get_animation(clip).loop_mode = Animation.LOOP_LINEAR
+
+	carry_anchor = BoneAttachment3D.new()
+	(find_child("Skeleton3D", true, false) as Skeleton3D).add_child(carry_anchor)
+	carry_anchor.bone_name = "carry_socket"
 
 	_last_position = global_position
 	_apply_variant()

@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://ddobajultcxkp" path="res://scenes/pressure_plate.tscn" id="2_5qjhm"]
 [ext_resource type="Script" uid="uid://dwf7uthkm8ajy" path="res://scripts/vault_puzzle.gd" id="3_kf0j1"]
 [ext_resource type="PackedScene" uid="uid://boemyyhoc6dtn" path="res://scenes/throwable.tscn" id="4_4kxtc"]
+[ext_resource type="PackedScene" path="res://assets/artifact/book_stand.glb" id="4_stand"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_y41jf"]
 vertices = PackedVector3Array(-0.75, 0.5, -9, -0.75, 0.5, -11, -2, 0.5, -11, -2, 0.5, -6.75, 2.25, 0.5, -11, 0.75, 0.5, -11, 0.75, 0.5, -9, 2.25, 0.5, -6.75, -4.25, 0.5, 4.25, -5.75, 0.5, 4.25, -5.5, 0.5, 5.25, -1, 0.5, 5.25, -7, 0.5, 3.5, -6, 0.5, 3.75, -5.75, 0.5, 2, -7, 0.5, -5, -0.75, 0.5, 6, 1, 0.5, 6, 1.25, 0.5, 5.25, -3.75, 0.5, 2.25, -3.75, 0.5, 3.75, 7.25, 0.5, 5.25, 7.25, 0.5, -5, -7, 0.5, 5.25, 1.25, 0.5, 7, -1.5, 0.5, 7, -1.5, 0.5, 11.5, 2.5, 0.5, 11.5, 2.75, 0.5, 13.25, 5.5, 0.5, 13, 5.5, 0.5, 7, 5.5, 0.5, 15.5, 2.25, 0.5, 14.75, -2.25, 0.5, 14.75, -2.5, 0.5, 11.75, -5.5, 0.5, 15.5, -5.5, 0.5, 7, -1.5, 2.5, 12.5, -1.5, 2.5, 13.5, 1.5, 2.5, 13.5, 1.5, 2.5, 12.5, -1.25, 0.5, 12.75, -1.25, 0.5, 13.5, 1.5, 0.5, 13.5, 1.5, 0.5, 12.75)
@@ -86,8 +87,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -10)
 use_collision = true
 height = 1.0
 
+[node name="BookStand" parent="." instance=ExtResource("4_stand")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -10)
+
 [node name="ArtifactSpot" type="Marker3D" parent="." unique_id=362484363]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, -10)
+transform = Transform3D(1, 0, 0, 0, 0.81915206, -0.57357645, 0, 0.57357645, 0.81915206, 0, 1.3668, -9.9036)
 
 [node name="ExtractionSpot" type="Marker3D" parent="." unique_id=195882650]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 9.7)

@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://drakn8smska4a" path="res://ui/hud.tscn" id="3_sugp2"]
 [ext_resource type="PackedScene" uid="uid://c7djabat5ogge" path="res://scenes/guard.tscn" id="4_jyhfs"]
 [ext_resource type="PackedScene" path="res://scenes/getaway.tscn" id="5_getaway"]
+[ext_resource type="PackedScene" path="res://scenes/artifact.tscn" id="6_artifact"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0wfyh"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -33,6 +34,8 @@ shadow_enabled = true
 [node name="Museum" parent="World" unique_id=810531496 instance=ExtResource("2_0wfyh")]
 
 [node name="Getaway" parent="World" instance=ExtResource("5_getaway")]
+
+[node name="Artifact" parent="World" instance=ExtResource("6_artifact")]
 
 [node name="Players" type="Node3D" parent="World" unique_id=1009031655]
 
