@@ -28,6 +28,7 @@
 [ext_resource type="AudioStream" path="res://assets/exterior/amb_wind.wav" id="snd_amb_wind"]
 [ext_resource type="AudioStream" path="res://assets/exterior/thunder.wav" id="snd_thunder"]
 [ext_resource type="AudioStream" path="res://assets/exterior/stamp.wav" id="snd_stamp"]
+[ext_resource type="AudioStream" path="res://assets/exterior/coin_clink.wav" id="snd_coin_clink"]
 [ext_resource type="Script" path="res://scripts/exterior_doors.gd" id="doors"]
 [ext_resource type="ArrayMesh" path="res://assets/exterior/meshes/doorl_ext_door.res" id="leaf_L_door"]
 [ext_resource type="ArrayMesh" path="res://assets/exterior/meshes/doorl_ext_bronze.res" id="leaf_L_bronze"]
@@ -35,6 +36,7 @@
 [ext_resource type="ArrayMesh" path="res://assets/exterior/meshes/doorr_ext_bronze.res" id="leaf_R_bronze"]
 [ext_resource type="Script" path="res://scripts/exterior_alarm.gd" id="alarm"]
 [ext_resource type="ArrayMesh" path="res://assets/exterior/meshes/librarian_ext_carved.res" id="librarian"]
+[ext_resource type="Script" path="res://scripts/pigeon_noise.gd" id="pigeon_noise"]
 [ext_resource type="PackedScene" path="res://assets/exterior/fountain_jets.glb" id="jets"]
 [ext_resource type="PackedScene" path="res://assets/exterior/capital.glb" id="capital"]
 [ext_resource type="PackedScene" path="res://assets/exterior/exterior_context.glb" id="context"]
@@ -2184,6 +2186,10 @@ stream = ExtResource("snd_siren_far")
 volume_db = -6.0
 unit_size = 60.0
 max_distance = 420.0
+
+[node name="PigeonNoise" type="Node" parent="."]
+script = ExtResource("pigeon_noise")
+pigeons_path = NodePath("../Life/Pigeons")
 
 [node name="Flags" type="Node3D" parent="."]
 
