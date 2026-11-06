@@ -10,11 +10,24 @@ uniform float band_every = 12.0;
 uniform float fountain_x = 38.5;
 uniform float fountain_z = 22.05;
 uniform float fountain_half = 6.95;
+uniform bool low_detail = false;
+uniform sampler2D star_map : hint_default_black, filter_linear_mipmap;
+uniform float star_strength = 0.0;
 
 varying vec3 world_position;
 
 void vertex() {
 	world_position = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
+}
+
+// The window's star on the floor, worked out here at LOW instead of by a shadow-casting light
+vec3 star_light(vec3 point, sampler2D star, float strength) {
+	vec3 from_window = point - vec3(0.0, 15.2, 9.75);
+	vec3 axis = normalize(vec3(0.0, -15.2, 7.75));
+	vec3 up = normalize(cross(vec3(1.0, 0.0, 0.0), axis));
+	float depth = max(dot(from_window, axis), 0.1);
+	vec2 q = vec2(from_window.x, dot(from_window, up)) / (depth * 0.5095);
+	return texture(star, q * 0.5 + 0.5).rgb * vec3(1.0, 0.74, 0.46) * strength * (1.0 - smoothstep(0.86, 1.0, length(q)));
 }
 
 float hash(vec2 p) {
@@ -50,4 +63,7 @@ void fragment() {
 	ALBEDO = colour * mix(1.0, 0.45, wet);
 	ROUGHNESS = mix(0.74 + tone * 0.12, 0.16, wet);
 	SPECULAR = mix(0.14, 0.62, wet);
+	if (low_detail && star_strength > 0.0) {
+		EMISSION = ALBEDO * star_light(world_position, star_map, star_strength);
+	}
 }

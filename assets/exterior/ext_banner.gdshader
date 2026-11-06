@@ -7,6 +7,9 @@ uniform sampler2D print : source_color, filter_linear_mipmap_anisotropic;
 uniform float sway = 0.11;
 uniform float speed = 0.8;
 
+// LOW graphics: no floodlights reach the cloth, so it carries its own light
+uniform bool low_detail = false;
+
 void vertex() {
 	// UV.y runs from the rod at the top (0) to the free hem at the bottom (1)
 	float free_cloth = UV.y * UV.y;
@@ -23,4 +26,7 @@ void fragment() {
 	SPECULAR = 0.2;
 	// A little light passes through the cloth, so it glows softly when lit from behind
 	BACKLIGHT = ALBEDO * 0.4;
+	if (low_detail) {
+		EMISSION = ALBEDO * 0.42;
+	}
 }

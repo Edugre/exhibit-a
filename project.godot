@@ -75,6 +75,4 @@ throw={
 
 [rendering]
 
-anti_aliasing/quality/msaa_3d=2
-anti_aliasing/quality/use_debanding=true
 rendering_device/driver.windows="d3d12"

@@ -4,12 +4,15 @@
 [ext_resource type="Texture2D" path="res://assets/exterior/ext_stone_albedo.png" id="t0"]
 [ext_resource type="Texture2D" path="res://assets/exterior/ext_stone_normal.png" id="t1"]
 [ext_resource type="Texture2D" path="res://assets/exterior/ext_stone_rough.png" id="t2"]
+[ext_resource type="Texture2D" path="res://assets/exterior/ext_lattice_cookie.png" id="t3"]
 
 [resource]
 shader = ExtResource("s")
 shader_parameter/stone_albedo = ExtResource("t0")
 shader_parameter/stone_normal = ExtResource("t1")
 shader_parameter/stone_rough = ExtResource("t2")
+shader_parameter/star_map = ExtResource("t3")
 shader_parameter/tint = Vector3(0.62, 0.61, 0.6)
 shader_parameter/metres_per_tile = 3.2
 shader_parameter/roughness_add = -0.08
+shader_parameter/star_strength = 0.5

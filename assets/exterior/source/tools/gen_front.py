@@ -95,6 +95,7 @@ for n, is_n in (("ext_stone_albedo", False), ("ext_stone_normal", True), ("ext_s
 tex_import("ext_lattice_cookie", lossless=True)
 tex_import("ext_door_normal", normal=True)
 tex_import("ext_door_ao")
+tex_import("ext_baked_light")
 tex_import("ext_props")
 tex_import("ext_props_glow")
 for sound in SOUNDS:
@@ -181,11 +182,16 @@ glb_import("fountain_jets", {"ext_jet": "ext_jet"})
 
 
 # --- Materials --------------------------------------------------------------------------------
-def stone_mat(name, stain=False, **params):
+def stone_mat(name, stain=False, star=False, **params):
     tex = {"stone_albedo": "ext_stone_albedo.png", "stone_normal": "ext_stone_normal.png", "stone_rough": "ext_stone_rough.png"}
     if stain:
         tex["stain_map"] = "ext_stain.png"
+        tex["baked_light"] = "ext_baked_light.png"
         params["stain_amount"] = 1.0
+        params["baked_strength"] = 4.0
+    if star:
+        tex["star_map"] = "ext_lattice_cookie.png"
+        params["star_strength"] = 0.5
     lines = ['[gd_resource type="ShaderMaterial" format=3]\n', f'[ext_resource type="Shader" path="{RES}ext_stone.gdshader" id="s"]']
     for i, v in enumerate(tex.values()):
         lines.append(f'[ext_resource type="Texture2D" path="{RES}{v}" id="t{i}"]')
@@ -206,6 +212,7 @@ def carved_mat(name, normal, ao):
 [ext_resource type="Texture2D" path="{RES}{normal}" id="t2"]
 [ext_resource type="Texture2D" path="{RES}{ao}" id="t3"]
 [ext_resource type="Texture2D" path="{RES}ext_stain.png" id="t4"]
+[ext_resource type="Texture2D" path="{RES}ext_baked_light.png" id="t5"]
 
 [resource]
 shader = ExtResource("s")
@@ -215,6 +222,8 @@ shader_parameter/carved_normal = ExtResource("t2")
 shader_parameter/carved_ao = ExtResource("t3")
 shader_parameter/stain_map = ExtResource("t4")
 shader_parameter/stain_amount = 1.0
+shader_parameter/baked_light = ExtResource("t5")
+shader_parameter/baked_strength = 4.0
 """, encoding="utf-8", newline="\n")
 
 
@@ -222,9 +231,9 @@ stone_mat("ext_stone", stain=True)
 stone_mat("ext_shaft", stain=True, joints="true", course_height=2.37, block_length=400.0, joint_width=0.007, block_tone=0.06)
 stone_mat("ext_ashlar", stain=True, joints="true", course_height=0.74, block_length=2.46, joint_width=0.010, block_tone=0.05)
 stone_mat("ext_rough", stain=True, tint="Vector3(0.86, 0.84, 0.8)", normal_strength=3.0, metres_per_tile=2.6, roughness_add=0.05)
-stone_mat("ext_granite", tint="Vector3(0.42, 0.415, 0.41)", metres_per_tile=1.4, normal_strength=0.7, roughness_add=-0.10)
-stone_mat("ext_riser", tint="Vector3(0.36, 0.355, 0.35)", metres_per_tile=1.4, normal_strength=0.7, roughness_add=-0.05)
-stone_mat("ext_paving", tint="Vector3(0.62, 0.61, 0.6)", metres_per_tile=3.2, roughness_add=-0.08)
+stone_mat("ext_granite", star=True, tint="Vector3(0.42, 0.415, 0.41)", metres_per_tile=1.4, normal_strength=0.7, roughness_add=-0.10)
+stone_mat("ext_riser", star=True, tint="Vector3(0.36, 0.355, 0.35)", metres_per_tile=1.4, normal_strength=0.7, roughness_add=-0.05)
+stone_mat("ext_paving", star=True, tint="Vector3(0.62, 0.61, 0.6)", metres_per_tile=3.2, roughness_add=-0.08)
 stone_mat("ext_context", tint="Vector3(0.72, 0.71, 0.69)", grime=0.3, grime_top=18.0, grime_length=14.0)
 stone_mat("ext_wing_wall", joints="true", course_height=0.74, block_length=2.46, joint_width=0.010, block_tone=0.05, grime=0.34, grime_top=12.0, grime_length=9.0)
 stone_mat("ext_wing_trim", grime=0.24, grime_top=19.0, grime_length=16.0)
@@ -280,10 +289,13 @@ shader = ExtResource("s")
 
 [ext_resource type="Shader" path="{RES}ext_plaza.gdshader" id="s"]
 [ext_resource type="Texture2D" path="{RES}ext_stone_albedo.png" id="t0"]
+[ext_resource type="Texture2D" path="{RES}ext_lattice_cookie.png" id="t1"]
 
 [resource]
 shader = ExtResource("s")
 shader_parameter/stone_albedo = ExtResource("t0")
+shader_parameter/star_map = ExtResource("t1")
+shader_parameter/star_strength = 0.5
 """, encoding="utf-8", newline=chr(10))
 (A / "ext_leaf.tres").write_text(f"""[gd_resource type="ShaderMaterial" format=3]
 
@@ -495,6 +507,8 @@ for i, px in enumerate(D.PAIRS_X):
     LIGHTS.append(dict(name=f"Graze{i}", pos=[px, 3.35, 14.5], target=[px, 19.5, 11.7], energy=5.0, angle=36, range=28, soft=1.4, atten=0.3, color=WARM, shadow=True))
 for i, cx in enumerate(D.ARCHES_X):
     LIGHTS.append(dict(name=f"ArchGraze{i}", pos=[cx, 0.25, 11.6], target=[cx, 17.0, 9.0], energy=2.6, angle=46, range=26, soft=1.8, atten=0.4, color=[1.0, 0.79, 0.55], shadow=True))
+    if cx != 0:
+        continue    # Godot only projects the star from a light with shadows, so the centre arch alone throws it
     LIGHTS.append(dict(name=f"WindowStar{i}", pos=[cx, 15.2, 9.75], target=[cx, 0.0, 17.5], energy=8.0 if cx == 0 else 5.0, angle=27, range=30, soft=1.0, atten=0.2, color=[1.0, 0.74, 0.46], shadow=cx == 0, projector=True))
     LIGHTS.append(dict(name=f"DoorLamp{i}", omni=True, pos=[cx, 3.5, 9.8], target=[0, 0, 0], energy=1.35, range=10, color=[1.0, 0.82, 0.64], shadow=False))
 for i, (fx, tx) in enumerate(((-24.0, -21.0), (-10.0, -7.0), (10.0, 7.0), (24.0, 21.0))):
@@ -690,6 +704,7 @@ text = head + "\n" + "\n".join(subs) + "\n" + "\n".join(nodes)
 night = f"""[gd_scene format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/exterior.tscn" id="exterior"]
+[ext_resource type="Script" path="res://scripts/exterior_quality.gd" id="quality"]
 [ext_resource type="Shader" path="{RES}ext_night_sky.gdshader" id="sky_shader"]
 
 [sub_resource type="ShaderMaterial" id="sky_mat"]
@@ -739,6 +754,9 @@ shadow_opacity = 0.55
 directional_shadow_max_distance = 260.0
 
 [node name="Exterior" parent="." instance=ExtResource("exterior")]
+
+[node name="Quality" type="Node" parent="."]
+script = ExtResource("quality")
 """
 (WT / "scenes" / "exterior_night.tscn").write_text(night, encoding="utf-8", newline="\n")
 print("exterior written:", len(subs), "shapes,", len(LIGHTS), "lights,", sum(1 for l in LIGHTS if l.get("shadow")), "with shadows")

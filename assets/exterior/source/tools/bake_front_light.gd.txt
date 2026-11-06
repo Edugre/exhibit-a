@@ -1,0 +1,74 @@
+extends Node
+## Test-only autoload: renders what the floodlights do to the centre front, seen dead-on, and saves it as
+## the light map the LOW graphics level uses in place of the real lights and their shadows.
+
+const LIT: Array[String] = ["Flood", "Graze", "ArchGraze", "EndBay", "Crest"]
+const STONE: Array[String] = ["ext_stone", "ext_shaft", "ext_ashlar", "ext_rough", "ext_carved", "ext_trim", "ext_relief"]
+const GREY := 0.25
+
+var out: String = ""
+
+
+func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	for a in OS.get_cmdline_user_args():
+		if a.begins_with("--out="):
+			out = a.substr(6)
+	if out != "":
+		_run()
+
+
+func _run() -> void:
+	while get_tree().current_scene == null or not get_tree().current_scene.is_node_ready():
+		await get_tree().process_frame
+	await get_tree().process_frame
+	var scene := get_tree().current_scene
+	var exterior: Node = scene.get_node("Exterior")
+	scene.get_node("Quality").process_mode = Node.PROCESS_MODE_DISABLED
+	scene.get_node("Quality").apply(2)
+	scene.get_node("Moon").visible = false
+	for name_ in ["Life", "Traffic", "Flags", "Props", "Trees", "Wings", "FrontDoors"]:
+		var n: Node = exterior.get_node_or_null(name_)
+		if n != null and n is Node3D:
+			n.visible = false
+	# Things that glow by themselves must not print onto the map
+	var front: Node = exterior.get_node("Front")
+	for child in front.get_children():
+		if child.name.contains("lantern") or child.name.contains("glass"):
+			child.visible = false
+	for light: Light3D in exterior.get_node("Lights").get_children():
+		var keep := false
+		for group in LIT:
+			keep = keep or light.name.begins_with(group)
+		light.visible = keep
+	var environment: Environment = (scene.get_node("Environment") as WorldEnvironment).environment
+	environment.background_mode = Environment.BG_COLOR
+	environment.background_color = Color.BLACK
+	environment.ambient_light_source = Environment.AMBIENT_SOURCE_DISABLED
+	environment.reflected_light_source = Environment.REFLECTION_SOURCE_DISABLED
+	environment.tonemap_mode = Environment.TONE_MAPPER_LINEAR
+	environment.tonemap_exposure = 1.0
+	environment.tonemap_white = 1.0
+	environment.ssao_enabled = true
+	environment.glow_enabled = false
+	environment.fog_enabled = false
+	for path in STONE:
+		var material := load("res://assets/exterior/%s.tres" % path) as ShaderMaterial
+		material.set_shader_parameter("capture_albedo", GREY)
+	var view := get_viewport()
+	view.scaling_3d_scale = 1.0
+	view.msaa_3d = Viewport.MSAA_4X
+	var cam := Camera3D.new()
+	cam.projection = Camera3D.PROJECTION_ORTHOGONAL
+	cam.size = 36.0
+	cam.near = 1.0
+	cam.far = 120.0
+	scene.add_child(cam)
+	cam.global_position = Vector3(0, 13, 50)
+	cam.make_current()
+	for i in 40:
+		await RenderingServer.frame_post_draw
+	var image := view.get_texture().get_image()
+	print("BAKE size ", image.get_size())
+	image.save_png(out)
+	get_tree().quit()

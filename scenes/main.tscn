@@ -63,6 +63,21 @@ layout_mode = 2
 text = "Join
 "
 
+[node name="GraphicsOption" type="OptionButton" parent="UI/Menu"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Auto picks for this computer. Low is for weak laptops."
+selected = 0
+item_count = 4
+popup/item_0/text = "Graphics: Auto"
+popup/item_0/id = 0
+popup/item_1/text = "Graphics: Low"
+popup/item_1/id = 1
+popup/item_2/text = "Graphics: Medium"
+popup/item_2/id = 2
+popup/item_3/text = "Graphics: High"
+popup/item_3/id = 3
+
 [node name="StatusLabel" type="Label" parent="UI/Menu" unique_id=214250854]
 unique_name_in_owner = true
 layout_mode = 2

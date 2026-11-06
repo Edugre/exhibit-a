@@ -10,6 +10,7 @@ uniform vec3 body_bronze : source_color = vec3(0.205, 0.145, 0.088);
 uniform vec3 rubbed_bronze : source_color = vec3(0.60, 0.50, 0.36);
 uniform vec3 verdigris : source_color = vec3(0.20, 0.31, 0.26);
 uniform float normal_depth = 1.3;
+uniform bool low_detail = false;
 
 float hash(vec2 p) {
 	return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
@@ -44,4 +45,7 @@ void fragment() {
 	NORMAL_MAP_DEPTH = normal_depth;
 	AO = maps.r;
 	AO_LIGHT_AFFECT = 0.45;
+	if (low_detail) {
+		EMISSION = ALBEDO * 0.55;
+	}
 }

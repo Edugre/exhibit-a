@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" path="res://assets/exterior/ext_carved_normal.png" id="t2"]
 [ext_resource type="Texture2D" path="res://assets/exterior/ext_carved_ao.png" id="t3"]
 [ext_resource type="Texture2D" path="res://assets/exterior/ext_stain.png" id="t4"]
+[ext_resource type="Texture2D" path="res://assets/exterior/ext_baked_light.png" id="t5"]
 
 [resource]
 shader = ExtResource("s")
@@ -15,3 +16,5 @@ shader_parameter/carved_normal = ExtResource("t2")
 shader_parameter/carved_ao = ExtResource("t3")
 shader_parameter/stain_map = ExtResource("t4")
 shader_parameter/stain_amount = 1.0
+shader_parameter/baked_light = ExtResource("t5")
+shader_parameter/baked_strength = 4.0

@@ -6,6 +6,9 @@ Two-player online co-op museum heist. Team: Eduardo Goncalvez, Alex Waisman, Jon
 ## How to run
 TBD
 
+## Graphics levels
+The game picks Low, Medium or High for each computer and steps down by itself if it runs slowly. The Graphics option in the menu overrides that. Low is built for weak laptops: it draws at a lower resolution and scales up, and the floodlights and their shadows come from a baked texture instead of real lights.
+
 ## Godot-provided systems
    - High-level multiplayer (ENetMultiplayerPeer, RPCs)
    - MultiplayerSpawner / MultiplayerSynchronizer (player spawning and position/rotation sync)
@@ -28,6 +31,7 @@ TBD
    - MultiMeshInstance3D (the pigeons, plaza trees and traffic, drawn in batches)
    - AudioStreamPlayer and AudioStreamPlayer3D (the city's soundscape, fountains, crickets, pigeons and car horns)
    - Automatic mesh LOD from the glTF importer (carved stone at a distance)
+   - Viewport 3D scaling with FSR, FXAA and MSAA (the graphics levels in scripts/exterior_quality.gd)
    - ReflectionProbe with custom ambient light (the rooms' dim indoor air at night)
    - NavigationServer3D baking from collision shapes (the guard's map, out through the doors to the curb)
 

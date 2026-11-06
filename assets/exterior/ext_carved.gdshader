@@ -15,6 +15,11 @@ uniform float normal_depth = 1.0;
 // A century of weather, laid across the whole front like a stencil, so nothing repeats
 uniform sampler2D stain_map : hint_default_white, filter_linear_mipmap;
 uniform float stain_amount = 0.0;
+// LOW graphics: the floodlights come from a baked map. capture_albedo is only used while baking it
+uniform bool low_detail = false;
+uniform sampler2D baked_light : source_color, hint_default_black, filter_linear_mipmap;
+uniform float baked_strength = 0.0;
+uniform float capture_albedo = 0.0;
 uniform vec4 stain_rect = vec4(-32.0, -5.0, 64.0, 36.0);
 
 varying vec3 world_pos;
@@ -44,8 +49,19 @@ void fragment() {
 		float weather = texture(stain_map, vec2(s.x, 1.0 - s.y)).r * 1.5;
 		albedo *= mix(1.0, weather, stain_amount);
 	}
+	if (capture_albedo > 0.0) {
+		albedo = vec3(capture_albedo);
+	}
+	vec3 baked = vec3(0.0);
+	if (low_detail && baked_strength > 0.0) {
+		vec2 b = (world_pos.xy - stain_rect.xy) / stain_rect.zw;
+		if (b.x > 0.0 && b.x < 1.0 && b.y > 0.0 && b.y < 1.0) {
+			baked = texture(baked_light, vec2(b.x, 1.0 - b.y)).rgb * baked_strength;
+		}
+	}
 
 	ALBEDO = albedo * tint;
+	EMISSION = ALBEDO * baked;
 	ROUGHNESS = rough;
 	SPECULAR = 0.3;
 	NORMAL_MAP = texture(carved_normal, UV).rgb;
