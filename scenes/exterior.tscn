@@ -621,26 +621,24 @@ size = Vector3(1.6, 1.2, 0.5)
 size = Vector3(1, 1.9, 0.4)
 
 [sub_resource type="BoxShape3D" id="Shape_93"]
-size = Vector3(2.2, 1.6, 1.3)
+size = Vector3(1.8, 1.9, 0.2)
 
 [sub_resource type="BoxShape3D" id="Shape_94"]
+size = Vector3(0.2, 2.8, 0.2)
+
+[sub_resource type="BoxShape3D" id="Shape_95"]
+size = Vector3(2.2, 1.6, 1.3)
+
+[sub_resource type="BoxShape3D" id="Shape_96"]
 size = Vector3(5, 1.5, 1.85)
-
-[sub_resource type="CylinderShape3D" id="Shape_95"]
-height = 4
-radius = 0.5
-
-[sub_resource type="CylinderShape3D" id="Shape_96"]
-height = 4
-radius = 0.5
 
 [sub_resource type="CylinderShape3D" id="Shape_97"]
 height = 4
-radius = 0.2
+radius = 0.5
 
 [sub_resource type="CylinderShape3D" id="Shape_98"]
 height = 4
-radius = 0.2
+radius = 0.5
 
 [sub_resource type="CylinderShape3D" id="Shape_99"]
 height = 4
@@ -650,26 +648,28 @@ radius = 0.2
 height = 4
 radius = 0.2
 
-[sub_resource type="BoxShape3D" id="Shape_101"]
-size = Vector3(2.6, 1, 1.1)
+[sub_resource type="CylinderShape3D" id="Shape_101"]
+height = 4
+radius = 0.2
 
-[sub_resource type="BoxShape3D" id="Shape_102"]
-size = Vector3(2.6, 1, 1.1)
+[sub_resource type="CylinderShape3D" id="Shape_102"]
+height = 4
+radius = 0.2
 
 [sub_resource type="BoxShape3D" id="Shape_103"]
-size = Vector3(3.6, 1, 1.1)
+size = Vector3(2.6, 1, 1.1)
 
 [sub_resource type="BoxShape3D" id="Shape_104"]
-size = Vector3(3.6, 1, 1.1)
+size = Vector3(2.6, 1, 1.1)
 
 [sub_resource type="BoxShape3D" id="Shape_105"]
 size = Vector3(3.6, 1, 1.1)
 
 [sub_resource type="BoxShape3D" id="Shape_106"]
-size = Vector3(2.4, 0.5, 0.6)
+size = Vector3(3.6, 1, 1.1)
 
 [sub_resource type="BoxShape3D" id="Shape_107"]
-size = Vector3(2.4, 0.5, 0.6)
+size = Vector3(3.6, 1, 1.1)
 
 [sub_resource type="BoxShape3D" id="Shape_108"]
 size = Vector3(2.4, 0.5, 0.6)
@@ -681,28 +681,28 @@ size = Vector3(2.4, 0.5, 0.6)
 size = Vector3(2.4, 0.5, 0.6)
 
 [sub_resource type="BoxShape3D" id="Shape_111"]
-size = Vector3(0.2, 2, 0.3)
+size = Vector3(2.4, 0.5, 0.6)
 
 [sub_resource type="BoxShape3D" id="Shape_112"]
-size = Vector3(2.6, 1, 1.1)
+size = Vector3(2.4, 0.5, 0.6)
 
 [sub_resource type="BoxShape3D" id="Shape_113"]
-size = Vector3(2.6, 1, 1.1)
+size = Vector3(0.2, 2, 0.3)
 
 [sub_resource type="BoxShape3D" id="Shape_114"]
-size = Vector3(3.6, 1, 1.1)
+size = Vector3(2.6, 1, 1.1)
 
 [sub_resource type="BoxShape3D" id="Shape_115"]
-size = Vector3(3.6, 1, 1.1)
+size = Vector3(2.6, 1, 1.1)
 
 [sub_resource type="BoxShape3D" id="Shape_116"]
 size = Vector3(3.6, 1, 1.1)
 
 [sub_resource type="BoxShape3D" id="Shape_117"]
-size = Vector3(2.4, 0.5, 0.6)
+size = Vector3(3.6, 1, 1.1)
 
 [sub_resource type="BoxShape3D" id="Shape_118"]
-size = Vector3(2.4, 0.5, 0.6)
+size = Vector3(3.6, 1, 1.1)
 
 [sub_resource type="BoxShape3D" id="Shape_119"]
 size = Vector3(2.4, 0.5, 0.6)
@@ -714,15 +714,13 @@ size = Vector3(2.4, 0.5, 0.6)
 size = Vector3(2.4, 0.5, 0.6)
 
 [sub_resource type="BoxShape3D" id="Shape_122"]
+size = Vector3(2.4, 0.5, 0.6)
+
+[sub_resource type="BoxShape3D" id="Shape_123"]
+size = Vector3(2.4, 0.5, 0.6)
+
+[sub_resource type="BoxShape3D" id="Shape_124"]
 size = Vector3(0.2, 2, 0.3)
-
-[sub_resource type="CylinderShape3D" id="Shape_123"]
-height = 5
-radius = 0.3
-
-[sub_resource type="CylinderShape3D" id="Shape_124"]
-height = 5
-radius = 0.3
 
 [sub_resource type="CylinderShape3D" id="Shape_125"]
 height = 5
@@ -956,11 +954,13 @@ radius = 0.3
 height = 5
 radius = 0.3
 
-[sub_resource type="BoxShape3D" id="Shape_183"]
-size = Vector3(2.2, 0.48, 0.7)
+[sub_resource type="CylinderShape3D" id="Shape_183"]
+height = 5
+radius = 0.3
 
-[sub_resource type="BoxShape3D" id="Shape_184"]
-size = Vector3(2.2, 0.48, 0.7)
+[sub_resource type="CylinderShape3D" id="Shape_184"]
+height = 5
+radius = 0.3
 
 [sub_resource type="BoxShape3D" id="Shape_185"]
 size = Vector3(2.2, 0.48, 0.7)
@@ -978,18 +978,27 @@ size = Vector3(2.2, 0.48, 0.7)
 size = Vector3(2.2, 0.48, 0.7)
 
 [sub_resource type="BoxShape3D" id="Shape_190"]
-size = Vector3(6.4, 24, 6.4)
+size = Vector3(2.2, 0.48, 0.7)
 
 [sub_resource type="BoxShape3D" id="Shape_191"]
-size = Vector3(1, 17.5, 304.5)
+size = Vector3(2.2, 0.48, 0.7)
 
 [sub_resource type="BoxShape3D" id="Shape_192"]
-size = Vector3(1, 17.5, 304.5)
+size = Vector3(6.4, 24, 6.4)
 
 [sub_resource type="BoxShape3D" id="Shape_193"]
-size = Vector3(344, 17.5, 1)
+size = Vector3(1, 1.6, 1)
 
 [sub_resource type="BoxShape3D" id="Shape_194"]
+size = Vector3(1, 17.5, 304.5)
+
+[sub_resource type="BoxShape3D" id="Shape_195"]
+size = Vector3(1, 17.5, 304.5)
+
+[sub_resource type="BoxShape3D" id="Shape_196"]
+size = Vector3(344, 17.5, 1)
+
+[sub_resource type="BoxShape3D" id="Shape_197"]
 size = Vector3(344, 17.5, 1)
 
 [node name="Exterior" type="Node3D"]
@@ -2745,413 +2754,425 @@ shape = SubResource("Shape_91")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.8, -3.55, 25.7)
 shape = SubResource("Shape_92")
 
+[node name="NoticeBoard" type="CollisionShape3D" parent="Collision/Props"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -26.7, -3.55, 33.95)
+shape = SubResource("Shape_93")
+
+[node name="TrojanSign" type="CollisionShape3D" parent="Collision/Props"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -19.2, -3.1, 34.3)
+shape = SubResource("Shape_94")
+
 [node name="AmbrosiaCart" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19, -3.7, 32.6)
-shape = SubResource("Shape_93")
+shape = SubResource("Shape_95")
 
 [node name="ParkedTaxi" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, -3.9, 36.375)
-shape = SubResource("Shape_94")
+shape = SubResource("Shape_96")
 
 [node name="Flagpole0" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27, -2.5, 19)
-shape = SubResource("Shape_95")
+shape = SubResource("Shape_97")
 
 [node name="Flagpole1" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27, -2.5, 19)
-shape = SubResource("Shape_96")
+shape = SubResource("Shape_98")
 
 [node name="StreetPole0" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5, -2.5, 34.2)
-shape = SubResource("Shape_97")
+shape = SubResource("Shape_99")
 
 [node name="StreetPole1" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5, -2.5, 54.1)
-shape = SubResource("Shape_98")
+shape = SubResource("Shape_100")
 
 [node name="StreetPole2" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.6, -2.5, 34.1)
-shape = SubResource("Shape_99")
+shape = SubResource("Shape_101")
 
 [node name="StreetPole3" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.6, -2.5, 54)
-shape = SubResource("Shape_100")
+shape = SubResource("Shape_102")
 
 [node name="PlanterW47" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -47, -4, 12.2)
-shape = SubResource("Shape_101")
+shape = SubResource("Shape_103")
 
 [node name="PlanterW86" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -86, -4, 12.2)
-shape = SubResource("Shape_102")
+shape = SubResource("Shape_104")
 
 [node name="PlanterW56" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56, -4, 11.2)
-shape = SubResource("Shape_103")
+shape = SubResource("Shape_105")
 
 [node name="PlanterW64" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -64, -4, 11.2)
-shape = SubResource("Shape_104")
+shape = SubResource("Shape_106")
 
 [node name="PlanterW72" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -72, -4, 11.2)
-shape = SubResource("Shape_105")
+shape = SubResource("Shape_107")
 
 [node name="PlazaBenchW52" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52, -4.25, 24.6)
-shape = SubResource("Shape_106")
+shape = SubResource("Shape_108")
 
 [node name="PlazaBenchW60" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -60, -4.25, 24.6)
-shape = SubResource("Shape_107")
+shape = SubResource("Shape_109")
 
 [node name="PlazaBenchW68" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -68, -4.25, 24.6)
-shape = SubResource("Shape_108")
+shape = SubResource("Shape_110")
 
 [node name="PlazaBenchW76" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -76, -4.25, 24.6)
-shape = SubResource("Shape_109")
+shape = SubResource("Shape_111")
 
 [node name="PlazaBenchW84" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -84, -4.25, 24.6)
-shape = SubResource("Shape_110")
+shape = SubResource("Shape_112")
 
 [node name="FountainSignW" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38.5, -3.5, 29.15)
-shape = SubResource("Shape_111")
+shape = SubResource("Shape_113")
 
 [node name="PlanterE47" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 47, -4, 12.2)
-shape = SubResource("Shape_112")
+shape = SubResource("Shape_114")
 
 [node name="PlanterE86" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 86, -4, 12.2)
-shape = SubResource("Shape_113")
+shape = SubResource("Shape_115")
 
 [node name="PlanterE56" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 56, -4, 11.2)
-shape = SubResource("Shape_114")
+shape = SubResource("Shape_116")
 
 [node name="PlanterE64" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 64, -4, 11.2)
-shape = SubResource("Shape_115")
+shape = SubResource("Shape_117")
 
 [node name="PlanterE72" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 72, -4, 11.2)
-shape = SubResource("Shape_116")
+shape = SubResource("Shape_118")
 
 [node name="PlazaBenchE52" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 52, -4.25, 24.6)
-shape = SubResource("Shape_117")
+shape = SubResource("Shape_119")
 
 [node name="PlazaBenchE60" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 60, -4.25, 24.6)
-shape = SubResource("Shape_118")
+shape = SubResource("Shape_120")
 
 [node name="PlazaBenchE68" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 68, -4.25, 24.6)
-shape = SubResource("Shape_119")
+shape = SubResource("Shape_121")
 
 [node name="PlazaBenchE76" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 76, -4.25, 24.6)
-shape = SubResource("Shape_120")
+shape = SubResource("Shape_122")
 
 [node name="PlazaBenchE84" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 84, -4.25, 24.6)
-shape = SubResource("Shape_121")
+shape = SubResource("Shape_123")
 
 [node name="FountainSignE" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 38.5, -3.5, 29.15)
-shape = SubResource("Shape_122")
+shape = SubResource("Shape_124")
 
 [node name="Tree0" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 90.75, -2, 33.92)
-shape = SubResource("Shape_123")
+shape = SubResource("Shape_125")
 
 [node name="Tree1" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 95.8, -2, 33.91)
-shape = SubResource("Shape_124")
+shape = SubResource("Shape_126")
 
 [node name="Tree2" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100.23, -2, 33.9)
-shape = SubResource("Shape_125")
+shape = SubResource("Shape_127")
 
 [node name="Tree3" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 105.14, -2, 33.89)
-shape = SubResource("Shape_126")
+shape = SubResource("Shape_128")
 
 [node name="Tree4" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 110.24, -2, 33.89)
-shape = SubResource("Shape_127")
+shape = SubResource("Shape_129")
 
 [node name="Tree5" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 115.91, -2, 33.87)
-shape = SubResource("Shape_128")
+shape = SubResource("Shape_130")
 
 [node name="Tree6" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 120.61, -2, 33.86)
-shape = SubResource("Shape_129")
+shape = SubResource("Shape_131")
 
 [node name="Tree7" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 126.14, -2, 33.85)
-shape = SubResource("Shape_130")
+shape = SubResource("Shape_132")
 
 [node name="Tree8" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 131.76, -2, 33.84)
-shape = SubResource("Shape_131")
+shape = SubResource("Shape_133")
 
 [node name="Tree9" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 136.92, -2, 33.83)
-shape = SubResource("Shape_132")
+shape = SubResource("Shape_134")
 
 [node name="Tree10" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 141.06, -2, 33.82)
-shape = SubResource("Shape_133")
+shape = SubResource("Shape_135")
 
 [node name="Tree11" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 146.03, -2, 33.81)
-shape = SubResource("Shape_134")
+shape = SubResource("Shape_136")
 
 [node name="Tree12" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 150.11, -2, 33.81)
-shape = SubResource("Shape_135")
+shape = SubResource("Shape_137")
 
 [node name="Tree13" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 91.3, -2, 28.84)
-shape = SubResource("Shape_136")
+shape = SubResource("Shape_138")
 
 [node name="Tree14" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 95.54, -2, 28.87)
-shape = SubResource("Shape_137")
+shape = SubResource("Shape_139")
 
 [node name="Tree15" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 100.64, -2, 28.91)
-shape = SubResource("Shape_138")
+shape = SubResource("Shape_140")
 
 [node name="Tree16" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 105.15, -2, 28.95)
-shape = SubResource("Shape_139")
+shape = SubResource("Shape_141")
 
 [node name="Tree17" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 110.37, -2, 28.99)
-shape = SubResource("Shape_140")
+shape = SubResource("Shape_142")
 
 [node name="Tree18" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 115.81, -2, 29.03)
-shape = SubResource("Shape_141")
+shape = SubResource("Shape_143")
 
 [node name="Tree19" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 120.85, -2, 29.08)
-shape = SubResource("Shape_142")
+shape = SubResource("Shape_144")
 
 [node name="Tree20" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 126.23, -2, 28.97)
-shape = SubResource("Shape_143")
+shape = SubResource("Shape_145")
 
 [node name="Tree21" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 131.69, -2, 29.16)
-shape = SubResource("Shape_144")
+shape = SubResource("Shape_146")
 
 [node name="Tree22" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 136.69, -2, 29.2)
-shape = SubResource("Shape_145")
+shape = SubResource("Shape_147")
 
 [node name="Tree23" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 141.25, -2, 29.24)
-shape = SubResource("Shape_146")
+shape = SubResource("Shape_148")
 
 [node name="Tree24" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 150.08, -2, 29.31)
-shape = SubResource("Shape_147")
+shape = SubResource("Shape_149")
 
 [node name="Tree25" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 145.65, -2, 29.27)
-shape = SubResource("Shape_148")
+shape = SubResource("Shape_150")
 
 [node name="Tree26" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -91.25, -2, 29.22)
-shape = SubResource("Shape_149")
+shape = SubResource("Shape_151")
 
 [node name="Tree27" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -95.25, -2, 29.2)
-shape = SubResource("Shape_150")
+shape = SubResource("Shape_152")
 
 [node name="Tree28" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -99.94, -2, 29.18)
-shape = SubResource("Shape_151")
+shape = SubResource("Shape_153")
 
 [node name="Tree29" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -104.23, -2, 29.16)
-shape = SubResource("Shape_152")
+shape = SubResource("Shape_154")
 
 [node name="Tree30" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -109.5, -2, 29.14)
-shape = SubResource("Shape_153")
+shape = SubResource("Shape_155")
 
 [node name="Tree31" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -114.7, -2, 29.12)
-shape = SubResource("Shape_154")
+shape = SubResource("Shape_156")
 
 [node name="Tree32" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -119.86, -2, 29.1)
-shape = SubResource("Shape_155")
+shape = SubResource("Shape_157")
 
 [node name="Tree33" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -124.91, -2, 29.07)
-shape = SubResource("Shape_156")
+shape = SubResource("Shape_158")
 
 [node name="Tree34" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -130.12, -2, 29.06)
-shape = SubResource("Shape_157")
+shape = SubResource("Shape_159")
 
 [node name="Tree35" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -135.5, -2, 29.03)
-shape = SubResource("Shape_158")
+shape = SubResource("Shape_160")
 
 [node name="Tree36" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -140.29, -2, 29.01)
-shape = SubResource("Shape_159")
+shape = SubResource("Shape_161")
 
 [node name="Tree37" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -144.87, -2, 29)
-shape = SubResource("Shape_160")
+shape = SubResource("Shape_162")
 
 [node name="Tree38" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -149.26, -2, 28.97)
-shape = SubResource("Shape_161")
+shape = SubResource("Shape_163")
 
 [node name="Tree39" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -149.34, -2, 34.44)
-shape = SubResource("Shape_162")
+shape = SubResource("Shape_164")
 
 [node name="Tree40" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -144.45, -2, 34.38)
-shape = SubResource("Shape_163")
+shape = SubResource("Shape_165")
 
 [node name="Tree41" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -139.81, -2, 34.32)
-shape = SubResource("Shape_164")
+shape = SubResource("Shape_166")
 
 [node name="Tree42" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -134.76, -2, 34.25)
-shape = SubResource("Shape_165")
+shape = SubResource("Shape_167")
 
 [node name="Tree43" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -129.82, -2, 34.18)
-shape = SubResource("Shape_166")
+shape = SubResource("Shape_168")
 
 [node name="Tree44" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -124.91, -2, 34.12)
-shape = SubResource("Shape_167")
+shape = SubResource("Shape_169")
 
 [node name="Tree45" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -119.5, -2, 34.06)
-shape = SubResource("Shape_168")
+shape = SubResource("Shape_170")
 
 [node name="Tree46" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -114.31, -2, 33.99)
-shape = SubResource("Shape_169")
+shape = SubResource("Shape_171")
 
 [node name="Tree47" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -108.95, -2, 33.92)
-shape = SubResource("Shape_170")
+shape = SubResource("Shape_172")
 
 [node name="Tree48" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -103.45, -2, 33.86)
-shape = SubResource("Shape_171")
+shape = SubResource("Shape_173")
 
 [node name="Tree49" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -98.94, -2, 33.79)
-shape = SubResource("Shape_172")
+shape = SubResource("Shape_174")
 
 [node name="Tree50" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -94.56, -2, 33.74)
-shape = SubResource("Shape_173")
+shape = SubResource("Shape_175")
 
 [node name="Tree51" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -90.46, -2, 33.69)
-shape = SubResource("Shape_174")
+shape = SubResource("Shape_176")
 
 [node name="Tree52" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40.9, -2, -153.56)
-shape = SubResource("Shape_175")
+shape = SubResource("Shape_177")
 
 [node name="Tree53" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -44.03, -2, -138.67)
-shape = SubResource("Shape_176")
+shape = SubResource("Shape_178")
 
 [node name="Tree54" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -57.8, -2, -171.09)
-shape = SubResource("Shape_177")
+shape = SubResource("Shape_179")
 
 [node name="Tree55" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 76.18, -2, -154.94)
-shape = SubResource("Shape_178")
+shape = SubResource("Shape_180")
 
 [node name="Tree56" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 37.54, -2, -136.18)
-shape = SubResource("Shape_179")
+shape = SubResource("Shape_181")
 
 [node name="Tree57" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 41.85, -2, -144.24)
-shape = SubResource("Shape_180")
+shape = SubResource("Shape_182")
 
 [node name="Tree58" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40.36, -2, -153.49)
-shape = SubResource("Shape_181")
+shape = SubResource("Shape_183")
 
 [node name="Tree59" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 64.12, -2, -162.74)
-shape = SubResource("Shape_182")
+shape = SubResource("Shape_184")
 
 [node name="Bench0" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 131.58, -4.26, 23.81)
-shape = SubResource("Shape_183")
+shape = SubResource("Shape_185")
 
 [node name="Bench1" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 104.91, -4.26, 23.77)
-shape = SubResource("Shape_184")
+shape = SubResource("Shape_186")
 
 [node name="Bench2" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 136.78, -4.26, 23.79)
-shape = SubResource("Shape_185")
+shape = SubResource("Shape_187")
 
 [node name="Bench3" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 110.49, -4.26, 23.63)
-shape = SubResource("Shape_186")
+shape = SubResource("Shape_188")
 
 [node name="Bench4" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 115.82, -4.26, 23.73)
-shape = SubResource("Shape_187")
+shape = SubResource("Shape_189")
 
 [node name="Bench5" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 121.04, -4.26, 23.54)
-shape = SubResource("Shape_188")
+shape = SubResource("Shape_190")
 
 [node name="Bench6" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 125.91, -4.26, 23.66)
-shape = SubResource("Shape_189")
+shape = SubResource("Shape_191")
 
 [node name="Needle" type="CollisionShape3D" parent="Collision/Props"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -59.8, 7.5, -220.44)
-shape = SubResource("Shape_190")
+shape = SubResource("Shape_192")
+
+[node name="BookReturn" type="CollisionShape3D" parent="Collision/Props"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -51.8, -3.7, -213.44)
+shape = SubResource("Shape_193")
 
 [node name="West" type="CollisionShape3D" parent="Collision/Edges"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -172.5, 3.25, -93.75)
-shape = SubResource("Shape_191")
+shape = SubResource("Shape_194")
 
 [node name="East" type="CollisionShape3D" parent="Collision/Edges"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 172.5, 3.25, -93.75)
-shape = SubResource("Shape_192")
+shape = SubResource("Shape_195")
 
 [node name="North" type="CollisionShape3D" parent="Collision/Edges"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.25, -246.5)
-shape = SubResource("Shape_193")
+shape = SubResource("Shape_196")
 
 [node name="South" type="CollisionShape3D" parent="Collision/Edges"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.25, 59)
-shape = SubResource("Shape_194")
+shape = SubResource("Shape_197")
 
 [node name="Markers" type="Node3D" parent="."]
 

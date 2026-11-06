@@ -473,6 +473,8 @@ cyl(P, "HydrantW", -29.0, 34.2, D.PLAZA_Y, D.PLAZA_Y + 0.8, 0.17)
 cyl(P, "HydrantE", 91.0, 34.2, D.PLAZA_Y, D.PLAZA_Y + 0.8, 0.17)
 box(P, "NewsBoxes", -24.8, -23.2, D.PLAZA_Y, D.PLAZA_Y + 1.2, 33.65, 34.15)
 box(P, "HoursBoard", -14.3, -13.3, D.PLAZA_Y, D.PLAZA_Y + 1.9, 25.5, 25.9)
+box(P, "NoticeBoard", -27.6, -25.8, D.PLAZA_Y, D.PLAZA_Y + 1.9, 33.85, 34.05)
+box(P, "TrojanSign", -19.3, -19.1, D.PLAZA_Y, D.PLAZA_Y + 2.8, 34.2, 34.4)
 box(P, "AmbrosiaCart", 17.9, 20.1, D.PLAZA_Y, D.PLAZA_Y + 1.6, 31.95, 33.25)
 box(P, "ParkedTaxi", -22.5, -17.5, D.ROAD_Y, D.ROAD_Y + 1.5, 35.45, 37.3)
 for i, (x, z) in enumerate(((-27.0, 19.0), (27.0, 19.0))):
@@ -496,6 +498,7 @@ for i, (x, z) in enumerate(SITE["benches"]):
         box(P, f"Bench{i}", x - 1.1, x + 1.1, D.PLAZA_Y, D.PLAZA_Y + 0.48, z - 0.35, z + 0.35)
 nx_, nz_ = SITE["needle"]
 box(P, "Needle", nx_ - 3.2, nx_ + 3.2, D.PLAZA_Y, D.PLAZA_Y + 24, nz_ - 3.2, nz_ + 3.2)
+box(P, "BookReturn", nx_ + 7.5, nx_ + 8.5, D.PLAZA_Y, D.PLAZA_Y + 1.6, nz_ + 6.5, nz_ + 7.5)
 box(E, "West", -D.BOUND_X - 1, -D.BOUND_X, LOW, 12, D.BOUND_Z_N, D.BOUND_Z_S)
 box(E, "East", D.BOUND_X, D.BOUND_X + 1, LOW, 12, D.BOUND_Z_N, D.BOUND_Z_S)
 box(E, "North", -D.BOUND_X, D.BOUND_X, LOW, 12, D.BOUND_Z_N - 1, D.BOUND_Z_N)

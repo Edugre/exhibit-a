@@ -11,6 +11,7 @@ const SPOOK_SPEED := 5.6       # a walk is 5 m/s, so only a run scares them
 const CALM_RANGE := 1.6        # walk right up to one and it goes anyway
 const FLY_SPEED := 9.0
 const SETTLE_TIME := Vector2(9.0, 22.0)
+const CROWNED_BIRD := 14       # wears a gold circlet, and won't say why
 
 ## Ledges a bird can stand on, world positions.
 @export var perches: Array[Vector3] = []
@@ -162,4 +163,4 @@ func _write(i: int, b: Dictionary) -> void:
 	var hide_it: bool = b.state == "away"
 	var basis := Basis(Vector3.UP, b.yaw).scaled(Vector3.ONE * (0.0001 if hide_it else 1.0))
 	multimesh.set_instance_transform(i, Transform3D(basis, b.pos))
-	multimesh.set_instance_custom_data(i, Color(flap, b.phase, 0.0, 0.0))
+	multimesh.set_instance_custom_data(i, Color(flap, b.phase, 1.0 if i == CROWNED_BIRD else 0.0, 0.0))

@@ -268,7 +268,7 @@ car_body(van, "van_white", "van")
 CARS["car_van"] = van
 
 # --- Where everything stands ------------------------------------------------------------------------
-west, east, far = Mesh(), Mesh(), Mesh()
+west, east, far, park = Mesh(), Mesh(), Mesh(), Mesh()
 for x, z in SITE["benches"]:
     if z > 0:
         bench(west if x < 0 else east, x, z)
@@ -307,6 +307,36 @@ p = Prop(west, -13.8, D.PLAZA_Y, 25.7)
 p.box(0, 0.06, 0, 0.9, 0.12, 0.4, "granite")
 p.box(0, 1.0, 0, 0.84, 1.8, 0.08, "iron")
 p.sign(0, 1.05, 0.065, 0.74, 0.92, "hours")
+
+
+# Secrets. The Needle really did come from Alexandria, and nobody took it back either.
+nx, nz = SITE["needle"]
+p = Prop(park, nx, D.PLAZA_Y, nz + 2.1)
+p.box(0, 1.65, 0.02, 1.5, 0.64, 0.04, "bronze")
+p.sign(0, 1.65, 0.05, 1.44, 0.58, "needle_plaque")
+# A book return, out in the park where nobody will see who uses it
+p = Prop(park, nx + 8.0, D.PLAZA_Y, nz + 7.0, -28.0)
+for dx in (-0.3, 0.3):
+    for dz in (-0.24, 0.24):
+        p.box(dx, 0.14, dz, 0.07, 0.28, 0.07, "iron")
+p.box(0, 0.74, 0, 0.8, 0.94, 0.62, "navy")
+p.wheel(0, 1.21, 0, 0.4, 0.62, "navy")
+p.box(0, 1.26, 0.325, 0.6, 0.04, 0.03, "bronze")
+p.sign(0, 0.86, 0.315, 0.68, 0.425, "late_returns")
+# Where the van pulls up
+p = Prop(west, -19.2, D.PLAZA_Y, 34.3)
+p.lathe(0, 0, [(0.0, 0.05), (2.8, 0.04)], "iron", 6)
+p.box(0, 2.4, 0.0, 0.62, 0.52, 0.02, "iron")
+p.sign(0, 2.4, 0.015, 0.6, 0.5, "trojan_only")
+p.sign(0, 2.4, -0.015, 0.6, 0.5, "trojan_only", yaw=180)
+# The neighbourhood's notice board
+p = Prop(west, -26.7, D.PLAZA_Y, 33.95, 180.0)
+for dx in (-0.82, 0.82):
+    p.box(dx, 0.9, 0, 0.08, 1.8, 0.08, "wood")
+p.box(0, 1.34, 0, 1.76, 0.92, 0.05, "wood")
+p.box(0, 1.84, 0, 1.9, 0.07, 0.2, "wood")
+p.sign(-0.42, 1.34, 0.03, 0.74, 0.72, "poster_heel")
+p.sign(0.42, 1.34, 0.03, 0.74, 0.72, "poster_knowledge")
 
 
 def barricade(m, x, z):
@@ -356,6 +386,6 @@ def export(meshes, name):
     print("TRIS", name, total, flush=True)
 
 
-export({"PropsWest": west, "PropsEast": east, "PropsFar": far}, "props")
+export({"PropsWest": west, "PropsEast": east, "PropsFar": far, "PropsPark": park}, "props")
 export(CARS, "cars")
 print("DONE", flush=True)
