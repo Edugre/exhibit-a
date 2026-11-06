@@ -73,7 +73,7 @@ func _ready() -> void:
 
 
 ## Fill in the card for this ending and play it out.
-func stamp_card(won: bool, reason: String, seconds_taken: float, caught_with_book: bool, out_of_time: bool) -> void:
+func stamp_card(won: bool, reason: String, seconds_taken: float, had_book: bool, out_of_time: bool) -> void:
 	var fine: int = Time.get_date_dict_from_system().year + DUE_YEAR_BC - 1    # there was no year zero
 	var years := _with_comma(fine)
 	_rows[1].text = "  TITLE    The Last Book of Alexandria"
@@ -83,7 +83,10 @@ func stamp_card(won: bool, reason: String, seconds_taken: float, caught_with_boo
 		_rows[4].text = "  OUT IN   %d:%02d. A library record." % [int(seconds_taken) / 60, int(seconds_taken) % 60]
 	else:
 		_rows[3].text = "  FINE     %s years and counting" % years
-		_rows[4].text = "  BOOK     %s" % ("Checked out by the guard." if caught_with_book else "Still on the shelf.")
+		var book := "Still on the shelf."
+		if had_book:
+			book = "Back on the shelf by closing." if out_of_time else "Checked out by the guard."
+		_rows[4].text = "  BOOK     %s" % book
 	_rows[5].text = "  NOTE     %s" % reason
 	_stamp.texture = WITHDRAWN if won else (CLOSED if out_of_time else REVOKED)
 	_stamp.visible = false
@@ -98,6 +101,13 @@ func stamp_card(won: bool, reason: String, seconds_taken: float, caught_with_boo
 		_typing.tween_property(row, "visible_ratio", 1.0, row.text.length() / TYPE_SPEED)
 	_typing.tween_interval(0.35)
 	_typing.tween_callback(_slam)
+
+
+## Stop whatever the card was doing, so nothing of it lands in the next heist.
+func clear() -> void:
+	if _typing != null:
+		_typing.kill()
+	_stamp.visible = false
 
 
 func _slam() -> void:

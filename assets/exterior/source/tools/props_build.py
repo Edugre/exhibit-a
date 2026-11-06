@@ -327,8 +327,8 @@ p.sign(0, 0.86, 0.315, 0.68, 0.425, "late_returns")
 p = Prop(west, -19.2, D.PLAZA_Y, 34.3)
 p.lathe(0, 0, [(0.0, 0.05), (2.8, 0.04)], "iron", 6)
 p.box(0, 2.4, 0.0, 0.62, 0.52, 0.02, "iron")
-p.sign(0, 2.4, 0.015, 0.6, 0.5, "trojan_only")
-p.sign(0, 2.4, -0.015, 0.6, 0.5, "trojan_only", yaw=180)
+p.sign(0, 2.4, 0.03, 0.6, 0.5, "trojan_only")
+p.sign(0, 2.4, -0.03, 0.6, 0.5, "trojan_only", yaw=180)
 # The neighbourhood's notice board
 p = Prop(west, -26.7, D.PLAZA_Y, 33.95, 180.0)
 for dx in (-0.82, 0.82):

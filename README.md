@@ -33,6 +33,8 @@ The game picks Low, Medium or High for each computer and steps down by itself if
    - Global shader uniforms and a shader include (the alarm, rain and snow reaching every exterior material at once)
    - MultiMeshInstance3D with the fall worked out in the vertex shader (rain and snow, no simulation)
    - Screen-space reflections (puddles, on High only)
+   - SystemFont, StyleBoxTexture and Tween (the library card and the alarm's words)
+   - GradientTexture2D and a Camera3D move (the opening shot behind the menu)
    - Automatic mesh LOD from the glTF importer (carved stone at a distance)
    - Viewport 3D scaling with FSR, FXAA and MSAA (the graphics levels in scripts/exterior_quality.gd)
    - ReflectionProbe with custom ambient light (the rooms' dim indoor air at night)

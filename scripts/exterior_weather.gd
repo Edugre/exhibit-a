@@ -99,6 +99,8 @@ func on_graphics_changed(level: int) -> void:
 
 
 func show_weather(new_kind: Kind) -> void:
+	if _flash != null:
+		_flash.kill()    # a flash still running would drag the moon back down after this
 	kind = new_kind
 	var rain := kind == Kind.RAIN
 	var snow := kind == Kind.SNOW

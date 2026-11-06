@@ -113,7 +113,7 @@ func _stand_down() -> void:
 	(get_node(mask_path) as Node3D).rotation.y = 0.0
 
 
-## The lights are read when the alarm goes up, so the graphics levels and the rooms are always current.
+## The lights are read the first time the alarm goes up, while they still hold their own colours.
 func _gather_lamps() -> void:
 	if not _lamps.is_empty():
 		return

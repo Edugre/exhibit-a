@@ -37,6 +37,7 @@ func _process(_delta: float) -> void:
 func _on_phase_changed(phase: GameState.Phase) -> void:
 	var ended := phase == GameState.Phase.WON or phase == GameState.Phase.LOST
 	end_panel.visible = false
+	end_panel.clear()
 	if ended:
 		result_label.text = "HEIST COMPLETE!" if phase == GameState.Phase.WON else "BUSTED"
 		reason_label.text = GameState.end_reason

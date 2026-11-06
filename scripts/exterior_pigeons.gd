@@ -9,6 +9,7 @@ signal startled(where: Vector3)
 const SPOOK_RANGE := 5.5
 const SPOOK_SPEED := 5.6       # a walk is 5 m/s, so only a run scares them
 const CALM_RANGE := 1.6        # walk right up to one and it goes anyway
+const SPEED_WINDOW := 0.25     # bodies only move on physics steps, so speed is measured over a span
 const FLY_SPEED := 9.0
 const SETTLE_TIME := Vector2(9.0, 22.0)
 const CROWNED_BIRD := 14       # wears a gold circlet, and won't say why
@@ -21,6 +22,8 @@ const CROWNED_BIRD := 14       # wears a gold circlet, and won't say why
 
 var _birds: Array[Dictionary] = []
 var _last_pos: Dictionary = {}
+var _speeds: Dictionary = {}
+var _window: float = 0.0
 var _flap_wait: float = 0.0
 var _coo_wait: float = 6.0
 
@@ -75,12 +78,17 @@ func scatter_all() -> void:
 
 ## Everyone who could scare a bird, with how fast they are moving.
 func _runners(delta: float) -> Array:
+	_window += delta
+	var measuring := _window >= SPEED_WINDOW
 	var list: Array = []
 	for p: Node3D in get_tree().get_nodes_in_group("players"):
-		var last: Vector3 = _last_pos.get(p, p.global_position)
-		var speed: float = Vector2(p.global_position.x - last.x, p.global_position.z - last.z).length() / maxf(delta, 0.001)
-		_last_pos[p] = p.global_position
-		list.append([p.global_position, speed])
+		if measuring:
+			var last: Vector3 = _last_pos.get(p, p.global_position)
+			_speeds[p] = Vector2(p.global_position.x - last.x, p.global_position.z - last.z).length() / _window
+			_last_pos[p] = p.global_position
+		list.append([p.global_position, _speeds.get(p, 0.0)])
+	if measuring:
+		_window = 0.0
 	return list
 
 
