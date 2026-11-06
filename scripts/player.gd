@@ -93,7 +93,20 @@ func _is_on_plinth() -> bool:
 	for plate: PressurePlate in get_tree().get_nodes_in_group("plates"):
 		if plate.overlaps_body(self):
 			return true
+	return _is_on_statue_spot()
+
+
+func _is_on_statue_spot() -> bool:
+	for spot: Area3D in get_tree().get_nodes_in_group("statue_spots"):
+		if spot.overlaps_body(self):
+			return true
 	return false
+
+
+## True while standing on one of the empty plinths outside with nothing to give them away. The guard
+## takes them for one more statue. The plates indoors don't count: she knows what belongs on those.
+func is_posing_as_statue() -> bool:
+	return not holding and _is_on_statue_spot()
 
 
 func _glide_between_steps(delta: float) -> void:

@@ -36,6 +36,7 @@
 [ext_resource type="ArrayMesh" path="res://assets/exterior/meshes/doorr_ext_bronze.res" id="leaf_R_bronze"]
 [ext_resource type="Script" path="res://scripts/exterior_alarm.gd" id="alarm"]
 [ext_resource type="ArrayMesh" path="res://assets/exterior/meshes/librarian_ext_carved.res" id="librarian"]
+[ext_resource type="PackedScene" path="res://scenes/statue_plinth.tscn" id="statue_plinth"]
 [ext_resource type="Script" path="res://scripts/pigeon_noise.gd" id="pigeon_noise"]
 [ext_resource type="PackedScene" path="res://assets/exterior/fountain_jets.glb" id="jets"]
 [ext_resource type="PackedScene" path="res://assets/exterior/capital.glb" id="capital"]
@@ -2186,6 +2187,20 @@ stream = ExtResource("snd_siren_far")
 volume_db = -6.0
 unit_size = 60.0
 max_distance = 420.0
+
+[node name="StatuePlinths" type="Node3D" parent="."]
+
+[node name="Plinth0" parent="StatuePlinths" instance=ExtResource("statue_plinth")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -16.7, 0.0, 13.2)
+
+[node name="Plinth1" parent="StatuePlinths" instance=ExtResource("statue_plinth")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16.7, 0.0, 13.2)
+
+[node name="Plinth2" parent="StatuePlinths" instance=ExtResource("statue_plinth")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17.4, -4.5, 27.2)
+
+[node name="Plinth3" parent="StatuePlinths" instance=ExtResource("statue_plinth")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.4, -4.5, 27.2)
 
 [node name="PigeonNoise" type="Node" parent="."]
 script = ExtResource("pigeon_noise")

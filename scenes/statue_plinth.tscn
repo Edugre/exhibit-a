@@ -1,0 +1,40 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/plates/plinth.glb" id="1_plinth"]
+[ext_resource type="Texture2D" path="res://assets/plates/label_pending.png" id="2_label"]
+
+[sub_resource type="BoxShape3D" id="top"]
+size = Vector3(1, 0.7, 1)
+
+[sub_resource type="BoxShape3D" id="stone"]
+size = Vector3(1.12, 0.6, 1.12)
+
+[sub_resource type="StandardMaterial3D" id="brass"]
+albedo_texture = ExtResource("2_label")
+metallic = 0.45
+roughness = 0.5
+emission_enabled = true
+emission_energy_multiplier = 0.4
+emission_texture = ExtResource("2_label")
+
+[sub_resource type="QuadMesh" id="plaque"]
+material = SubResource("brass")
+size = Vector2(0.78, 0.335)
+
+[node name="StatuePlinth" type="Area3D" groups=["statue_spots"]]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0)
+shape = SubResource("top")
+
+[node name="Model" parent="." instance=ExtResource("1_plinth")]
+
+[node name="Stone" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Stone"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+shape = SubResource("stone")
+
+[node name="Plaque" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.275, 0.504)
+mesh = SubResource("plaque")

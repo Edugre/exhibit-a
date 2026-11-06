@@ -247,6 +247,8 @@ func _find_visible_player() -> Node3D:
 	var best_distance := INF
 
 	for player: Node3D in get_tree().get_nodes_in_group("players"):
+		if not chasing and player.is_posing_as_statue():
+			continue  # one more statue, unless she already saw them climb up there
 		var chest := player.global_position + Vector3.UP * 1.2
 		var to_player := chest - eye
 		var distance := to_player.length()
