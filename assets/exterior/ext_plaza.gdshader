@@ -48,9 +48,10 @@ void fragment() {
 	float column = floor((p.x + shift) / paver_length);
 	vec2 f = vec2(fract((p.x + shift) / paver_length) * paver_length, fract(p.y / course_width) * course_width);
 	float edge = min(min(f.x, paver_length - f.x), min(f.y, course_width - f.y));
-	float fine = 1.0 - smoothstep(0.01, 0.04, length(fwidth(p)));
-	float joint = (1.0 - smoothstep(0.006, 0.016, edge)) * fine;
-	float tone = hash(vec2(column, row)) - 0.5;
+	// Joints are drawn with their real width on screen, and thin away with distance instead of crawling
+	float pixel = max(length(fwidth(p)), 0.0004);
+	float joint = (1.0 - smoothstep(0.011 - pixel, 0.011 + pixel, edge)) * clamp(0.018 / pixel, 0.0, 1.0);
+	float tone = (hash(vec2(column, row)) - 0.5) * clamp(1.5 - pixel * 16.0, 0.0, 1.0);
 	// Long darker bands tie the floor to the rhythm of the building
 	float band = 1.0 - smoothstep(0.55, 0.62, abs(mod(p.x, band_every) - band_every * 0.5));
 	vec3 colour = texture(stone_albedo, p / 2.4).rgb * tint;

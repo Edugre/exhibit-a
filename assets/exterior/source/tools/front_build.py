@@ -366,7 +366,7 @@ def bronze_doors(cx, z):
 def door_passage():
     """The short stone passage from the doors into the building."""
     x, top, z0, z1 = 1.8, 3.9, 5.6, D.DOOR_Z - 0.2
-    box("ext_paving", -x, x, -0.5, 0.0, z0, z1, skip=("w", "e", "d", "n", "s"))
+    box("ext_paving", -x, x, -0.5, 0.0, 6.0, z1, skip=("w", "e", "d", "n", "s"))
     box("ext_ashlar", -x - 0.6, -x, 0.0, top, z0, z1, skip=("w", "d", "u", "n", "s"))
     box("ext_ashlar", x, x + 0.6, 0.0, top, z0, z1, skip=("e", "d", "u", "n", "s"))
     box("ext_stone", -x, x, top, top + 0.5, z0, z1, skip=("w", "e", "u", "n", "s"))
@@ -633,7 +633,7 @@ def modillions(path):
 
 
 def soffit_panels(path):
-    y = D.COL_TOP_Y + 3.118
+    y = D.COL_TOP_Y + 3.095
     for p, d, nor in on_path(path, 1.06, 0.40):
         c = p + d * 0.53
         a, o0, o1 = 0.30, 0.52, 1.36
@@ -649,7 +649,7 @@ def inscriptions():
     """The name and two lines of warning, cut into the frieze, where a person on the ground can read them."""
     y0 = D.COL_TOP_Y + 1.46
     y1 = y0 + 0.56
-    z = ZF + 0.03
+    z = ZF + 0.05
     for key, cx, half in (("name", 0.0, 4.25), ("touch", -14.0, 3.75), ("know", 14.0, 3.75)):
         v = [(cx - half, y0, z), (cx + half, y0, z), (cx + half, y1, z), (cx - half, y1, z)]
         parts["ext_relief"].add(v, [(0, 1, 2, 3)], cell_uv(LAYOUT["inscriptions"][key]))
@@ -777,7 +777,7 @@ def terrace_and_base():
     """Stone terrace from the doors to the stairs, on the heavy base wall that lifts the whole front."""
     Z = D.TERRACE_Z_FRONT
     box("ext_paving", -D.PAV_X, D.PAV_X, D.TERRACE_Y - 0.5, D.TERRACE_Y, D.DOOR_Z - 0.1, Z, skip=("w", "e", "d", "n", "s"))
-    prof = [(0.82, D.PLAZA_Y), (0.82, -4.06), (0.70, -3.96), (0.46, -3.90), (0.40, -3.86), (0.40, -0.78), (0.46, -0.72), (0.58, -0.62), (0.58, -0.52), (0.70, -0.42), (0.74, -0.30), (0.74, -0.08), (0.66, 0.0), (0.0, 0.0)]
+    prof = [(0.82, D.PLAZA_Y), (0.82, -4.06), (0.70, -3.96), (0.46, -3.90), (0.30, -3.86), (0.30, -0.78), (0.46, -0.72), (0.58, -0.62), (0.58, -0.52), (0.70, -0.42), (0.74, -0.30), (0.74, -0.08), (0.66, 0.0), (0.0, 0.0)]
     for sx in (-1, 1):
         path = [(sx * (D.STAIR_X + D.CHEEK_W), Z), (sx * D.PAV_X, Z), (sx * D.PAV_X, 7.0)]
         if sx < 0:

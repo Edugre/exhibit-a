@@ -16,6 +16,9 @@ const PATROL_SPEED := 2.0
 const INVESTIGATE_SPEED := 3.0
 const CHASE_SPEED := 4.5          # slower than walking (5), faster than sneaking (2.5)
 const TURN_SPEED := 6.0
+## She moves on physics steps. Her model glides between them, so she doesn't stutter on a fast screen.
+const GLIDE_SPEED := 22.0
+const SNAP_DISTANCE := 3.0
 
 # Spotting uses the beam players can see, so those numbers live with the beam.
 const VIEW_DISTANCE := GuardModel.BEAM_RANGE
@@ -57,6 +60,7 @@ const ALERT_LIGHT := Color(1.0, 0.2, 0.2)
 @onready var flashlight: SpotLight3D = model.flashlight
 
 var state := State.PATROL
+var _model_at := Vector3.ZERO
 var _waypoints: Array[Vector3] = []
 var _waypoint_index := 0
 var _wait_timer := 0.0
@@ -74,6 +78,13 @@ func _ready() -> void:
 		_waypoints.append((marker as Node3D).global_position)
 	flashlight.light_color = CALM_LIGHT
 	GameState.heist_reset.connect(_on_heist_reset)  # only fires on the host
+
+
+func _process(delta: float) -> void:
+	_model_at = _model_at.lerp(global_position, 1.0 - exp(-GLIDE_SPEED * delta))
+	if _model_at.distance_to(global_position) > SNAP_DISTANCE:
+		_model_at = global_position
+	model.global_position = _model_at
 
 
 func _physics_process(delta: float) -> void:

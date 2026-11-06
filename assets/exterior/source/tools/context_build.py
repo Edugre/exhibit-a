@@ -172,7 +172,7 @@ def site():
         loft("BO_Lamp", x, z, [(D.LAMP_TOP_Y - 0.45, 0.14), (D.LAMP_TOP_Y + 0.25, 0.27)], 8)
         loft("BO_Metal", x, z, [(D.LAMP_TOP_Y + 0.25, 0.31), (D.LAMP_TOP_Y + 0.45, 0.14), (D.LAMP_TOP_Y + 0.6, 0.03)], 8)
     # Fifth Avenue runs one way in five lanes, with a zebra crossing where 82nd Street meets the steps
-    y = D.ROAD_Y + 0.012
+    y = D.ROAD_Y + 0.03
     lane = (D.ROAD_Z_END - D.CURB_Z) / 5
     for i in range(1, 5):
         z = D.CURB_Z + i * lane
@@ -188,11 +188,8 @@ def site():
     # Tree pits at the real trees; the trees themselves are drawn in instanced batches
     for x, z in SITE["trees"]:
         if abs(x) <= 160 and 10 < z < 36:
-            box("BO_Metal", x - 1.15, x + 1.15, P, P + 0.02, z - 1.15, z + 1.15)
-            box("BO_Wet", x - 1.0, x + 1.0, P, P + 0.025, z - 1.0, z + 1.0)
-    for x, z in SITE["benches"]:
-        if z > 0:
-            box("BO_StoneDark", x - 1.1, x + 1.1, P, P + 0.48, z - 0.35, z + 0.35)
+            box("BO_Metal", x - 1.15, x + 1.15, P, P + 0.035, z - 1.15, z + 1.15)
+            box("BO_Wet", x - 1.0, x + 1.0, P, P + 0.06, z - 1.0, z + 1.0)
     # The park's edge: a clipped hedge along the limit of the walkable ground
     h = 2.6
     box("BO_Hedge", -D.BOUND_X - 1.4, -D.BOUND_X, P, P + h, D.BOUND_Z_N, 18.0)
@@ -229,7 +226,7 @@ def site():
                 front = D.FAR_WALK_Z_END + 0.5
                 box("BO_City", a, b, P, top, front, front + 33.5)
                 # A heavy cornice, a line of stone above the shops, and for some a water tank on the roof
-                box("BO_CityTrim", a - 0.3, b + 0.3, top - 0.4, top, front - 0.45, front + 34)
+                box("BO_CityTrim", a - 0.3, b + 0.3, top - 0.4, top + 0.15, front - 0.45, front + 34)
                 box("BO_CityTrim", a, b, P + 4.2, P + 4.7, front - 0.25, front)
                 if i % 3 == 0 and b - a > 10:
                     wx, wz = a + (b - a) * 0.3, front + 15

@@ -248,7 +248,7 @@ def top_cornice_profile(y):
     return [(-0.05, y - 0.62), (0.03, y - 0.62), (0.03, y - 0.4), (0.12, y - 0.34), (0.3, y - 0.2), (0.34, y - 0.12), (0.46, y - 0.06), (0.5, y), (-0.3, y)]
 
 
-BASE_PROFILE = [(0.82, D.PLAZA_Y), (0.82, -4.06), (0.70, -3.96), (0.46, -3.90), (0.40, -3.86), (0.40, -0.78), (0.46, -0.72), (0.58, -0.62), (0.58, -0.52),
+BASE_PROFILE = [(0.82, D.PLAZA_Y), (0.82, -4.06), (0.70, -3.96), (0.46, -3.90), (0.30, -3.86), (0.30, -0.78), (0.46, -0.72), (0.58, -0.62), (0.58, -0.52),
                 (0.70, -0.42), (0.74, -0.30), (0.74, -0.08), (0.66, 0.0), (0.0, 0.0)]
 
 
@@ -364,6 +364,12 @@ def front_section(sx):
         F.sweep(TRIM, run, top_cornice_profile(y_top))
         for p, d, nor in F.on_path(run, 0.42, 0.3):
             F.oriented_box(TRIM, p, d, nor, 0.1, 0.24, 0.4, D.CORNICE_Y + 0.02, D.CORNICE_Y + 0.26)
+    # A plain block closes the end of the facade where it stops along the side wall
+    W = Wall(face[3], face[4]) if sx > 0 else Wall(face[0], face[1])
+    u = W.length if sx > 0 else 0.0
+    a, b = (u - 0.04, u + 0.04)
+    W.box(TRIM, a, b, D.PLAZA_Y, 0.02, -FACE, 0.86, skip=())
+    W.box(TRIM, a, b, 0.02, D.END_TOP_Y, -FACE, 0.54, skip=())
     SECTIONS["WingE" if sx > 0 else "WingW"] = F.parts
 
 
@@ -376,9 +382,9 @@ def back_section():
                (-141.0, -151.5), (-141.0, -96.0), (-152.3, -96.0), (-152.3, 18.6)]
     ordered[0] = (152.3, -14.0)
     ordered[-1] = (-152.3, -14.0)
-    F.sweep(TRIM, ordered, [(0.3, D.PLAZA_Y), (0.3, -3.9), (0.1, -3.7), (0.1, -0.1), (0.2, 0.0), (0.0, 0.1)])
+    F.sweep(TRIM, ordered, [(0.34, D.PLAZA_Y), (0.34, -3.9), (0.17, -3.7), (0.17, -0.1), (0.26, 0.0), (0.0, 0.1)])
     F.sweep(TRIM, ordered, [(0.0, D.CORNICE_Y - 0.5), (0.06, D.CORNICE_Y - 0.5), (0.06, D.CORNICE_Y), (0.3, D.CORNICE_Y + 0.2), (0.5, D.CORNICE_Y + 0.3), (0.0, D.CORNICE_Y + 0.3)])
-    F.sweep(TRIM, ordered, [(0.0, D.WING_TOP_Y - 0.5), (0.05, D.WING_TOP_Y - 0.5), (0.2, D.WING_TOP_Y - 0.25), (0.4, D.WING_TOP_Y - 0.1), (0.4, D.WING_TOP_Y), (-0.3, D.WING_TOP_Y)])
+    F.sweep(TRIM, ordered, [(0.0, D.WING_TOP_Y - 0.5), (0.05, D.WING_TOP_Y - 0.5), (0.2, D.WING_TOP_Y - 0.25), (0.4, D.WING_TOP_Y - 0.1), (0.4, D.WING_TOP_Y + 0.05), (-0.3, D.WING_TOP_Y + 0.05)])
     # Plain arched windows along the long side walls
     for a, b in (((141.0, -96.0), (141.0, -150.0)), ((-141.0, -150.0), (-141.0, -98.0)), ((-152.3, -96.0), (-152.3, -30.0)), ((28.6, -147.5), (5.5, -170.9)), ((-5.5, -170.9), (-28.6, -147.5))):
         W = Wall(a, b)

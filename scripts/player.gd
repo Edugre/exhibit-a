@@ -9,6 +9,10 @@ const MOUSE_SENSITIVITY := 0.002
 const INTERACT_RANGE := 4.0
 const INTERACT_PROMPT := "Press E to interact"
 const DROP_PROMPT := "Press E to drop"
+## Physics runs 60 times a second, far less often than a fast screen draws, so the camera and a
+## teammate's model are drawn between steps. Only what's seen moves; the body and its sync don't change.
+const GLIDE_SPEED := 22.0
+const SNAP_DISTANCE := 3.0
 
 ## Accent colour, picked by the host and set before this node enters the tree.
 var variant: int = 0
@@ -21,6 +25,11 @@ var variant: int = 0
 
 var current_interactable: Node = null
 var holding: bool = false
+var _view_from: Vector3
+var _view_to: Vector3
+var _head_offset: Vector3
+var _model_at: Vector3
+var _model_offset: Vector3
 
 
 func _enter_tree() -> void:
@@ -37,6 +46,9 @@ func _ready() -> void:
 	if is_multiplayer_authority():
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	interact_ray.add_exception(self)
+	_head_offset = head.position
+	_model_offset = model.position
+	reset_view_smoothing()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -61,7 +73,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED  # click to recapture
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	_glide_between_steps(delta)
+
 	# You only vanish from your own view while you're looking out through this body.
 	if is_multiplayer_authority():
 		model.visible = not camera.current
@@ -80,6 +94,24 @@ func _is_on_plinth() -> bool:
 		if plate.overlaps_body(self):
 			return true
 	return false
+
+
+func _glide_between_steps(delta: float) -> void:
+	if is_multiplayer_authority():
+		var between := _view_from.lerp(_view_to, Engine.get_physics_interpolation_fraction())
+		head.global_position = between + global_basis * _head_offset
+		return
+	_model_at = _model_at.lerp(global_position, 1.0 - exp(-GLIDE_SPEED * delta))
+	if _model_at.distance_to(global_position) > SNAP_DISTANCE:
+		_model_at = global_position
+	model.global_position = _model_at + _model_offset
+
+
+## Jump straight to where the body is, after a teleport.
+func reset_view_smoothing() -> void:
+	_view_from = global_position
+	_view_to = global_position
+	_model_at = global_position
 
 
 func _physics_process(delta: float) -> void:
@@ -106,6 +138,10 @@ func _physics_process(delta: float) -> void:
 		velocity.z = move_toward(velocity.z, 0.0, speed)
 
 	move_and_slide()
+	_view_from = _view_to
+	_view_to = global_position
+	if _view_from.distance_to(_view_to) > SNAP_DISTANCE:
+		_view_from = _view_to
 
 
 func _update_interact_target() -> void:
@@ -162,6 +198,7 @@ func teleport(to: Vector3) -> void:
 	if multiplayer.get_remote_sender_id() != 1:
 		return  # only the host may teleport players
 	global_position = to
+	reset_view_smoothing()
 	velocity = Vector3.ZERO
 	rotation.y = 0.0
 	head.rotation.x = 0.0

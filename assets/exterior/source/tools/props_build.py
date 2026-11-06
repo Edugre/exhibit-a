@@ -140,7 +140,7 @@ def news_box(m, x, z, yaw):
             p.box(dx, 0.2, dz, 0.04, 0.4, 0.04, "iron")
     p.box(0, 0.74, 0, 0.5, 0.72, 0.42, "navy")
     p.box(0, 1.14, 0, 0.54, 0.08, 0.46, "navy")
-    p.sign(0, 0.8, 0.215, 0.4, 0.5, "newspaper")
+    p.sign(0, 0.8, 0.235, 0.4, 0.5, "newspaper")
 
 
 def flagpole(m, x, z):
@@ -162,11 +162,11 @@ def street_sign_pole(m, x, z, yaw):
     p = Prop(m, x, D.PLAZA_Y, z, yaw)
     p.lathe(0, 0, [(0.0, 0.1), (0.12, 0.09), (0.16, 0.05), (3.5, 0.04)], "iron", 7)
     p.box(0, 3.42, 0.0, 1.05, 0.26, 0.02, "sign_green")
-    p.sign(0, 3.42, 0.012, 1.0, 0.25, "street_5av")
-    p.sign(0, 3.42, -0.012, 1.0, 0.25, "street_5av", yaw=180)
+    p.sign(0, 3.42, 0.03, 1.0, 0.25, "street_5av")
+    p.sign(0, 3.42, -0.03, 1.0, 0.25, "street_5av", yaw=180)
     p.box(0, 3.14, 0.0, 0.02, 0.26, 1.05, "sign_green")
-    p.sign(0.012, 3.14, 0, 1.0, 0.25, "street_82", yaw=90)
-    p.sign(-0.012, 3.14, 0, 1.0, 0.25, "street_82", yaw=-90)
+    p.sign(0.03, 3.14, 0, 1.0, 0.25, "street_82", yaw=90)
+    p.sign(-0.03, 3.14, 0, 1.0, 0.25, "street_82", yaw=-90)
 
 
 def signal_pole(m, x, z, yaw, arm):
@@ -191,9 +191,9 @@ def cart(m, x, z, yaw):
     p.box(0.92, 0.25, 0, 0.1, 0.5, 0.1, "iron")
     p.box(0, 0.86, 0, 2.0, 0.82, 1.04, "steel")
     p.box(0, 1.3, 0, 2.08, 0.06, 1.12, "chrome")
-    p.sign(0, 0.86, 0.525, 1.76, 0.44, "ambrosia_side")
-    p.sign(0, 0.86, -0.525, 1.76, 0.44, "ambrosia_side", yaw=180)
-    p.sign(1.005, 0.92, 0, 0.72, 0.54, "ambrosia_menu", yaw=90)
+    p.sign(0, 0.86, 0.545, 1.76, 0.44, "ambrosia_side")
+    p.sign(0, 0.86, -0.545, 1.76, 0.44, "ambrosia_side", yaw=180)
+    p.sign(1.025, 0.92, 0, 0.72, 0.54, "ambrosia_menu", yaw=90)
     # Grill, buns, a jar of mustard, a bottle of nectar
     p.box(-0.45, 1.36, 0, 0.8, 0.06, 0.74, "iron")
     for i in range(4):
@@ -251,11 +251,11 @@ CARS = {}
 taxi = Mesh()
 p = car_body(taxi, "taxi", "car")
 p.box(0.3, 1.55, 0, 0.3, 0.2, 0.9, "taxi_lit")
-p.sign(0.3, 1.55, 0.452, 0.28, 0.14, "taxi_sign", yaw=0)
-p.sign(0.3, 1.55, -0.452, 0.28, 0.14, "taxi_sign", yaw=180)
-p.sign(0.1, 0.66, 0.935, 1.5, 0.3, "taxi_door", yaw=0)
-p.sign(0.1, 0.66, -0.935, 1.5, 0.3, "taxi_door", yaw=180)
-p.sign(2.5, 0.54, 0, 0.36, 0.14, "plate", yaw=90)
+p.sign(0.3, 1.55, 0.472, 0.28, 0.14, "taxi_sign", yaw=0)
+p.sign(0.3, 1.55, -0.472, 0.28, 0.14, "taxi_sign", yaw=180)
+p.sign(0.1, 0.66, 0.955, 1.5, 0.3, "taxi_door", yaw=0)
+p.sign(0.1, 0.66, -0.955, 1.5, 0.3, "taxi_door", yaw=180)
+p.sign(2.52, 0.54, 0, 0.36, 0.14, "plate", yaw=90)
 CARS["car_taxi"] = taxi
 sedan = Mesh()
 car_body(sedan, "sedan", "car")
@@ -295,18 +295,18 @@ signal_pole(far, -6.5, 54.1, 90.0, 7.6)
 for sx, m in ((-1, west), (1, east)):
     p = Prop(m, sx * 7.0, 0.0, D.PED_Z[1] + 0.31)
     p.box(0, 1.6, -0.01, 1.32, 0.46, 0.03, "bronze")
-    p.sign(0, 1.6, 0.012, 1.26, 0.42, "sculptures")
+    p.sign(0, 1.6, 0.03, 1.26, 0.42, "sculptures")
     p = Prop(m, sx * 21.0, 0.0, D.PED_Z[1] + 0.31)
     p.box(0, 1.6, -0.01, 1.32, 0.46, 0.03, "bronze")
-    p.sign(0, 1.6, 0.012, 1.26, 0.42, "sculptures")
+    p.sign(0, 1.6, 0.03, 1.26, 0.42, "sculptures")
     p = Prop(m, sx * (D.FOUNTAIN_X - sx * 0.0), D.PLAZA_Y, D.FOUNTAIN_Z + D.FOUNTAIN_SIZE / 2 + 0.26)
     p.box(0, 0.5, -0.05, 0.08, 1.0, 0.05, "iron")
     p.box(0, 1.0, 0, 1.04, 0.56, 0.05, "iron")
-    p.sign(0, 1.0, 0.03, 0.96, 0.48, "fountain_sign")
+    p.sign(0, 1.0, 0.05, 0.96, 0.48, "fountain_sign")
 p = Prop(west, -13.8, D.PLAZA_Y, 25.7)
 p.box(0, 0.06, 0, 0.9, 0.12, 0.4, "granite")
 p.box(0, 1.0, 0, 0.84, 1.8, 0.08, "iron")
-p.sign(0, 1.05, 0.045, 0.74, 0.92, "hours")
+p.sign(0, 1.05, 0.065, 0.74, 0.92, "hours")
 
 
 def barricade(m, x, z):
