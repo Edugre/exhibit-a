@@ -21,11 +21,16 @@
 [ext_resource type="AudioStream" path="res://assets/exterior/car_horn.wav" id="snd_car_horn"]
 [ext_resource type="AudioStream" path="res://assets/exterior/car_engine.wav" id="snd_car_engine"]
 [ext_resource type="AudioStream" path="res://assets/exterior/door_groan.wav" id="snd_door_groan"]
+[ext_resource type="AudioStream" path="res://assets/exterior/she_knows.wav" id="snd_she_knows"]
+[ext_resource type="AudioStream" path="res://assets/exterior/alarm_bell.wav" id="snd_alarm_bell"]
+[ext_resource type="AudioStream" path="res://assets/exterior/siren_far.wav" id="snd_siren_far"]
 [ext_resource type="Script" path="res://scripts/exterior_doors.gd" id="doors"]
 [ext_resource type="ArrayMesh" path="res://assets/exterior/meshes/doorl_ext_door.res" id="leaf_L_door"]
 [ext_resource type="ArrayMesh" path="res://assets/exterior/meshes/doorl_ext_bronze.res" id="leaf_L_bronze"]
 [ext_resource type="ArrayMesh" path="res://assets/exterior/meshes/doorr_ext_door.res" id="leaf_R_door"]
 [ext_resource type="ArrayMesh" path="res://assets/exterior/meshes/doorr_ext_bronze.res" id="leaf_R_bronze"]
+[ext_resource type="Script" path="res://scripts/exterior_alarm.gd" id="alarm"]
+[ext_resource type="ArrayMesh" path="res://assets/exterior/meshes/librarian_ext_carved.res" id="librarian"]
 [ext_resource type="PackedScene" path="res://assets/exterior/fountain_jets.glb" id="jets"]
 [ext_resource type="PackedScene" path="res://assets/exterior/capital.glb" id="capital"]
 [ext_resource type="PackedScene" path="res://assets/exterior/exterior_context.glb" id="context"]
@@ -256,6 +261,17 @@ initial_velocity_min = 0.25
 initial_velocity_max = 0.45
 scale_min = 0.12
 scale_max = 0.3
+
+[sub_resource type="SphereMesh" id="eye_ball"]
+radius = 0.075
+height = 0.15
+radial_segments = 14
+rings = 7
+
+[sub_resource type="StandardMaterial3D" id="eye_glow"]
+shading_mode = 0
+albedo_color = Color(1, 0.3, 0.12, 1)
+disable_receive_shadows = true
 
 [sub_resource type="ParticleProcessMaterial" id="moth_motion"]
 emission_shape = 3
@@ -2078,6 +2094,83 @@ mesh = ExtResource("leaf_R_door")
 [node name="bronze" type="MeshInstance3D" parent="FrontDoors/HingeR"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6, 0, -8.700000000000001)
 mesh = ExtResource("leaf_R_bronze")
+
+[node name="Alarm" type="Node3D" parent="."]
+script = ExtResource("alarm")
+
+[node name="OwlEyes" type="Node3D" parent="Alarm"]
+
+[node name="Eye0L" type="MeshInstance3D" parent="Alarm/OwlEyes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.175, 18.6, 11.02)
+mesh = SubResource("eye_ball")
+surface_material_override/0 = SubResource("eye_glow")
+cast_shadow = 0
+
+[node name="Eye0R" type="MeshInstance3D" parent="Alarm/OwlEyes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13.825, 18.6, 11.02)
+mesh = SubResource("eye_ball")
+surface_material_override/0 = SubResource("eye_glow")
+cast_shadow = 0
+
+[node name="Eye1L" type="MeshInstance3D" parent="Alarm/OwlEyes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.175, 18.6, 11.02)
+mesh = SubResource("eye_ball")
+surface_material_override/0 = SubResource("eye_glow")
+cast_shadow = 0
+
+[node name="Eye1R" type="MeshInstance3D" parent="Alarm/OwlEyes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.175, 18.6, 11.02)
+mesh = SubResource("eye_ball")
+surface_material_override/0 = SubResource("eye_glow")
+cast_shadow = 0
+
+[node name="Eye2L" type="MeshInstance3D" parent="Alarm/OwlEyes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.825, 18.6, 11.02)
+mesh = SubResource("eye_ball")
+surface_material_override/0 = SubResource("eye_glow")
+cast_shadow = 0
+
+[node name="Eye2R" type="MeshInstance3D" parent="Alarm/OwlEyes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.175, 18.6, 11.02)
+mesh = SubResource("eye_ball")
+surface_material_override/0 = SubResource("eye_glow")
+cast_shadow = 0
+
+[node name="Librarian" type="Node3D" parent="Alarm"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.450000000000001, 27.6, 9.26)
+
+[node name="Head" type="MeshInstance3D" parent="Alarm/Librarian"]
+mesh = ExtResource("librarian")
+
+[node name="EyeL" type="MeshInstance3D" parent="Alarm/Librarian"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.125, 1.04, 0.66)
+mesh = SubResource("eye_ball")
+surface_material_override/0 = SubResource("eye_glow")
+cast_shadow = 0
+
+[node name="EyeR" type="MeshInstance3D" parent="Alarm/Librarian"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.125, 1.04, 0.66)
+mesh = SubResource("eye_ball")
+surface_material_override/0 = SubResource("eye_glow")
+cast_shadow = 0
+
+[node name="Whisper" type="AudioStreamPlayer" parent="Alarm"]
+stream = ExtResource("snd_she_knows")
+volume_db = -2.0
+
+[node name="Bell" type="AudioStreamPlayer3D" parent="Alarm"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 10)
+stream = ExtResource("snd_alarm_bell")
+volume_db = -9.0
+unit_size = 20.0
+max_distance = 220.0
+
+[node name="Siren" type="AudioStreamPlayer3D" parent="Alarm"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 150, 8, 48)
+stream = ExtResource("snd_siren_far")
+volume_db = -6.0
+unit_size = 60.0
+max_distance = 420.0
 
 [node name="Flags" type="Node3D" parent="."]
 

@@ -63,6 +63,15 @@ func _process(delta: float) -> void:
 		_write(i, b)
 
 
+## Every bird at once, for the alarm. Nobody scared them, so nothing here counts as a noise.
+func scatter_all() -> void:
+	_flap_wait = 0.0
+	for b: Dictionary in _birds:
+		if b.state == "perched":
+			var from: Vector3 = b.pos + Vector3(randf_range(-3.0, 3.0), 0.0, randf_range(-3.0, 3.0))
+			_take_off(b, from, false)
+
+
 ## Everyone who could scare a bird, with how fast they are moving.
 func _runners(delta: float) -> Array:
 	var list: Array = []
@@ -86,7 +95,7 @@ func _perch(b: Dictionary, delta: float, runners: Array) -> void:
 		b.yaw += randf_range(-1.6, 1.6)
 
 
-func _take_off(b: Dictionary, from_where: Vector3) -> void:
+func _take_off(b: Dictionary, from_where: Vector3, heard: bool = true) -> void:
 	var away := (b.pos as Vector3) - from_where
 	away.y = 0.0
 	away = away.normalized() if away.length() > 0.01 else Vector3.FORWARD
@@ -95,7 +104,8 @@ func _take_off(b: Dictionary, from_where: Vector3) -> void:
 	b.from = b.pos
 	b.to = (b.pos as Vector3) + away * 22.0 + Vector3(randf_range(-7.0, 7.0), randf_range(14.0, 22.0), randf_range(-3.0, 3.0))
 	b.yaw = atan2(away.x, away.z)
-	startled.emit(b.pos)
+	if heard:
+		startled.emit(b.pos)
 	if _flap_wait <= 0.0:
 		_flap_wait = 1.5
 		_play(flap_sound, b.pos)

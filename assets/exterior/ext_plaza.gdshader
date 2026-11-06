@@ -2,6 +2,8 @@
 // long has no seams to unwrap. Near the fountains the stone is wet, dark and glossy.
 shader_type spatial;
 
+global uniform float exterior_alarm;
+
 uniform sampler2D stone_albedo : source_color, repeat_enable, filter_linear_mipmap_anisotropic;
 uniform vec3 tint = vec3(0.60, 0.59, 0.58);
 uniform float course_width = 0.6;
@@ -65,6 +67,7 @@ void fragment() {
 	ROUGHNESS = mix(0.74 + tone * 0.12, 0.16, wet);
 	SPECULAR = mix(0.14, 0.62, wet);
 	if (low_detail && star_strength > 0.0) {
-		EMISSION = ALBEDO * star_light(world_position, star_map, star_strength);
+		vec3 warning = vec3(1.25, 0.14, 0.09) * (0.72 + 0.28 * sin(TIME * 3.4));
+		EMISSION = ALBEDO * star_light(world_position, star_map, star_strength) * mix(vec3(1.0), warning, exterior_alarm);
 	}
 }

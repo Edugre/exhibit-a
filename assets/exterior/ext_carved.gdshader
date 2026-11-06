@@ -2,6 +2,9 @@
 // The atlas holds the normal map, and occlusion in two sizes that darken the stone in its recesses.
 shader_type spatial;
 
+// Set by the alarm when the Book is taken: the baked floodlights pulse red, as the real ones do
+global uniform float exterior_alarm;
+
 uniform sampler2D stone_albedo : source_color, repeat_enable, filter_linear_mipmap_anisotropic;
 uniform sampler2D stone_rough : hint_default_white, repeat_enable, filter_linear_mipmap_anisotropic;
 uniform sampler2D carved_normal : hint_normal, repeat_enable, filter_linear_mipmap_anisotropic;
@@ -56,7 +59,8 @@ void fragment() {
 	if (low_detail && baked_strength > 0.0) {
 		vec2 b = (world_pos.xy - stain_rect.xy) / stain_rect.zw;
 		if (b.x > 0.0 && b.x < 1.0 && b.y > 0.0 && b.y < 1.0) {
-			baked = texture(baked_light, vec2(b.x, 1.0 - b.y)).rgb * baked_strength;
+			vec3 warning = vec3(1.25, 0.14, 0.09) * (0.72 + 0.28 * sin(TIME * 3.4));
+			baked = texture(baked_light, vec2(b.x, 1.0 - b.y)).rgb * baked_strength * mix(vec3(1.0), warning, exterior_alarm);
 		}
 	}
 

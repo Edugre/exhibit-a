@@ -4,6 +4,9 @@ shader_type spatial;
 render_mode cull_disabled;
 
 uniform sampler2D print : source_color, filter_linear_mipmap_anisotropic;
+// The Book's banner when the Book has gone: it unrolls from the rod over the old one
+uniform sampler2D print_stolen : source_color, filter_linear_mipmap_anisotropic;
+global uniform float exterior_alarm;
 uniform float sway = 0.11;
 uniform float speed = 0.8;
 
@@ -22,6 +25,9 @@ void vertex() {
 
 void fragment() {
 	ALBEDO = texture(print, UV).rgb;
+	if (UV.x > 0.3334 && UV.x < 0.6666 && UV.y < exterior_alarm * 1.03) {
+		ALBEDO = texture(print_stolen, vec2((UV.x - 0.33333) * 3.0, UV.y)).rgb;
+	}
 	ROUGHNESS = 0.88;
 	SPECULAR = 0.2;
 	// A little light passes through the cloth, so it glows softly when lit from behind

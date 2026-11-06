@@ -12,7 +12,7 @@ from PIL import Image, ImageDraw, ImageFilter
 
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
 import ext_dims as D
-SOUNDS = ["amb_city", "amb_fountain", "amb_crickets", "pigeons_flap", "pigeon_coo", "car_horn", "car_engine", "door_groan"]
+SOUNDS = ["amb_city", "amb_fountain", "amb_crickets", "pigeons_flap", "pigeon_coo", "car_horn", "car_engine", "door_groan", "she_knows", "alarm_bell", "siren_far"]
 
 WT = pathlib.Path(__file__).resolve().parent
 for up in (WT, *WT.parents):
@@ -42,7 +42,7 @@ atlas(CAP / "cap_normal.png", [ORN / f"{n}_normal.png" for n in names], (128, 12
 wide = atlas(CAP / "cap_ao_wide.png", [ORN / f"{n}_ao_wide.png" for n in names], (255, 255, 255)).convert("L")
 tight = atlas(CAP / "cap_ao_tight.png", [ORN / f"{n}_ao_tight.png" for n in names], (255, 255, 255)).convert("L")
 Image.merge("RGB", (wide, tight, Image.new("L", (2048, 2048), 0))).save(A / "ext_carved_ao.png", optimize=True)
-for src, name in ((TRIM, "ext_trim_normal"), (TRIM, "ext_trim_ao"), (RELIEF, "ext_relief_normal"), (RELIEF, "ext_relief_ao"), (RELIEF, "ext_door_normal"), (RELIEF, "ext_door_ao"), (ART, "ext_banners"), (ART, "ext_stain"), (ART, "ext_props"), (ART, "ext_props_glow")):
+for src, name in ((TRIM, "ext_trim_normal"), (TRIM, "ext_trim_ao"), (RELIEF, "ext_relief_normal"), (RELIEF, "ext_relief_ao"), (RELIEF, "ext_door_normal"), (RELIEF, "ext_door_ao"), (ART, "ext_banners"), (ART, "ext_banner_stolen"), (ART, "ext_stain"), (ART, "ext_props"), (ART, "ext_props_glow")):
     shutil.copy(src / f"{name}.png", A / f"{name}.png")
 
 # The window's star lattice as a light pattern, thrown across the terrace by a single cheap light
@@ -95,12 +95,13 @@ for n, is_n in (("ext_stone_albedo", False), ("ext_stone_normal", True), ("ext_s
 tex_import("ext_lattice_cookie", lossless=True)
 tex_import("ext_door_normal", normal=True)
 tex_import("ext_door_ao")
+tex_import("ext_banner_stolen")
 tex_import("ext_baked_light")
 tex_import("ext_props")
 tex_import("ext_props_glow")
 for sound in SOUNDS:
     shutil.copy(ART / f"{sound}.wav", A / f"{sound}.wav")
-    loops = sound.startswith("amb_") or sound == "car_engine"
+    loops = sound.startswith("amb_") or sound in ("car_engine", "alarm_bell", "siren_far")
     (A / f"{sound}.wav.import").write_text(f"""[remap]
 
 importer="wav"
@@ -257,10 +258,12 @@ shader_parameter/relief_ao = ExtResource("t1")
 
 [ext_resource type="Shader" path="{RES}ext_banner.gdshader" id="s"]
 [ext_resource type="Texture2D" path="{RES}ext_banners.png" id="t0"]
+[ext_resource type="Texture2D" path="{RES}ext_banner_stolen.png" id="t1"]
 
 [resource]
 shader = ExtResource("s")
 shader_parameter/print = ExtResource("t0")
+shader_parameter/print_stolen = ExtResource("t1")
 """, encoding="utf-8", newline="\n")
 for road_name, painted in (("ext_road", "false"), ("ext_road_line", "true")):
     (A / f"{road_name}.tres").write_text(f"""[gd_resource type="ShaderMaterial" format=3]

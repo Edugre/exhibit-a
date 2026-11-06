@@ -3,6 +3,9 @@
 // dirt that collects below ledges.
 shader_type spatial;
 
+// Set by the alarm when the Book is taken: the baked floodlights pulse red, as the real ones do
+global uniform float exterior_alarm;
+
 uniform sampler2D stone_albedo : source_color, repeat_enable, filter_linear_mipmap_anisotropic;
 uniform sampler2D stone_normal : hint_normal, repeat_enable, filter_linear_mipmap_anisotropic;
 uniform sampler2D stone_rough : hint_default_white, repeat_enable, filter_linear_mipmap_anisotropic;
@@ -71,7 +74,8 @@ void fragment() {
 			vec2 st = vec2(s.x, 1.0 - s.y);
 			ALBEDO *= texture(stain_map, st).r * 1.5;
 			if (baked_strength > 0.0 && s.x > 0.0 && s.x < 1.0 && s.y > 0.0 && s.y < 1.0) {
-				EMISSION = ALBEDO * texture(baked_light, st).rgb * baked_strength;
+				vec3 warning = vec3(1.25, 0.14, 0.09) * (0.72 + 0.28 * sin(TIME * 3.4));
+				EMISSION = ALBEDO * texture(baked_light, st).rgb * baked_strength * mix(vec3(1.0), warning, exterior_alarm);
 			}
 		}
 		if (star_strength > 0.0) {

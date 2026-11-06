@@ -118,3 +118,25 @@ n = 8 * SR
 t = np.arange(n) / SR
 engine = low(rng.standard_normal(n), 240) + 0.5 * band(rng.standard_normal(n), 300, 1400)
 write("car_engine", seam(engine + 0.3 * np.sin(2 * np.pi * 58 * t), 1.0))
+
+# She knows: one long breath of a whisper, close to the ear
+n = int(1.9 * SR)
+t = np.arange(n) / SR
+breath = band(rng.standard_normal(n), 2400, 8200) + 0.4 * band(rng.standard_normal(n), 900, 2400)
+shape = np.clip(t / 0.18, 0, 1) ** 1.5 * np.clip((1.9 - t) / 1.0, 0, 1) ** 2
+write("she_knows", breath * shape * (0.82 + 0.18 * np.sin(2 * np.pi * 5.5 * t)))
+
+# An old electric alarm bell, somewhere in the building
+n = 3 * SR
+t = np.arange(n) / SR
+strike = (np.sin(2 * np.pi * 24 * t) > 0).astype(float)
+ring = sum(np.sin(2 * np.pi * f * t) * g for f, g in ((1180, 1.0), (2370, 0.5), (3720, 0.25), (5310, 0.12)))
+write("alarm_bell", seam(ring * (0.55 + 0.45 * low(strike, 200)), 0.3))
+
+# A police siren a long way uptown, rising and falling
+n = 12 * SR
+t = np.arange(n) / SR
+wail = 760 + 340 * np.sin(2 * np.pi * 0.17 * t)
+tone = np.sin(2 * np.pi * np.cumsum(wail) / SR)
+tone += 0.4 * np.sin(4 * np.pi * np.cumsum(wail) / SR)
+write("siren_far", seam(band(tone, 300, 2400) * (0.75 + 0.25 * swell(n, 2.0, 1.0)), 1.5))

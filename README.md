@@ -30,6 +30,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
    - GPUParticles3D (moths round the exterior's lamps, steam from the street)
    - MultiMeshInstance3D (the pigeons, plaza trees and traffic, drawn in batches)
    - AudioStreamPlayer and AudioStreamPlayer3D (the city's soundscape, fountains, crickets, pigeons and car horns)
+   - Global shader uniforms (the alarm that reaches every exterior material at once)
    - Automatic mesh LOD from the glTF importer (carved stone at a distance)
    - Viewport 3D scaling with FSR, FXAA and MSAA (the graphics levels in scripts/exterior_quality.gd)
    - ReflectionProbe with custom ambient light (the rooms' dim indoor air at night)

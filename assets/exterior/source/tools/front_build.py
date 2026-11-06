@@ -318,6 +318,7 @@ def ring_pull(x, y, z):
 
 
 LEAVES = ({m: Part() for m in MATS}, {m: Part() for m in MATS})
+LIBRARIAN = {m: Part() for m in MATS}
 
 
 def bronze_doors(cx, z):
@@ -672,9 +673,17 @@ def attic():
     for a, b in spans:
         n = max(int((b - a) / 2.3), 1)
         xs += [a + (b - a) * (i + 0.5) / n for i in range(n)]
+    global parts
     for i, x in enumerate(xs):
-        piece = SHUSH if i == 5 else MASK
-        place("ext_carved", piece, lambda q, x=x: (q[0] * 1.5 + x, q[1] * 1.5 + y1, q[2] * 1.5 + z - 0.34), flip=False)
+        if i == 5:
+            # The librarian is built apart from the others, so she can turn her head when the Book goes
+            main = parts
+            parts = LIBRARIAN
+            place("ext_carved", SHUSH, lambda q: (q[0] * 1.5, q[1] * 1.5, q[2] * 1.5), flip=False)
+            parts = main
+            json.dump({"x": x, "y": y1, "z": z - 0.34}, open(HERE / "crest_spot.json", "w"))
+        else:
+            place("ext_carved", MASK, lambda q, x=x: (q[0] * 1.5 + x, q[1] * 1.5 + y1, q[2] * 1.5 + z - 0.34), flip=False)
     return xs
 
 
@@ -919,5 +928,5 @@ def export(sections, filename):
 if __name__ == "__main__":
     build_all()
     export({"Front": parts}, "front")
-    export({"DoorL": LEAVES[0], "DoorR": LEAVES[1]}, "doors")
+    export({"DoorL": LEAVES[0], "DoorR": LEAVES[1], "Librarian": LIBRARIAN}, "doors")
     print("DONE", flush=True)

@@ -128,6 +128,36 @@ for tag, sx in (("L", -1), ("R", 1)):
         STREET_RES += f'[ext_resource type="ArrayMesh" path="res://assets/exterior/meshes/door{tag.lower()}_ext_{part}.res" id="leaf_{tag}_{part}"]\n'
         n.append(f'[node name="{part}" type="MeshInstance3D" parent="FrontDoors/Hinge{tag}"]\ntransform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, {-hx}, 0, {-D.DOOR_Z + 0.1})\nmesh = ExtResource("leaf_{tag}_{part}")\n')
 
+# She will know: the owls' eyes, the librarian on her hinge, and the alarm's sounds
+CREST = json.load(open(pathlib.Path(__file__).parent / "crest_spot.json"))
+STREET_RES += '[ext_resource type="Script" path="res://scripts/exterior_alarm.gd" id="alarm"]\n'
+STREET_RES += '[ext_resource type="ArrayMesh" path="res://assets/exterior/meshes/librarian_ext_carved.res" id="librarian"]\n'
+STREET_SUBS += """[sub_resource type="SphereMesh" id="eye_ball"]
+radius = 0.075
+height = 0.15
+radial_segments = 14
+rings = 7
+
+[sub_resource type="StandardMaterial3D" id="eye_glow"]
+shading_mode = 0
+albedo_color = Color(1, 0.3, 0.12, 1)
+disable_receive_shadows = true
+
+"""
+n.append('[node name="Alarm" type="Node3D" parent="."]\nscript = ExtResource("alarm")\n')
+n.append('[node name="OwlEyes" type="Node3D" parent="Alarm"]\n')
+eye_y = D.ARCH_CROWN_Y + 0.10 + 0.90
+for i, cx in enumerate(D.ARCHES_X):
+    for tag, sx in (("L", -1), ("R", 1)):
+        n.append(f'[node name="Eye{i}{tag}" type="MeshInstance3D" parent="Alarm/OwlEyes"]\ntransform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, {cx + sx * 0.175}, {eye_y}, {D.WALL_Z + 1.02})\nmesh = SubResource("eye_ball")\nsurface_material_override/0 = SubResource("eye_glow")\ncast_shadow = 0\n')
+n.append(f'[node name="Librarian" type="Node3D" parent="Alarm"]\ntransform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, {CREST["x"]}, {CREST["y"]}, {CREST["z"]})\n')
+n.append('[node name="Head" type="MeshInstance3D" parent="Alarm/Librarian"]\nmesh = ExtResource("librarian")\n')
+for tag, sx in (("L", -1), ("R", 1)):
+    n.append(f'[node name="Eye{tag}" type="MeshInstance3D" parent="Alarm/Librarian"]\ntransform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, {sx * 0.125}, 1.04, 0.66)\nmesh = SubResource("eye_ball")\nsurface_material_override/0 = SubResource("eye_glow")\ncast_shadow = 0\n')
+n.append('[node name="Whisper" type="AudioStreamPlayer" parent="Alarm"]\nstream = ExtResource("snd_she_knows")\nvolume_db = -2.0\n')
+n.append('[node name="Bell" type="AudioStreamPlayer3D" parent="Alarm"]\ntransform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 10)\nstream = ExtResource("snd_alarm_bell")\nvolume_db = -9.0\nunit_size = 20.0\nmax_distance = 220.0\n')
+n.append('[node name="Siren" type="AudioStreamPlayer3D" parent="Alarm"]\ntransform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 150, 8, 48)\nstream = ExtResource("snd_siren_far")\nvolume_db = -6.0\nunit_size = 60.0\nmax_distance = 420.0\n')
+
 # Flags on the two tall poles
 n.append('[node name="Flags" type="Node3D" parent="."]\n')
 for sx, tag in ((-1, "West"), (1, "East")):

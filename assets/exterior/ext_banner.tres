@@ -2,7 +2,9 @@
 
 [ext_resource type="Shader" path="res://assets/exterior/ext_banner.gdshader" id="s"]
 [ext_resource type="Texture2D" path="res://assets/exterior/ext_banners.png" id="t0"]
+[ext_resource type="Texture2D" path="res://assets/exterior/ext_banner_stolen.png" id="t1"]
 
 [resource]
 shader = ExtResource("s")
 shader_parameter/print = ExtResource("t0")
+shader_parameter/print_stolen = ExtResource("t1")

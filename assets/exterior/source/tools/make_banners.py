@@ -104,15 +104,21 @@ d.text((cx, 770), "A Retrospective", font=font(ITAL, 92), fill=PALE, anchor="mm"
 d.text((cx, 884), "Heel not included.", font=font(REG, 60), fill=GOLD, anchor="mm")
 
 # The Last Book, on oxblood
-x0, x1 = COL, 2 * COL
-d.rectangle([x0, 0, x1, H], fill=(84, 19, 18))
-border(d, x0, x1, GOLD)
-cx = (x0 + x1) // 2
-spaced(d, cx, 136, "THE LAST BOOK", font(BOLD, 120), GOLD, 14)
-spaced(d, cx, 262, "OF ALEXANDRIA", font(BOLD, 120), GOLD, 14)
-tome(d, cx, 508, 150)
-spaced(d, cx, 758, "NOW OVERDUE", font(BOLD, 134), PALE, 14)
-d.text((cx, 888), "Please do not touch. She will know.", font=font(ITAL, 60), fill=GOLD, anchor="mm")
+def book_panel(d, x0, x1, bg, headline, footnote):
+    d.rectangle([x0, 0, x1, H], fill=bg)
+    border(d, x0, x1, GOLD)
+    cx = (x0 + x1) // 2
+    spaced(d, cx, 136, "THE LAST BOOK", font(BOLD, 120), GOLD, 14)
+    spaced(d, cx, 262, "OF ALEXANDRIA", font(BOLD, 120), GOLD, 14)
+    tome(d, cx, 508, 150)
+    spaced(d, cx, 758, headline, font(BOLD, 134), PALE, 14)
+    d.text((cx, 888), footnote, font=font(ITAL, 60), fill=GOLD, anchor="mm")
+
+
+book_panel(d, COL, 2 * COL, (84, 19, 18), "NOW OVERDUE", "Please do not touch. She will know.")
+# The same banner once the Book has gone, its colour gone from oxblood to alarm
+stolen = Image.new("RGB", (W, H), (0, 0, 0))
+book_panel(ImageDraw.Draw(stolen), COL, 2 * COL, (132, 16, 14), "NOW STOLEN", "She knows.")
 
 # Helen, on deep teal
 x0, x1 = 2 * COL, 3 * COL
@@ -133,4 +139,7 @@ noise = np.asarray(Image.fromarray((rng.random((H // 8, W // 8)) * 255).astype(n
 folds = 0.90 + 0.10 * np.sin(np.arange(W)[None, :] / W * 3.0 * 2 * np.pi * 5.0 + 1.3)
 a *= (weave * (0.93 + 0.14 * noise) * folds)[..., None]
 Image.fromarray((np.clip(a, 0, 1) * 255).astype(np.uint8)).save(OUT / "ext_banners.png", optimize=True)
+b = np.asarray(stolen, dtype=np.float32) / 255
+b *= (weave * (0.93 + 0.14 * noise) * folds)[..., None]
+Image.fromarray((np.clip(b, 0, 1) * 255).astype(np.uint8)).crop((COL, 0, 2 * COL, H)).save(OUT / "ext_banner_stolen.png", optimize=True)
 print("banners written")
