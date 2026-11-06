@@ -5,6 +5,8 @@ shader_type spatial;
 // Set by the alarm when the Book is taken: the baked floodlights pulse red, as the real ones do
 global uniform float exterior_alarm;
 
+#include "res://assets/exterior/ext_weather.gdshaderinc"
+
 uniform sampler2D stone_albedo : source_color, repeat_enable, filter_linear_mipmap_anisotropic;
 uniform sampler2D stone_rough : hint_default_white, repeat_enable, filter_linear_mipmap_anisotropic;
 uniform sampler2D carved_normal : hint_normal, repeat_enable, filter_linear_mipmap_anisotropic;
@@ -64,10 +66,13 @@ void fragment() {
 		}
 	}
 
-	ALBEDO = albedo * tint;
+	vec3 surface = albedo * tint;
+	float specular = 0.3;
+	apply_weather(world_pos, n, 1.0, surface, rough, specular);
+	ALBEDO = surface;
 	EMISSION = ALBEDO * baked;
 	ROUGHNESS = rough;
-	SPECULAR = 0.3;
+	SPECULAR = specular;
 	NORMAL_MAP = texture(carved_normal, UV).rgb;
 	NORMAL_MAP_DEPTH = normal_depth;
 	AO = ao.r;

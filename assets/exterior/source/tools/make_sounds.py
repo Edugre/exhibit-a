@@ -140,3 +140,28 @@ wail = 760 + 340 * np.sin(2 * np.pi * 0.17 * t)
 tone = np.sin(2 * np.pi * np.cumsum(wail) / SR)
 tone += 0.4 * np.sin(4 * np.pi * np.cumsum(wail) / SR)
 write("siren_far", seam(band(tone, 300, 2400) * (0.75 + 0.25 * swell(n, 2.0, 1.0)), 1.5))
+
+# Rain on stone: a steady hiss, a heavier patter under it, and the odd fat drop
+n = 16 * SR
+sides = []
+for side in range(2):
+    wet = band(rng.standard_normal(n), 1400, 7800) + 0.6 * band(rng.standard_normal(n), 320, 1400)
+    fat = (rng.random(n) > 0.9994) * rng.random(n)
+    wet += band(np.convolve(fat, np.exp(-np.arange(500) / 70.0), "same"), 600, 3000) * 5.0
+    sides.append(seam(wet * (0.82 + 0.18 * swell(n, 3.0, 1.0)), 2.0))
+write("amb_rain", np.stack(sides, -1))
+
+# Wind round the columns on a snowy night: low and hollow, rising and dropping
+n = 18 * SR
+sides = []
+for side in range(2):
+    gust = band(rng.standard_normal(n), 160, 620) * (0.3 + 0.7 * swell(n, 2.8, 1.8))
+    sides.append(seam(gust + 0.18 * low(rng.standard_normal(n), 120), 2.5))
+write("amb_wind", np.stack(sides, -1))
+
+# Far thunder: one crack softened by distance, then a long roll
+n = 6 * SR
+t = np.arange(n) / SR
+roll = low(rng.standard_normal(n), 190) * np.exp(-t * 0.9) * (0.5 + 0.5 * swell(n, 0.5, 1.4))
+crack = band(rng.standard_normal(n), 200, 1400) * np.exp(-t * 11.0)
+write("thunder", roll + 0.45 * crack)

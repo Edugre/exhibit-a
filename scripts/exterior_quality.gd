@@ -113,6 +113,7 @@ func apply(new_level: int) -> void:
 		var steam := life.get_node_or_null("Steam")
 		if steam != null:
 			steam.visible = not low
+	get_tree().call_group("exterior_weather", "on_graphics_changed", level)
 
 
 func _named(light: Light3D, groups: Array[String]) -> bool:

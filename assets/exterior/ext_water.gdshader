@@ -2,6 +2,8 @@
 // the plume, with a low glow where the lamps are set under it. Normals are worked out here from noise.
 shader_type spatial;
 
+#include "res://assets/exterior/ext_weather.gdshaderinc"
+
 uniform vec3 deep_colour : source_color = vec3(0.012, 0.016, 0.022);
 uniform vec3 lamp_colour : source_color = vec3(1.0, 0.86, 0.68);
 uniform float centre_x = 38.5;
@@ -41,6 +43,17 @@ void fragment() {
 	ALBEDO = deep_colour;
 	ROUGHNESS = 0.1;
 	SPECULAR = 0.7;
+	if (exterior_snow > 0.5) {
+		// Frozen over, with snow blown across the ice in drifts
+		vec2 q = mat2(vec2(0.8, 0.6), vec2(-0.6, 0.8)) * p;
+		float blown = weather_noise(q * vec2(0.45, 0.8)) * 0.5 + weather_noise(p * 1.7 + 9.0) * 0.3 + weather_noise(q * 4.3 + 3.0) * 0.2;
+		float drift = smoothstep(0.36, 0.66, blown);
+		ALBEDO = mix(vec3(0.16, 0.2, 0.25), vec3(0.8, 0.83, 0.9), drift);
+		ROUGHNESS = mix(0.26, 0.86, drift);
+		SPECULAR = 0.4;
+		NORMAL = normalize((VIEW_MATRIX * vec4(0.0, 1.0, 0.0, 0.0)).xyz);
+		EMISSION = vec3(0.0);
+	} else {
 	// Wishes: coins on the floor of the pool, glinting as the water moves over them
 	vec2 cell = floor(p / 0.24);
 	vec2 inside = fract(p / 0.24) - 0.5 + (vec2(hash(cell), hash(cell + 3.7)) - 0.5) * 0.4;
@@ -49,4 +62,5 @@ void fragment() {
 	vec3 metal = mix(vec3(0.85, 0.5, 0.25), vec3(0.8, 0.82, 0.85), step(0.5, hash(cell + 7.1)));
 	float near = 1.0 - smoothstep(4.0, 26.0, length(CAMERA_POSITION_WORLD.xz - p));
 	EMISSION = lamp_colour * (0.012 + 0.09 * exp(-d * d * 0.09)) + metal * here * max(glint, 0.0) * 0.09 * near;
+	}
 }

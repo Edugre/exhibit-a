@@ -2,7 +2,12 @@
 
 [ext_resource type="PackedScene" path="res://scenes/exterior.tscn" id="exterior"]
 [ext_resource type="Script" path="res://scripts/exterior_quality.gd" id="quality"]
+[ext_resource type="Script" path="res://scripts/exterior_weather.gd" id="weather"]
 [ext_resource type="Shader" path="res://assets/exterior/ext_night_sky.gdshader" id="sky_shader"]
+[ext_resource type="Shader" path="res://assets/exterior/ext_precip.gdshader" id="precip_shader"]
+[ext_resource type="AudioStream" path="res://assets/exterior/amb_rain.wav" id="snd_rain"]
+[ext_resource type="AudioStream" path="res://assets/exterior/amb_wind.wav" id="snd_wind"]
+[ext_resource type="AudioStream" path="res://assets/exterior/thunder.wav" id="snd_thunder"]
 
 [sub_resource type="ShaderMaterial" id="sky_mat"]
 shader = ExtResource("sky_shader")
@@ -54,3 +59,19 @@ directional_shadow_max_distance = 260.0
 
 [node name="Quality" type="Node" parent="."]
 script = ExtResource("quality")
+
+[node name="Weather" type="Node3D" parent="."]
+script = ExtResource("weather")
+precip_shader = ExtResource("precip_shader")
+
+[node name="RainSound" type="AudioStreamPlayer" parent="Weather"]
+stream = ExtResource("snd_rain")
+volume_db = -3.0
+
+[node name="WindSound" type="AudioStreamPlayer" parent="Weather"]
+stream = ExtResource("snd_wind")
+volume_db = -3.0
+
+[node name="ThunderSound" type="AudioStreamPlayer" parent="Weather"]
+stream = ExtResource("snd_thunder")
+volume_db = -7.0

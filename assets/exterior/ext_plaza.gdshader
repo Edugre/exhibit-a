@@ -4,6 +4,8 @@ shader_type spatial;
 
 global uniform float exterior_alarm;
 
+#include "res://assets/exterior/ext_weather.gdshaderinc"
+
 uniform sampler2D stone_albedo : source_color, repeat_enable, filter_linear_mipmap_anisotropic;
 uniform vec3 tint = vec3(0.60, 0.59, 0.58);
 uniform float course_width = 0.6;
@@ -63,9 +65,16 @@ void fragment() {
 	float outside = length(max(d, vec2(0.0)));
 	float wander = value_noise(p * 0.55) * 2.4;
 	float wet = 1.0 - smoothstep(0.6 + wander * 0.6, 1.4 + wander * 1.1, outside);
-	ALBEDO = colour * mix(1.0, 0.45, wet);
-	ROUGHNESS = mix(0.74 + tone * 0.12, 0.16, wet);
-	SPECULAR = mix(0.14, 0.62, wet);
+	vec3 surface = colour * mix(1.0, 0.45, wet);
+	float rough = mix(0.74 + tone * 0.12, 0.16, wet);
+	float specular = mix(0.14, 0.62, wet);
+	apply_weather(world_position, vec3(0.0, 1.0, 0.0), 1.0, surface, rough, specular);
+	ALBEDO = surface;
+	ROUGHNESS = rough;
+	SPECULAR = specular;
+	if (!low_detail) {
+		NORMAL = normalize((VIEW_MATRIX * vec4(weather_ripple(world_position, vec3(0.0, 1.0, 0.0), TIME), 0.0)).xyz);
+	}
 	if (low_detail && star_strength > 0.0) {
 		vec3 warning = vec3(1.25, 0.14, 0.09) * (0.72 + 0.28 * sin(TIME * 3.4));
 		EMISSION = ALBEDO * star_light(world_position, star_map, star_strength) * mix(vec3(1.0), warning, exterior_alarm);

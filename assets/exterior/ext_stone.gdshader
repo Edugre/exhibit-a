@@ -6,6 +6,8 @@ shader_type spatial;
 // Set by the alarm when the Book is taken: the baked floodlights pulse red, as the real ones do
 global uniform float exterior_alarm;
 
+#include "res://assets/exterior/ext_weather.gdshaderinc"
+
 uniform sampler2D stone_albedo : source_color, repeat_enable, filter_linear_mipmap_anisotropic;
 uniform sampler2D stone_normal : hint_normal, repeat_enable, filter_linear_mipmap_anisotropic;
 uniform sampler2D stone_rough : hint_default_white, repeat_enable, filter_linear_mipmap_anisotropic;
@@ -68,11 +70,17 @@ void fragment() {
 	if (low_detail) {
 		vec3 a = abs(n);
 		vec2 uv = a.y > a.x && a.y > a.z ? p.xz : (a.x > a.z ? p.zy : p.xy);
-		ALBEDO = texture(stone_albedo, uv).rgb * tint;
+		vec3 plain = texture(stone_albedo, uv).rgb * tint;
+		float plain_rough = clamp(0.78 + roughness_add, 0.0, 1.0);
+		float plain_specular = 0.2;
+		vec2 s = (world_pos.xy - stain_rect.xy) / stain_rect.zw;
+		vec2 st = vec2(s.x, 1.0 - s.y);
 		if (stain_amount > 0.0) {
-			vec2 s = (world_pos.xy - stain_rect.xy) / stain_rect.zw;
-			vec2 st = vec2(s.x, 1.0 - s.y);
-			ALBEDO *= texture(stain_map, st).r * 1.5;
+			plain *= texture(stain_map, st).r * 1.5;
+		}
+		apply_weather(world_pos, n, 1.0, plain, plain_rough, plain_specular);
+		ALBEDO = plain;
+		if (stain_amount > 0.0) {
 			if (baked_strength > 0.0 && s.x > 0.0 && s.x < 1.0 && s.y > 0.0 && s.y < 1.0) {
 				vec3 warning = vec3(1.25, 0.14, 0.09) * (0.72 + 0.28 * sin(TIME * 3.4));
 				EMISSION = ALBEDO * texture(baked_light, st).rgb * baked_strength * mix(vec3(1.0), warning, exterior_alarm);
@@ -81,8 +89,8 @@ void fragment() {
 		if (star_strength > 0.0) {
 			EMISSION += ALBEDO * star_light(world_pos, star_map, star_strength);
 		}
-		ROUGHNESS = clamp(0.78 + roughness_add, 0.0, 1.0);
-		SPECULAR = 0.2;
+		ROUGHNESS = plain_rough;
+		SPECULAR = plain_specular;
 	} else {
 	vec3 albedo = texture(stone_albedo, p.zy).rgb * blend.x
 			+ texture(stone_albedo, p.xz).rgb * blend.y
@@ -146,10 +154,14 @@ void fragment() {
 		albedo *= mix(1.0, weather, stain_amount);
 	}
 
-	ALBEDO = albedo * tint;
-	ROUGHNESS = clamp(rough + roughness_add, 0.0, 1.0);
-	SPECULAR = 0.3;
-	NORMAL = normalize((VIEW_MATRIX * vec4(wn, 0.0)).xyz);
+	vec3 surface = albedo * tint;
+	float final_rough = clamp(rough + roughness_add, 0.0, 1.0);
+	float final_specular = 0.3;
+	apply_weather(world_pos, n, 1.0, surface, final_rough, final_specular);
+	ALBEDO = surface;
+	ROUGHNESS = final_rough;
+	SPECULAR = final_specular;
+	NORMAL = normalize((VIEW_MATRIX * vec4(weather_ripple(world_pos, wn, TIME), 0.0)).xyz);
 	}
 	if (capture_albedo > 0.0) {
 		ALBEDO = vec3(capture_albedo);

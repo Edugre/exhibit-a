@@ -78,6 +78,21 @@ popup/item_2/id = 2
 popup/item_3/text = "Graphics: High"
 popup/item_3/id = 3
 
+[node name="WeatherOption" type="OptionButton" parent="UI/Menu"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Only the host's choice counts. Surprise rolls a new night every heist."
+selected = 0
+item_count = 4
+popup/item_0/text = "Weather: Surprise"
+popup/item_0/id = 0
+popup/item_1/text = "Weather: Clear"
+popup/item_1/id = 1
+popup/item_2/text = "Weather: Rain"
+popup/item_2/id = 2
+popup/item_3/text = "Weather: Snow"
+popup/item_3/id = 3
+
 [node name="StatusLabel" type="Label" parent="UI/Menu" unique_id=214250854]
 unique_name_in_owner = true
 layout_mode = 2

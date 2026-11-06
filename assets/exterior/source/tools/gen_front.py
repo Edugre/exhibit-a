@@ -12,7 +12,7 @@ from PIL import Image, ImageDraw, ImageFilter
 
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
 import ext_dims as D
-SOUNDS = ["amb_city", "amb_fountain", "amb_crickets", "pigeons_flap", "pigeon_coo", "car_horn", "car_engine", "door_groan", "she_knows", "alarm_bell", "siren_far"]
+SOUNDS = ["amb_city", "amb_fountain", "amb_crickets", "pigeons_flap", "pigeon_coo", "car_horn", "car_engine", "door_groan", "she_knows", "alarm_bell", "siren_far", "amb_rain", "amb_wind", "thunder"]
 
 WT = pathlib.Path(__file__).resolve().parent
 for up in (WT, *WT.parents):
@@ -335,18 +335,16 @@ roughness = 0.44
 [resource]
 shader = ExtResource("s")
 """, encoding="utf-8", newline=chr(10))
-(A / "ext_props.tres").write_text(f"""[gd_resource type="StandardMaterial3D" format=3]
+(A / "ext_props.tres").write_text(f"""[gd_resource type="ShaderMaterial" format=3]
 
+[ext_resource type="Shader" path="{RES}ext_props.gdshader" id="s"]
 [ext_resource type="Texture2D" path="{RES}ext_props.png" id="t0"]
 [ext_resource type="Texture2D" path="{RES}ext_props_glow.png" id="t1"]
 
 [resource]
-albedo_texture = ExtResource("t0")
-roughness = 0.62
-metallic_specular = 0.35
-emission_enabled = true
-emission_energy_multiplier = 1.7
-emission_texture = ExtResource("t1")
+shader = ExtResource("s")
+shader_parameter/paint = ExtResource("t0")
+shader_parameter/glow = ExtResource("t1")
 """, encoding="utf-8", newline=chr(10))
 (A / "ext_glass.tres").write_text("""[gd_resource type="StandardMaterial3D" format=3]
 
@@ -708,7 +706,12 @@ night = f"""[gd_scene format=3]
 
 [ext_resource type="PackedScene" path="res://scenes/exterior.tscn" id="exterior"]
 [ext_resource type="Script" path="res://scripts/exterior_quality.gd" id="quality"]
+[ext_resource type="Script" path="res://scripts/exterior_weather.gd" id="weather"]
 [ext_resource type="Shader" path="{RES}ext_night_sky.gdshader" id="sky_shader"]
+[ext_resource type="Shader" path="{RES}ext_precip.gdshader" id="precip_shader"]
+[ext_resource type="AudioStream" path="{RES}amb_rain.wav" id="snd_rain"]
+[ext_resource type="AudioStream" path="{RES}amb_wind.wav" id="snd_wind"]
+[ext_resource type="AudioStream" path="{RES}thunder.wav" id="snd_thunder"]
 
 [sub_resource type="ShaderMaterial" id="sky_mat"]
 shader = ExtResource("sky_shader")
@@ -760,6 +763,22 @@ directional_shadow_max_distance = 260.0
 
 [node name="Quality" type="Node" parent="."]
 script = ExtResource("quality")
+
+[node name="Weather" type="Node3D" parent="."]
+script = ExtResource("weather")
+precip_shader = ExtResource("precip_shader")
+
+[node name="RainSound" type="AudioStreamPlayer" parent="Weather"]
+stream = ExtResource("snd_rain")
+volume_db = -3.0
+
+[node name="WindSound" type="AudioStreamPlayer" parent="Weather"]
+stream = ExtResource("snd_wind")
+volume_db = -3.0
+
+[node name="ThunderSound" type="AudioStreamPlayer" parent="Weather"]
+stream = ExtResource("snd_thunder")
+volume_db = -7.0
 """
 (WT / "scenes" / "exterior_night.tscn").write_text(night, encoding="utf-8", newline="\n")
 print("exterior written:", len(subs), "shapes,", len(LIGHTS), "lights,", sum(1 for l in LIGHTS if l.get("shadow")), "with shadows")
