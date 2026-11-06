@@ -12,7 +12,7 @@ from PIL import Image, ImageDraw, ImageFilter
 
 sys.path.insert(0, str(pathlib.Path(__file__).parent))
 import ext_dims as D
-SOUNDS = ["amb_city", "amb_fountain", "amb_crickets", "pigeons_flap", "pigeon_coo", "car_horn", "car_engine", "door_groan", "she_knows", "alarm_bell", "siren_far", "amb_rain", "amb_wind", "thunder"]
+SOUNDS = ["amb_city", "amb_fountain", "amb_crickets", "pigeons_flap", "pigeon_coo", "car_horn", "car_engine", "door_groan", "she_knows", "alarm_bell", "siren_far", "amb_rain", "amb_wind", "thunder", "stamp"]
 
 WT = pathlib.Path(__file__).resolve().parent
 for up in (WT, *WT.parents):

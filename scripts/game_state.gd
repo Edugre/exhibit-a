@@ -12,6 +12,7 @@ enum Phase { LOBBY, PLAYING, WON, LOST }
 enum ArtifactState { LOCKED, AVAILABLE, CARRIED, DROPPED, DELIVERED }
 
 const HEIST_DURATION := 180.0  # seconds; set to ~20 temporarily to test the timeout
+const TIME_UP_REASON := "Time's up. The museum opened."
 const TIME_SYNC_INTERVAL := 0.5
 
 var phase: Phase = Phase.LOBBY
@@ -39,7 +40,7 @@ func _process(delta: float) -> void:
 		_time_sync = 0.0
 		_sync_time.rpc(time_left)  # host corrects any drift on the client
 	if time_left <= 0.0:
-		end_heist(false, "Time's up. The museum opened.")
+		end_heist(false, TIME_UP_REASON)
 
 
 # --- Host-only API: other systems report events here ----------------------

@@ -7,7 +7,7 @@ extends CanvasLayer
 @onready var artifact_label: Label = %ArtifactLabel
 @onready var alert_label: Label = %AlertLabel
 @onready var waiting_label: Label = %WaitingLabel
-@onready var end_panel: Control = %EndPanel
+@onready var end_panel: PanelContainer = %EndPanel
 @onready var result_label: Label = %ResultLabel
 @onready var reason_label: Label = %ReasonLabel
 @onready var restart_button: Button = %RestartButton
@@ -40,11 +40,16 @@ func _on_phase_changed(phase: GameState.Phase) -> void:
 	if ended:
 		result_label.text = "HEIST COMPLETE!" if phase == GameState.Phase.WON else "BUSTED"
 		reason_label.text = GameState.end_reason
+		var taken := GameState.HEIST_DURATION - GameState.time_left
+		var had_book := GameState.artifact_state == GameState.ArtifactState.CARRIED or GameState.artifact_state == GameState.ArtifactState.DROPPED
+		var out_of_time := GameState.end_reason == GameState.TIME_UP_REASON
+		var reason := GameState.end_reason
 		if phase == GameState.Phase.WON:
 			await _watch_getaway()
 			if GameState.phase != phase:
 				return  # the host left while the van was driving off
 		end_panel.visible = true
+		end_panel.stamp_card(phase == GameState.Phase.WON, reason, taken, had_book, out_of_time)
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE  # so the Restart button can be clicked
 	elif phase == GameState.Phase.PLAYING and _last_phase != GameState.Phase.LOBBY:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED  # coming back from a restart

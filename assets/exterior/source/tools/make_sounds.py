@@ -159,6 +159,12 @@ for side in range(2):
     sides.append(seam(gust + 0.18 * low(rng.standard_normal(n), 120), 2.5))
 write("amb_wind", np.stack(sides, -1))
 
+# A rubber stamp hitting a desk
+n = int(0.5 * SR)
+t = np.arange(n) / SR
+hit = low(rng.standard_normal(n), 320) * np.exp(-t * 26.0) + 0.4 * band(rng.standard_normal(n), 900, 3600) * np.exp(-t * 90.0)
+write("stamp", hit + 0.6 * np.sin(2 * np.pi * 92 * t) * np.exp(-t * 20.0))
+
 # Far thunder: one crack softened by distance, then a long roll
 n = 6 * SR
 t = np.arange(n) / SR
