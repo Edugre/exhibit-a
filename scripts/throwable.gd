@@ -7,7 +7,9 @@ const HOLD_OFFSET := Vector3(0.4, -0.3, -0.8)  # right, down and forward from th
 const FALL_LIMIT := -10.0  # below this, the heel has left the map
 const THROW_SPEED := 12.0
 const TUMBLE_SPEED := 7.0  # end over end, so it doesn't fly like it's on a wire
-const NOISE_RADIUS := 8.0
+
+## How far the guard hears this land.
+@export var noise_radius := 8.0
 
 ## Peer id of the player holding this, 0 if nobody. Replicated to the client.
 @export var holder_id := 0:
@@ -65,6 +67,9 @@ func _find_holder() -> Node3D:
 func interact(peer_id: int) -> void:
 	if holder_id != 0:
 		return
+	for other: Throwable in get_tree().get_nodes_in_group("throwables"):
+		if other.holder_id == peer_id:
+			return  # one thing in the throwing hand at a time
 	holder_id = peer_id
 	freeze = true
 
@@ -100,7 +105,7 @@ func _on_body_entered(_body: Node) -> void:
 		return
 	if _thrown:
 		_thrown = false
-		NoiseSystem.emit_noise(global_position, NOISE_RADIUS)
+		NoiseSystem.emit_noise(global_position, noise_radius)
 		_play_thud.rpc()
 
 

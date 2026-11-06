@@ -158,6 +158,14 @@ n.append('[node name="Whisper" type="AudioStreamPlayer" parent="Alarm"]\nstream 
 n.append('[node name="Bell" type="AudioStreamPlayer3D" parent="Alarm"]\ntransform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 6, 10)\nstream = ExtResource("snd_alarm_bell")\nvolume_db = -9.0\nunit_size = 20.0\nmax_distance = 220.0\n')
 n.append('[node name="Siren" type="AudioStreamPlayer3D" parent="Alarm"]\ntransform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 150, 8, 48)\nstream = ExtResource("snd_siren_far")\nvolume_db = -6.0\nunit_size = 60.0\nmax_distance = 420.0\n')
 
+# Empty plinths a player can stand on and pass for a statue, and the rule that flocks make noise
+STREET_RES += '[ext_resource type="PackedScene" path="res://scenes/statue_plinth.tscn" id="statue_plinth"]\n'
+STREET_RES += '[ext_resource type="Script" path="res://scripts/pigeon_noise.gd" id="pigeon_noise"]\n'
+n.append('[node name="StatuePlinths" type="Node3D" parent="."]\n')
+for i, (x, y, z, turn) in enumerate(((-16.7, D.TERRACE_Y, 13.2, 0), (16.7, D.TERRACE_Y, 13.2, 0), (-17.4, D.PLAZA_Y, 27.2, 0), (17.4, D.PLAZA_Y, 27.2, 0))):
+    n.append(f'[node name="Plinth{i}" parent="StatuePlinths" instance=ExtResource("statue_plinth")]\ntransform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, {x}, {y}, {z})\n')
+n.append('[node name="PigeonNoise" type="Node" parent="."]\nscript = ExtResource("pigeon_noise")\npigeons_path = NodePath("../Life/Pigeons")\n')
+
 # Flags on the two tall poles
 n.append('[node name="Flags" type="Node3D" parent="."]\n')
 for sx, tag in ((-1, "West"), (1, "East")):

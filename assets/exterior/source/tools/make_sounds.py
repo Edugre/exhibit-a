@@ -165,6 +165,12 @@ t = np.arange(n) / SR
 hit = low(rng.standard_normal(n), 320) * np.exp(-t * 26.0) + 0.4 * band(rng.standard_normal(n), 900, 3600) * np.exp(-t * 90.0)
 write("stamp", hit + 0.6 * np.sin(2 * np.pi * 92 * t) * np.exp(-t * 20.0))
 
+# A coin landing on stone: two bright rings, gone quickly
+n = int(0.7 * SR)
+t = np.arange(n) / SR
+ping = sum(np.sin(2 * np.pi * f * t) * g * np.exp(-t * d) for f, g, d in ((3240, 1.0, 9.0), (4910, 0.6, 13.0), (7120, 0.3, 19.0)))
+write("coin_clink", ping * (0.8 + 0.2 * np.sign(np.sin(2 * np.pi * 26 * t))))
+
 # Far thunder: one crack softened by distance, then a long roll
 n = 6 * SR
 t = np.arange(n) / SR

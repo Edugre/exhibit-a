@@ -91,6 +91,27 @@ def stamp(name, top, bottom):
     Image.fromarray(rgba, "RGBA").save(OUT / f"stamp_{name}.png", optimize=True)
 
 
+# The brass label on the plinths outside, in the style of the two in the gallery
+lw, lh = 1024, 440
+plate = np.ones((lh, lw, 3), np.float32) * np.array([0.68, 0.51, 0.27], np.float32)
+streaks = np.asarray(Image.fromarray((rng.random((lh, 1)) * 255).astype(np.uint8)).resize((lw, lh)).filter(ImageFilter.GaussianBlur(0.6)), dtype=np.float32) / 255
+plate *= (0.82 + 0.34 * streaks + 0.02 * blur_noise(lw, lh, 1.0))[..., None]
+label = Image.fromarray((plate.clip(0, 1) * 255).astype(np.uint8))
+g = ImageDraw.Draw(label)
+DARK = (52, 34, 18)
+g.rectangle((18, 18, lw - 19, lh - 19), outline=DARK, width=4)
+g.rectangle((28, 28, lw - 29, lh - 29), outline=DARK, width=1)
+for sx, sy in ((48, 48), (lw - 48, 48), (48, lh - 48), (lw - 48, lh - 48)):
+    g.ellipse((sx - 11, sy - 11, sx + 11, sy + 11), outline=DARK, width=3)
+    g.line((sx - 7, sy - 5, sx + 7, sy + 5), fill=DARK, width=3)
+SERIF_B, SERIF_I, SERIF_R = "C:/Windows/Fonts/georgiab.ttf", "C:/Windows/Fonts/georgiai.ttf", "C:/Windows/Fonts/georgia.ttf"
+g.text((lw / 2, 106), "VACANT", font=ImageFont.truetype(SERIF_B, 84), fill=DARK, anchor="mm")
+g.text((lw / 2, 186), "Marble, we hope", font=ImageFont.truetype(SERIF_I, 42), fill=DARK, anchor="mm")
+g.line((342, 227, 682, 227), fill=DARK, width=2)
+g.text((lw / 2, 284), "Sculpture pending donation.", font=ImageFont.truetype(SERIF_R, 46), fill=DARK, anchor="mm")
+g.text((lw / 2, 352), "Please stand very still.", font=ImageFont.truetype(SERIF_I, 52), fill=DARK, anchor="mm")
+label.save(OUT.parent / "assets" / "plates" / "label_pending.png", optimize=True)
+
 stamp("withdrawn", "WITHDRAWN", "")
 stamp("revoked", "PRIVILEGES", "REVOKED")
 stamp("closed", "LIBRARY", "CLOSED")

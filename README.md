@@ -42,6 +42,9 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 - (puzzle conditions, artifact ownership/scoring, guard logic, noise/distraction, timer, outcome logic)
 - Pressure plate puzzle condition (scripts/vault_puzzle.gd)
 - Noise system and throw impact rule (scripts/noise_system.gd, scripts/throwable.gd)
+- Pigeons as an alarm (scripts/pigeon_noise.gd)
+- Passing for a statue on the plinths outside (scripts/player.gd, scripts/guard.gd)
+- Fountain coins as a second, quieter throwable (scenes/coin.tscn, scripts/throwable.gd)
 - Artifact pickup, carrying and dropping (scripts/artifact.gd)
 - Cosmetic exterior life: pigeons that scatter from runners, flickering lanterns, front doors that open for anyone near them, and traffic that obeys the signal and honks at people in the road (scripts/exterior_pigeons.gd, scripts/exterior_flicker.gd, scripts/exterior_doors.gd, scripts/exterior_traffic.gd). Each peer runs its own and none touches game state
 
