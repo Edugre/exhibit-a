@@ -8,8 +8,8 @@ Youtube Link:
 
 ## Team
 - Eduardo Goncalvez (PID: 6526311)
-- Alex Waisman (PID: 6524435)
-- Jonathan Serrano (PID: 6629880)
+- Alex Waisman (PID: 6529880)
+- Jonathan Serrano (PID: 6524435)
 
 ## Concept
 Exhibit A is a two-player online co-op heist game in the “friendslop” style of Lethal Company and R.E.P.O. Two thieves break into a museum after hours to steal its most valuable artifacts before the night runs out.
@@ -22,7 +22,7 @@ Once they have an artifact, players must carry it out and load it into the getaw
 Steal **The Last Book of Alexandria** and get it into the Trojan Van before the museum opens.
 
 1. Stand on the two empty statue plates **at the same time** (one player each) to swing open the portrait door to the vault.
-2. Pick up the book and carry it out of the museum.
+82. Pick up the book and carry it out of the museum.
 3. Step onto the painted drop zone next to the van while carrying it.
 
 You have **3 minutes**. The librarian patrols the gallery with a flashlight: if she spots you, she gives chase, and if she catches either of you, the heist fails. Throw the Heel of Achilles to make a noise and lure her away.
@@ -119,7 +119,50 @@ You have **3 minutes**. The librarian patrols the gallery with a flashlight: if 
 - Trojan Van, drop zone and road (`assets/getaway/`): made for this project in Blender. Editable source is in `assets/getaway/source/`.
 
 ## Contributions
-TODO
+Eduardo Goncalvez (PID: 6526311)
+- Project setup: Created the Godot project and organized its folder layout (`project.godot`, `.gitignore`, `.gitattributes`, `.editorconfig`).
+- Networking: Implemented the networking features that handle hosting and joining over ENet (`network_manager.gd`, `main.gd`, `main.tscn`).
+- Greybox level: Designed the layout of the museum level (`museum.tscn`).
+- Game state: Worked on `game_state.gd`, which holds the timer, outcome, and synced restart, and connected it to `hud.gd` and `hud.tscn` to show it on screen.
+- Guard AI: Implemented the guard AI, which covers patrol, vision cone, chase, and catching a player (`guard.gd`, `guard.tscn`).
+
+Alex Waisman (PID: 6529880)
+- Assets: Made all the 3D models and their textures in Blender, with help from Claude through an MCP connection: the player and guard (`assets/characters/`), the book artifact (`assets/artifact/`), the portrait door (`assets/door/`), the statue plinths (`assets/plates/`), the Heel of Achilles throwable (`assets/throwable/`), and the Trojan Van and drop zone (`assets/getaway/`).
+- Character animation: Animated the player and guard models (`player_model.gd`, `guard_model.gd`, `player_model.tscn`, `guard_model.tscn`).
+- Artifact: Wrote the logic for the artifact, which handles picking it up and carrying it (`artifact.gd`, `artifact_model.gd`, `artifact.tscn`, `artifact_model.tscn`).
+- Win condition: Added the drop zone where players deliver the artifact, and the win scene (`drop_zone.gd`, `drop_zone.tscn`, `trojan_van.gd`, `trojan_van.tscn`, `getaway.tscn`).
+- Throwable sound: Added the throwable's landing sound (`assets/throwable/thud.wav`).
+
+
+Jonathan Serrano (6524435)
+- Interaction: Implemented the interact raycast on the player, an on-screen prompt, and interactions the host checks before applying (`player.gd`, `player.tscn`).
+- Co-op puzzle: Made the logic for the co-op puzzle where two pressure plates that must be held down at the same time to open the vault door. (`pressure_plate.gd`, `pressure_plate.tscn`, `vault_puzzle.gd`, `vault_door.gd`).
+- Noise: Added a reusable system that alerts guards when a noise is made, and worked on how the guards react to noise (`noise_system.gd`, `guard.gd`).
+- Throwing: Worked on the throwing logic that handles picking up, throwing, the impact noise, and resetting the object (`throwable.gd`, `throwable.tscn`).
+
 
 ## GenAI statement
-TODO
+
+Tools used: CXlaude Code and Blender MCP Connection.
+
+Representative prompts:
+- "Review my noise and guard logic and identify edge cases I should test."
+
+- "Why does a held RigidBody3D stutter and lag behind the player only on the client? The host positions it and a MultiplayerSynchronizer syncs it."
+
+- "Generate using the Blender  connection, model a guard character: an old librarian
+  with a grey bun, glasses on a chain, a cardigan, a long skirt, and sensible shoes, but very
+  muscular. She needs two poses: stooped and shuffling on patrol, holding a flashlight and a
+  heavy book, and standing tall  in a chase, with the book tucked under her arm
+  and her glasses flashing white." (through a Blender MCP connection)
+
+How it supported our workflow:
+- Assets: The Player, guard, artifact, throwable and vehicle models were generated with AI through Blender, then adjusted by hand (scale, materials, collision shapes).
+- Code: Claude gave us suggestions for each part of the project, pointed out possible errors before we tested, and explained unexpected results. All game rules were designed and written by us.
+- Not used for: game design decisions.
+
+How we verified the output:
+- Every AI suggestion was read line by line before we kept it, and we rewrote parts we couldn't explain.
+- Each change went through a pull request that another teammate reviewed before merging.
+- We playtested each feature by hand after merging.
+- Each member can walk through the systems they own.
