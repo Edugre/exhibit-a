@@ -3,15 +3,87 @@ Two-player online co-op museum heist. Team: Eduardo Goncalvez, Alex Waisman, Jon
 
 **Engine:** Godot 4.7.2 (Standard, GDScript). Everyone must use this exact version.
 
-## How to run
-TBD
+## Gameplay video
+Youtube Link: 
 
-## Godot-provided systems
+## Team
+- Eduardo Goncalvez (PID: 6526311)
+- Alex Waisman (PID: 6524435)
+- Jonathan Serrano (PID: 6629880)
+
+## Concept
+Exhibit A is a two-player online co-op heist game in the “friendslop” style of Lethal Company and R.E.P.O. Two thieves break into a museum after hours to steal its most valuable artifacts before the night runs out.
+
+Getting in takes teamwork. Players solve puzzles that need both of them at once, like holding two pressure plates down together to open the vault. Security guards and the museum’s librarian patrol the halls with flashlights, and getting caught ends the heist. Every noise draws their attention, which cuts both ways: a careless player gives the team away, but a well-thrown object can lure a guard out of the way.
+
+Once they have an artifact, players must carry it out and load it into the getaway van before time runs out. The full game will feature hand-designed rooms full of puzzles and secrets, arranged in a new order on every run, along with gadgets that open up new ways to sneak, distract, and escape.
+
+## Objective
+Steal **The Last Book of Alexandria** and get it into the Trojan Van before the museum opens.
+
+1. Stand on the two empty statue plates **at the same time** (one player each) to swing open the portrait door to the vault.
+2. Pick up the book and carry it out of the museum.
+3. Step onto the painted drop zone next to the van while carrying it.
+
+You have **3 minutes**. The librarian patrols the gallery with a flashlight: if she spots you, she gives chase, and if she catches either of you, the heist fails. Throw the Heel of Achilles to make a noise and lure her away.
+
+- **Win:** the book is delivered to the drop zone.
+- **Lose:** the guard catches a player, or the timer runs out.
+- After either outcome, either player can press **Restart** to play again together.
+
+## Controls
+| Action | Key |
+|---|---|
+| Move | W A S D |
+| Look | Mouse |
+| Jump | Space |
+| Sneak (move slower) | Ctrl |
+| Interact: pick up the book or the heel, drop the book | E |
+| Throw the heel | Left mouse button |
+| Free / recapture the mouse | Esc / click |
+
+## Implemented features
+- **Online co-op for two players:** one player hosts, the other joins by IP. The host runs all game rules and both screens stay in sync.
+- **One museum gallery, a vault, and an outdoor extraction area** with the getaway van.
+- **Cooperative puzzle:** two pressure plinths that must be held at the same time open the vault door. Each plinth lights a picture lamp on the door while it is pressed.
+- **Artifact:** pick up, carry, drop, and deliver the book. Only one player can hold it at a time, and you can't carry the book and the heel at once.
+- **Guard AI:** patrols a waypoint loop, detects players with a flashlight vision cone blocked by walls, chases, investigates noises and last-seen positions, then returns to patrol. Catching a player ends the heist.
+- **Throwable and noise:** the Heel of Achilles can be thrown. Its impact makes a noise that sends the guard within 8 m to investigate.
+- **Heist rules:** 3-minute countdown, win/lose outcomes, and a synchronized restart that resets the players, guard, door, plinths, book, and heel.
+- **HUD:** time remaining, artifact status (locked / vault open / carried by you or your partner / dropped / in the van), guard alert indicator, waiting-for-partner message, and the end screen.
+- **Getaway cutscene** on a win: the van drives off through the exit barrier before the end screen appears.
+
+## Technology stack & dependencies
+- **Godot 4.7.2 stable**, Standard edition, scripted entirely in **GDScript**.
+- **Networking:** Godot's high-level multiplayer API over ENet (UDP port 7777).
+- **Assets:** Blender (all models made for this project, exported as glTF `.glb`).
+- **Version control:** Git and GitHub.
+- No addons, Asset Library plugins, or third-party packages.
+
+## How to build / run
+1. Install **Godot 4.7.2 stable (Standard)** from godotengine.org.
+2. Extract the zip file and open `project.godot` from the Godot Project Manager (Import).
+3. **Two players on one machine:** Debug → Customize Run Instances → Enable Multiple Instances, set to 2, then press F5. Click **Host** in one window and **Join** in the other (leave the address blank for `127.0.0.1`).
+4. **Two machines on the same network:** each player runs the project. One clicks **Host**; the other types the host's local IP address and clicks **Join**. The host's firewall must allow UDP port 7777.
+5. The heist starts automatically once both players are connected.
+
+## Engine abstraction disclosure
+| Engine features used | External packages/assets | Systems our team wrote |
+|---|---|---|
+| Rendering, lighting, particles, and animation playback | None. All models, textures, and sounds were made for this project (see Asset credits). | Heist rules: timer, win/lose outcome, restart (`game_state.gd`) |
+| Physics: CharacterBody3D, RigidBody3D, Area3D, raycasts | | Cooperative plinth puzzle and vault door (`vault_puzzle.gd`, `pressure_plate.gd`, `vault_door.gd`) |
+| Navigation mesh and NavigationAgent3D pathfinding | | Guard decisions: patrol, vision cone, suspicion, chase, investigate, catch (`guard.gd`) |
+| High-level multiplayer: ENet, RPCs, MultiplayerSpawner/Synchronizer | | Artifact ownership, carrying, dropping, delivery (`artifact.gd`, `drop_zone.gd`) |
+| glTF import, skeletons, AnimationPlayer | | Noise and distraction rules (`noise_system.gd`, `throwable.gd`) |
+| UI controls (Label, Button, containers) | | Host authority and networking flow (`network_manager.gd`, `main.gd`, `player.gd`), HUD (`hud.gd`) |
+
+### Godot-provided systems
    - High-level multiplayer (ENetMultiplayerPeer, RPCs)
    - MultiplayerSpawner / MultiplayerSynchronizer (player spawning and position/rotation sync)
    - CharacterBody3D physics and CSG geometry
+   - NavigationRegion3D and NavigationAgent3D (navigation mesh baking and the guard's pathfinding)
    - RayCast3D (detecting what the player is looking at)
-   - Physics ray queries (guard line of sight, stopping her flashlight beam at walls)
+   - Physics ray queries (guard line of sight, stopping her flashlight beam at walls, placing a dropped book)
    - Area3D (detecting players on the pressure plates)
    - glTF scene import, Skeleton3D skinning and AnimationPlayer (player and guard models)
    - BoneAttachment3D, SpotLight3D and Tween (guard flashlight and lens glare)
@@ -20,11 +92,23 @@ TBD
    - RigidBody3D, continuous collision and contact monitoring (throwable physics and impacts)
    - AudioStreamPlayer3D (the heel's landing sound)
 
-## Systems we wrote
-- (puzzle conditions, artifact ownership/scoring, guard logic, noise/distraction, timer, outcome logic)
-- Pressure plate puzzle condition (scripts/vault_puzzle.gd)
+### Systems we wrote
+- Heist timer, outcome and synchronized restart (scripts/game_state.gd)
+- Host/join flow, player spawning and restart respawns (scripts/network_manager.gd, scripts/main.gd)
+- Pressure plate puzzle condition and vault door (scripts/vault_puzzle.gd, scripts/pressure_plate.gd, scripts/vault_door.gd)
+- Guard AI: patrol, vision cone, suspicion, chase, investigation, catch (scripts/guard.gd)
 - Noise system and throw impact rule (scripts/noise_system.gd, scripts/throwable.gd)
 - Artifact pickup, carrying and dropping (scripts/artifact.gd)
+- Delivery and win condition (scripts/drop_zone.gd)
+- Player movement, interaction and throw requests (scripts/player.gd)
+- HUD and end screen (scripts/hud.gd)
+
+## Known limitations
+- Only one gallery room, one vault, and one guard. Additional rooms and procedural room ordering are planned for HW #4.
+- Sneaking only slows the player down. It doesn't yet affect how quickly the guard notices you or make footsteps quieter.
+- Exactly two players. There is no lobby or matchmaking: the client must type the host's IP address, and playing across different networks needs port 7777 forwarded on the host's router.
+- If the host quits, the client is sent back to the main menu; the session can't continue without the host.
+- There is one throwable, and the heel is the only gadget so far.
 
 ## Asset credits
 - Player and guard characters (`assets/characters/`): made for this project in Blender. Editable sources are in `assets/characters/source/`.
@@ -33,3 +117,9 @@ TBD
 - The portrait door and its label (`assets/door/`): made for this project in Blender. Editable source is in `assets/door/source/`.
 - The Last Book of Alexandria and its display stand (`assets/artifact/`): made for this project in Blender. Editable source is in `assets/artifact/source/`.
 - Trojan Van, drop zone and road (`assets/getaway/`): made for this project in Blender. Editable source is in `assets/getaway/source/`.
+
+## Contributions
+TODO
+
+## GenAI statement
+TODO
