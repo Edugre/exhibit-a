@@ -4,7 +4,7 @@ Two-player online co-op museum heist. Team: Eduardo Goncalvez, Alex Waisman, Jon
 **Engine:** Godot 4.7.2 (Standard, GDScript). Everyone must use this exact version.
 
 ## Gameplay video
-Youtube Link: 
+Youtube Link: https://youtu.be/Om2ZqEZNuqk
 
 ## Team
 - Eduardo Goncalvez (PID: 6526311)
