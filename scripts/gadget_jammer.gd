@@ -2,15 +2,18 @@ class_name GadgetJammer
 extends Node
 ## Signal Jammer, the HW #4 gadget: one player's side of it. A child of each player.
 ## There's one jammer per heist, a JammerPickup lying in the museum (on the lobby's ticket desk). Whoever
-## picks it up can use it (use_gadget) and put it down for their partner (throw, with nothing else in hand).
+## picks it up has it in their hotbar (see Hotbar). With it in hand they fire it with the throw button, or
+## from anywhere in the bar with use_gadget (Q), which also brings it to hand; the hotbar's drop key puts it
+## down for their partner.
 ## The owner asks the host; the host checks the phase, who's holding it, its charges and the range, spends a
 ## charge, and jams every "jammable" object close enough. The charges belong to the jammer, not the player.
 ##
 ## Jammable targets: in group "jammable", with a host-only method jam(seconds: float) -> void.
 ## They can also have show_jammed(seconds: float) -> void, which every peer calls for the look.
 ##
-## The look (asset item P2.4): the jammer rides on its holder's belt, comes up into the holder's view
-## when they press the key, and a spent charge plays a pulse on every screen.
+## The look (asset item P2.4): stowed, the jammer rides on its holder's belt. In hand it stays up in the
+## holder's own view (and in their hand for everyone else), kicks when fired, and a spent charge plays a
+## pulse on every screen.
 
 const JAM_SECONDS := 6.0
 const JAM_RANGE := 6.0  # metres from the player to the target
@@ -24,17 +27,21 @@ const DUD_SOUND := preload("res://assets/gadget/jam_dud.wav")
 ## On the front of the belt, right of the buckle, relative to the player's model (its label facing forward).
 ## The coat reaches z -0.29 at that height, and the arms hang past the hips, so the front is where it shows.
 const BELT := Transform3D(Basis(Vector3.UP, PI), Vector3(0.16, 0.84, -0.32))
-## In your own view, relative to the camera: tucked out of sight, and raised to use.
+## In your own view, relative to the camera: tucked out of sight, held while it's in hand, and thrust up to fire.
 var _view_down := Transform3D(Basis.from_euler(Vector3(-0.6, 0.35, 0.2)), Vector3(0.3, -0.7, -0.4))
+var _view_held := Transform3D(Basis.from_euler(Vector3(0.0, 0.35, 0.12)), Vector3(0.24, -0.27, -0.4))
 var _view_up := Transform3D(Basis.from_euler(Vector3(0.1, 0.35, 0.12)), Vector3(0.2, -0.2, -0.38))
-const VIEW_HOLD := 0.7  # seconds it stays up
+## In a teammate's hand, as everyone else sees it: relative to their head, like a held throwable.
+var _hand_pose := Transform3D(Basis.from_euler(Vector3(0.0, 0.35, 0.12)), Vector3(0.32, -0.38, -0.5))
 
 @onready var player: CharacterBody3D = get_parent()
 @onready var hud: GadgetHud = $GadgetHud
 
 var _belt_model: Node3D
+var _hand_model: Node3D  # everyone but the owner
 var _view_model: Node3D  # owner only
 var _view_tween: Tween
+var _view_shown := false
 var _dud_player: AudioStreamPlayer
 
 
@@ -59,28 +66,42 @@ func _ready() -> void:
 		_dud_player = AudioStreamPlayer.new()
 		_dud_player.stream = DUD_SOUND
 		add_child(_dud_player)
+	else:
+		_hand_model = MODEL.instantiate()
+		_hand_model.transform = _hand_pose
+		_hand_model.visible = false
+		player.get_node(^"Head").add_child(_hand_model)
 
 
-## Every peer works out from the jammer's synced holder whether it's on this player's belt.
+## Every peer works out from the jammer's synced holder, slot and the holder's picked slot where it shows:
+## on the belt when stowed, in the hand when picked.
 func _process(_delta: float) -> void:
 	var pickup := jammer()
 	var mine := holding()
-	_belt_model.visible = mine
+	var in_hand := mine and pickup.in_hand()
+	_belt_model.visible = mine and not in_hand
+	if _hand_model:
+		_hand_model.visible = in_hand
 	if player.is_multiplayer_authority():
-		hud.charges_label.visible = mine
-		if mine:
-			hud.charges_label.text = "Jammer [Q]: %d / %d   ·   put down [LMB]" % [pickup.charges, JammerPickup.MAX_CHARGES]
+		hud.charges_label.visible = false  # the hotbar shows the charges
+		_show_in_view(in_hand)
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not player.is_multiplayer_authority() or Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
 		return
 	if event.is_action_pressed("use_gadget"):
-		if holding():
-			_raise_into_view()  # straight away, so the key feels answered before the host replies
-		_request_use.rpc_id(1)
-	elif event.is_action_pressed("throw") and holding() and not _hands_full():
-		_request_drop.rpc_id(1)  # the throw button puts the jammer down when there's nothing to throw
+		request_use()
+
+
+## Owner: fire the jammer. From anywhere in the hotbar: it's brought to hand first.
+func request_use() -> void:
+	if player.get("holding"):
+		return  # both hands on the book
+	if holding():
+		player.selected_slot = jammer().slot
+		_kick_in_view()  # straight away, so the key feels answered before the host replies
+	_request_use.rpc_id(1)
 
 
 ## The jammer for this run, wherever it is. null between a restart's free and spawn.
@@ -96,17 +117,6 @@ func holding() -> bool:
 	return pickup != null and pickup.is_held_by(player.name.to_int())
 
 
-## Holding the book or something to throw: then the throw button is theirs, not the jammer's.
-func _hands_full() -> bool:
-	var me := player.name.to_int()
-	if GameState.artifact_state == GameState.ArtifactState.CARRIED and GameState.artifact_holder == me:
-		return true
-	for throwable: Throwable in get_tree().get_nodes_in_group("throwables"):
-		if throwable.holder_id == me:
-			return true
-	return false
-
-
 # --- Host only ---------------------------------------------------------------
 
 @rpc("any_peer", "call_local", "reliable")
@@ -118,6 +128,8 @@ func _request_use() -> void:
 		return  # each player asks through their own GadgetJammer
 	if GameState.phase != GameState.Phase.PLAYING:
 		return
+	if GameState.artifact_state == GameState.ArtifactState.CARRIED and GameState.artifact_holder == sender_id:
+		return  # both hands on the book
 
 	var pickup := jammer()
 	if pickup == null or not pickup.is_held_by(sender_id):
@@ -145,18 +157,6 @@ func _request_use() -> void:
 	_show_message.rpc_id(sender_id, "Jammed %d for %d s" % [targets.size(), int(JAM_SECONDS)])
 
 
-@rpc("any_peer", "call_local", "reliable")
-func _request_drop() -> void:
-	if not multiplayer.is_server():
-		return
-	var sender_id := multiplayer.get_remote_sender_id()
-	if sender_id != player.name.to_int() or _hands_full():
-		return
-	var pickup := jammer()
-	if pickup and pickup.is_held_by(sender_id):
-		pickup.drop_from(player)
-
-
 func _targets_in_range() -> Array[Node]:
 	var found: Array[Node] = []
 	for target: Node in get_tree().get_nodes_in_group("jammable"):
@@ -182,6 +182,8 @@ func _play_pulse(at: Vector3, jammed: Array) -> void:  # untyped: typed arrays d
 	player.get_parent().get_parent().add_child(pulse)  # the world, not the player, so it stays put
 	pulse.global_position = at
 	_belt_model.blink()
+	if _hand_model:
+		_hand_model.blink()
 	if _view_model:
 		_view_model.blink()
 	for path in jammed:
@@ -201,15 +203,31 @@ func _play_dud() -> void:
 
 # --- Owner's view ---------------------------------------------------------------
 
-func _raise_into_view() -> void:
+## Slides it up into view when it comes to hand, and back down out of sight when it goes.
+func _show_in_view(shown: bool) -> void:
+	if _view_model == null or shown == _view_shown:
+		return
+	_view_shown = shown
+	if _view_tween:
+		_view_tween.kill()
+	_view_model.visible = true
+	_view_tween = create_tween().set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	if shown:
+		_view_tween.tween_property(_view_model, "transform", _view_held, 0.18)
+	else:
+		_view_tween.tween_property(_view_model, "transform", _view_down, 0.15)
+		_view_tween.tween_callback(_view_model.hide)
+
+
+## Fired: a quick thrust forward, then back to where it's held.
+func _kick_in_view() -> void:
 	if _view_model == null:
 		return
 	if _view_tween:
 		_view_tween.kill()
+	_view_shown = true
 	_view_model.visible = true
 	_view_tween = create_tween().set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	_view_tween.tween_property(_view_model, "transform", _view_up, 0.15)
-	_view_tween.tween_interval(VIEW_HOLD)
-	_view_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	_view_tween.tween_property(_view_model, "transform", _view_down, 0.2)
-	_view_tween.tween_callback(_view_model.hide)
+	_view_tween.tween_property(_view_model, "transform", _view_up, 0.12)
+	_view_tween.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
+	_view_tween.tween_property(_view_model, "transform", _view_held, 0.3)

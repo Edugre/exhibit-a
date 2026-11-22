@@ -48,10 +48,11 @@ You have **3 minutes, plus 30 seconds for every room between the lobby and the g
 | Look | Mouse |
 | Jump | Space |
 | Sneak (move slower) | Ctrl |
-| Interact: pick up the book, the heel, a coin or the jammer; drop the book | E |
-| Throw the heel or a coin | Left mouse button |
-| Use the Signal Jammer (while you carry it) | Q |
-| Put the jammer down for your partner (with nothing else in hand) | Left mouse button |
+| Interact: pick up the book; pick up the heel, a coin or the jammer into your hotbar; drop the book | E |
+| Pick the hotbar slot in your hand | 1 – 4 / mouse wheel |
+| Use what's in your hand: throw the heel or a coin, fire the jammer | Left mouse button |
+| Fire the Signal Jammer from anywhere in your hotbar (brings it to hand) | Q |
+| Put down what's in your hand (for your partner, say) | G |
 | Free / recapture the mouse | Esc / click |
 
 ## Implemented features
@@ -61,8 +62,9 @@ You have **3 minutes, plus 30 seconds for every room between the lobby and the g
 - **Four pool rooms (HW #4):** Sculpture Hall, Twin Archives, Laser Corridor and Security Office (see the table above). Each has its own props and lighting, and most have a brass plaque over the doorway naming the room.
 - **Cooperative puzzles:** two pressure plinths that must be held at the same time open the vault door, and each plinth lights a picture lamp on the door while it is pressed. Twin Archives asks for two presses within 2 seconds from rooms apart. The Laser Corridor asks the players to hand the switches off between them.
 - **Room sounds (HW #4):** every room hums at its own pitch; clocks tick in the lobby and the archives, floorboards creak and pages rustle in Twin Archives, the security office buzzes under its tubes with radio chatter from the desk, and the laser grid hums while it's on and zaps when someone walks into it.
-- **Signal Jammer gadget (HW #4):** one jammer per heist, waiting on the lobby's ticket desk with its LED blinking. Either player picks it up (E); it clips to their belt, and with nothing else in hand the throw button puts it down for the other. It has two charges for the whole heist, which go wherever it goes (Q). A charge switches off every jammable thing within 6 m for 6 seconds, which right now means laser grids. The HUD shows the charges left. Everyone can see it working: the jammer rides on each player's belt and comes up into your view when you use it, a ring of light sweeps out to its range with a burst of radio static on both screens, and a jammed grid throws sparks while its beams sputter. A use that jams nothing just clicks.
-- **Artifact:** pick up, carry, drop, and deliver the book. Only one player can hold it at a time, and you can't carry the book and the heel at once.
+- **Hotbar (HW #4):** four slots at the bottom of the screen for everything you pick up: the heel, coins and the jammer, each shown by a small turning model of itself. Pick a slot with 1–4 or the mouse wheel; what's in it is in your hand, for you to throw or fire, and the rest stays stowed. A new pickup goes into the first free slot (and into your hand if it was empty), and a full bar refuses more until you put something down (G). The host decides what's in each slot; which slot is in hand is your own choice, synced like your movement, so your partner sees what you're holding. The book takes both hands: the bar keeps its contents but nothing is in hand until you put the book down.
+- **Signal Jammer gadget (HW #4):** one jammer per heist, waiting on the lobby's ticket desk with its LED blinking. Either player picks it up (E) into their hotbar; G puts it down for the other. It has two charges for the whole heist, which go wherever it goes; fire it with the left mouse button while it's in hand, or Q from anywhere in the bar. A charge switches off every jammable thing within 6 m for 6 seconds, which right now means laser grids. The hotbar shows the charges left. Everyone can see it working: stowed, the jammer rides on its holder's belt; in hand, it stays up in your view and in your hand for your partner, and kicks when you fire it, a ring of light sweeps out to its range with a burst of radio static on both screens, and a jammed grid throws sparks while its beams sputter. A use that jams nothing just clicks.
+- **Artifact:** pick up, carry, drop, and deliver the book. Only one player can hold it at a time, and it takes both hands: whatever's in your hotbar stays stowed while you carry it.
 - **Guard AI:** patrols a waypoint loop, detects players with a flashlight vision cone blocked by walls, chases (through doorways into other rooms), investigates noises and last-seen positions, then returns to patrol. Catching a player ends the heist.
 - **The librarian and her staff:** there is one librarian, the boss. She walks a route through every room of the run, built after each build, and starts each heist in the vault. The rooms' night staff see exactly as she does but never chase or catch: when one is sure they've seen someone, they ring a hand bell (again every 3 s while they can still see them), every player gets "She's coming…" on screen, and she hurries to where the player was seen. Design: docs/boss_and_staff.md.
 - **Throwable and noise:** the Heel of Achilles can be thrown. Its impact makes a noise that sends any guard within 8 m to investigate. The Heel waits at the lobby's coat check, coins by the fountains outside, and more heels and coins in every guarded room.
@@ -139,6 +141,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
    - MultiMeshInstance3D with the fall worked out in the vertex shader (rain and snow, no simulation)
    - Screen-space reflections (puddles, on High only)
    - SystemFont, StyleBoxTexture and Tween (the library card and the alarm's words)
+   - SubViewport with its own World3D, StyleBoxFlat and containers (the hotbar's slots, each icon a live render of the item's own model)
    - GradientTexture2D and a Camera3D move (the opening shot behind the menu)
    - Automatic mesh LOD from the glTF importer (carved stone at a distance)
    - Viewport 3D scaling with FSR, FXAA and MSAA (the graphics levels in scripts/exterior_quality.gd)
@@ -164,7 +167,8 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 - Noise system and throw impact rule (scripts/noise_system.gd, scripts/throwable.gd)
 - Artifact pickup, carrying and dropping (scripts/artifact.gd)
 - Delivery and win condition (scripts/drop_zone.gd)
-- Player movement, interaction and throw requests (scripts/player.gd)
+- Player movement and interaction requests (scripts/player.gd)
+- Hotbar: four slots the host fills in pickup order (first free slot, refused when full), the in-hand slot chosen by its owner and synced, and the host checking the holder before any throw or drop (scripts/carryable.gd, scripts/hotbar.gd)
 - HUD and end screen (scripts/hud.gd), and the library card it fills in (scripts/library_card.gd)
 - Pigeons as an alarm: a scared flock calls the guard (scripts/pigeon_noise.gd). The host runs the flock and tells the client, so both players see the same birds (scripts/exterior_pigeons.gd)
 - Passing for a statue on the plinths outside (scripts/player.gd, scripts/guard.gd)
@@ -227,6 +231,7 @@ Eduardo Goncalvez (PID: 6526311)
 - HW #4 rooms and ordering: The room contract and template, splitting the museum into rooms, spawning them from the host and rebuilding them on restart, the room ordering rule, and the timer that scales with the run (`room.gd`, `room_gate.gd`, `room_catalog.gd`, `museum_layout.gd`, `room_order.gd`, `game_state.gd`, `entrance_room.tscn`, `vault_room.tscn`).
 - HW #4 throwables and props: Placed the throwables in the rooms (B5), and made the rope barriers, bench and signs (`assets/interior/barrier_bench/`, `assets/interior/signs/`).
 - HW #4 Hall of Arms and polish: Made the Hall of Arms set (`assets/interior/arms/`), the "Gallery closed" sign, the ceiling fan, the drifting dust and floor wear (`scenes/ambient/`, `assets/interior/wear/`), hung the fixtures in the lobby, Hall of Arms and vault, did a lighting pass on those three rooms, and dressed the gallery and vault (`assets/interior/vault/`).
+- HW #4 hotbar: The four-slot hotbar for the throwables and the jammer, with the jammer kept in view while it's in hand (`carryable.gd`, `hotbar.gd`, and changes to `throwable.gd`, `jammer_pickup.gd`, `gadget_jammer.gd` and `player.gd`).
 
 Alex Waisman (PID: 6529880)
 - Assets: Made all the 3D models and their textures in Blender, with help from Claude through an MCP connection: the player and guard (`assets/characters/`), the book artifact (`assets/artifact/`), the portrait door (`assets/door/`), the statue plinths (`assets/plates/`), the Heel of Achilles throwable (`assets/throwable/`), and the Trojan Van and drop zone (`assets/getaway/`).

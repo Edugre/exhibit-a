@@ -17,11 +17,16 @@ const SNAP_DISTANCE := 3.0
 ## Accent colour, picked by the host and set before this node enters the tree.
 var variant: int = 0
 
+## Which hotbar slot is in hand (0 to Carryable.SLOTS - 1). This player's own choice, synced like their
+## movement; what's in each slot is the host's (see Hotbar).
+@export var selected_slot := 0
+
 @onready var head: Node3D = $Head
 @onready var camera: Camera3D = $Head/Camera3D
 @onready var interact_ray: RayCast3D = $Head/Camera3D/InteractRay
 @onready var interact_prompt: Label = $PromptLayer/InteractPrompt
 @onready var model: Node3D = $Model
+@onready var hotbar: Hotbar = $Hotbar
 
 var current_interactable: Node = null
 var holding: bool = false
@@ -63,10 +68,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_tree().get_first_node_in_group("artifact").request_drop()
 	elif event.is_action_pressed("interact") and current_interactable != null:
 		_request_interact.rpc_id(1, current_interactable.get_path())
-		
-	elif event.is_action_pressed("throw") and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		_request_throw.rpc_id(1)
-		
 	elif event.is_action_pressed("ui_cancel"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE  # Esc frees the mouse
 	elif event is InputEventMouseButton and event.pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED and _can_recapture_mouse():
@@ -86,7 +87,7 @@ func _process(delta: float) -> void:
 		model.carrying = holding
 
 	# Every peer can see for itself who's on a plinth, so being a statue needs no network traffic.
-	model.statue = not holding and not _holding_throwable() and _is_on_plinth()
+	model.statue = not holding and not _hand_full() and _is_on_plinth()
 
 
 ## While the end card is up, the mouse belongs to its Restart button.
@@ -116,15 +117,12 @@ func _is_on_statue_spot() -> bool:
 ## True while standing on one of the empty plinths outside with nothing to give them away. The guard
 ## takes them for one more statue. The plates indoors don't count: she knows what belongs on those.
 func is_posing_as_statue() -> bool:
-	return not holding and not _holding_throwable() and _is_on_statue_spot()
+	return not holding and not _hand_full() and _is_on_statue_spot()
 
 
-## A statue doesn't hold a marble foot or a handful of coins.
-func _holding_throwable() -> bool:
-	for throwable: Throwable in get_tree().get_nodes_in_group("throwables"):
-		if throwable.holder_id == name.to_int():
-			return true
-	return false
+## A statue doesn't hold a marble foot, a coin or a gadget. Whatever's stowed in the hotbar doesn't show.
+func _hand_full() -> bool:
+	return hotbar.in_hand() != null
 
 
 func _glide_between_steps(delta: float) -> void:
@@ -187,6 +185,8 @@ func _update_interact_target() -> void:
 	current_interactable = new_target
 	interact_prompt.visible = holding or current_interactable != null
 	interact_prompt.text = DROP_PROMPT if holding else INTERACT_PROMPT
+	if not holding and current_interactable is Carryable and hotbar.is_full():
+		interact_prompt.text = Hotbar.FULL_TEXT
 		
 @rpc("any_peer", "call_local", "reliable")
 func _request_interact(target_path: NodePath) -> void:
@@ -208,20 +208,6 @@ func _request_interact(target_path: NodePath) -> void:
 		return
 
 	target.interact(sender_id)
-
-@rpc("any_peer", "call_local", "reliable")
-func _request_throw() -> void:
-	if not multiplayer.is_server():
-		return
-
-	var sender_id := multiplayer.get_remote_sender_id()
-	if sender_id != name.to_int():
-		return
-
-	for throwable: Throwable in get_tree().get_nodes_in_group("throwables"):
-		if throwable.holder_id == sender_id:
-			throwable.throw(-head.global_basis.z)
-			return
 
 ## Host → owner: move this player (used on restart). The owner applies it,
 ## and the synchronizer carries the new position to everyone.

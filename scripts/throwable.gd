@@ -1,7 +1,8 @@
 class_name Throwable
-extends RigidBody3D
-## An object players can pick up and throw. The host runs its physics;
-## the MultiplayerSynchronizer copies its position and holder to the client.
+extends Carryable
+## An object players can pick up into their hotbar and throw. The host runs its physics;
+## the MultiplayerSynchronizer copies its position, holder and slot to the client.
+## It's drawn in front of its holder only while it's in their hand; stowed in another slot, it's hidden.
 
 const HOLD_OFFSET := Vector3(0.4, -0.3, -0.8)  # right, down and forward from the head
 const FALL_LIMIT := -10.0  # below this, the heel has left the map
@@ -10,13 +11,6 @@ const TUMBLE_SPEED := 7.0  # end over end, so it doesn't fly like it's on a wire
 
 ## How far the guard hears this land.
 @export var noise_radius := 8.0
-
-## Peer id of the player holding this, 0 if nobody. Replicated to the client.
-@export var holder_id := 0:
-	set(value):
-		holder_id = value
-		if is_node_ready():
-			collision_shape.set_deferred("disabled", holder_id != 0)
 
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D
 @onready var thud: AudioStreamPlayer3D = $Thud
@@ -44,40 +38,34 @@ func _physics_process(_delta: float) -> void:
 		_return_to_start()
 		return
 
-	if holder_id != 0 and _find_holder() == null:
+	if holder_id != 0 and find_holder() == null:
 		_release()  # the holder left the game
 
 
 func _process(_delta: float) -> void:
 	if holder_id == 0:
+		visible = true
 		return
 
-	var holder := _find_holder()
+	var holder := find_holder()
 	if holder == null:
 		return
 
+	# Stowed ones ride along unseen, so they're never left somewhere stale
+	visible = in_hand()
 	var head: Node3D = holder.get_node("Head")
 	global_position = head.global_transform * HOLD_OFFSET
 	global_rotation = head.global_rotation
 
 
-func _find_holder() -> Node3D:
-	# Players are named after their peer id. Asked by group, so throwables can sit anywhere in the level.
-	for player in get_tree().get_nodes_in_group("players"):
-		if player.name == str(holder_id):
-			return player as Node3D
-	return null
+func _holder_changed() -> void:
+	if is_node_ready():
+		collision_shape.set_deferred("disabled", holder_id != 0)
 
 
-## Host only: called by the player's interact request.
+## Host only: called by the player's interact request. Into the first free hotbar slot.
 func interact(peer_id: int) -> void:
-	if holder_id != 0:
-		return
-	for other: Throwable in get_tree().get_nodes_in_group("throwables"):
-		if other.holder_id == peer_id:
-			return  # one thing in the throwing hand at a time
-	holder_id = peer_id
-	freeze = true
+	take(peer_id)
 
 ## Host only: called by the player's throw request.
 func throw(direction: Vector3) -> void:
