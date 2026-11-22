@@ -120,11 +120,13 @@ The game picks Low, Medium or High for each computer and steps down by itself if
    - Physics interpolation fraction (drawing the camera and models between physics steps, so movement is smooth on fast screens)
    - ReflectionProbe with custom ambient light (the rooms' dim indoor air at night)
    - NavigationServer3D baking from collision shapes (the guard's map, out through the doors to the curb)
+   - NavigationRegion3D baked at runtime per room, and NavigationLink3D through each doorway (HW #4 rooms: guards can follow you from room to room)
 
 ### Systems we wrote
 - Heist timer, outcome and synchronized restart (scripts/game_state.gd)
 - Host/join flow, player spawning and restart respawns (scripts/network_manager.gd, scripts/main.gd)
 - Pressure plate puzzle condition and vault door (scripts/vault_puzzle.gd, scripts/pressure_plate.gd, scripts/vault_door.gd)
+- Room contract for HW #4: how rooms line up door to door, what each room provides, and the exit gate that stays open once the artifact is taken (scripts/room.gd, scripts/room_gate.gd, scripts/room_catalog.gd, scenes/rooms/room_template.tscn)
 - Two-plate timing gate for Twin Archives: the gate opens when both plates are pressed within 2 seconds of each other (scripts/gates/twin_plate_gate.gd)
 - Guard AI: patrol, vision cone, suspicion, chase, investigation, catch (scripts/guard.gd)
 - Noise system and throw impact rule (scripts/noise_system.gd, scripts/throwable.gd)
@@ -164,6 +166,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 - Interior surfaces (`assets/interior/kit/`): made for this project. The parquet, marble and plaster are drawn by script (`assets/interior/source/tools/make_kit.py`), and the carved cornice reuses the exterior's moulding maps.
 - Conservation crates and the draped statue (`assets/interior/crates/`): made for this project. Modelled in Blender by script (`assets/interior/source/tools/crates_build.py`, using Blender's cloth simulation for the drop cloth), with the texture drawn by script (`make_crates_art.py`). The stencils and labels are set in Impact, Courier New, Arial Black and Ink Free, rendered into the texture.
 - Glass display cases (`assets/interior/cases/`): made for this project. Modelled in Blender by script (`assets/interior/source/tools/cases_build.py`), with the texture drawn by script (`make_cases_art.py`). The curators' cards and the brass plate are set in Palatino Linotype, rendered into the texture.
+- Rope barriers, gallery bench, wet-floor sign and "Do not touch" stand (`assets/interior/barrier_bench/`, `assets/interior/signs/`): made for this project. Modelled in Blender by script (`barrier_bench_build.py`, `signs_build.py`), with the textures drawn by script (`barrier_bench_art.py`, `signs_art.py`); lettering set in Palatino Linotype and Arial, rendered into the texture.
 
 ## Contributions
 Eduardo Goncalvez (PID: 6526311)
