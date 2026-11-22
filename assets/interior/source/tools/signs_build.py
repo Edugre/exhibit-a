@@ -26,7 +26,7 @@ CARD = M.material("card", atlas.image, roughness=0.8)
 def wet_floor():
     """Two printed panels leaning together, hinged at the top. Front faces -Y (Godot +Z). Origin on the floor."""
     b = M.Builder()
-    h, w, half = D.WETFLOOR_HEIGHT, D.WETFLOOR_WIDTH, D.WETFLOOR_SPLAY / 2
+    h, w, half = D.WETFLOOR_H, D.WETFLOOR_W, D.WETFLOOR_SPLAY / 2
     lean = math.degrees(math.atan2(half, h))
     length = math.hypot(half, h)
     thick = 0.012
@@ -48,18 +48,18 @@ def do_not_touch():
     """A brass post with a placard on top, tilted back for reading. Front faces -Y. Origin on the floor."""
     b = M.Builder()
     brass = atlas.uv("brass")
-    r = D.POST_BASE_RADIUS
+    r = D.POST_BASE_R
     b.cylinder(r, r, 0.022, 0, brass, M.at(z=0.011), segments=32)
     b.cylinder(r * 0.94, 0.045, 0.05, 0, brass, M.at(z=0.047), segments=32)
-    top = D.PLACARD_POST_HEIGHT - 0.16
-    b.cylinder(D.POST_SHAFT_RADIUS, D.POST_SHAFT_RADIUS, top - 0.072, 0, brass, M.at(z=(top + 0.072) / 2))
+    top = D.PLACARD_POST_H - 0.16
+    b.cylinder(D.POST_SHAFT_R, D.POST_SHAFT_R, top - 0.072, 0, brass, M.at(z=(top + 0.072) / 2))
     b.cylinder(0.034, 0.03, 0.04, 0, brass, M.at(z=top))
     tilt = -28.0  # top leans away from the reader (+Y), so the card faces up at them
-    centre = Vector((0, 0.03, D.PLACARD_POST_HEIGHT - 0.03))
+    centre = Vector((0, 0.03, D.PLACARD_POST_H - 0.03))
     frame = M.at(*centre, rx=tilt)
-    b.box(D.PLACARD_WIDTH + 0.03, 0.014, D.PLACARD_HEIGHT + 0.03, 0, brass, frame, bevel=0.004)
+    b.box(D.PLACARD_W + 0.03, 0.014, D.PLACARD_H + 0.03, 0, brass, frame, bevel=0.004)
     card = frame @ Matrix.Translation((0, -0.009, 0))
-    faces = b.box(D.PLACARD_WIDTH, 0.004, D.PLACARD_HEIGHT, 1, atlas.uv("placard"), card)
+    faces = b.box(D.PLACARD_W, 0.004, D.PLACARD_H, 1, atlas.uv("placard"), card)
     rot = M.at(rx=tilt).to_3x3()
     b.print_face(faces, rot @ Vector((0, -1, 0)), Vector((1, 0, 0)), rot @ Vector((0, 0, 1)), atlas.uv("placard"))
     # A bracket from the post up to the back of the frame

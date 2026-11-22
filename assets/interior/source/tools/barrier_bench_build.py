@@ -25,15 +25,15 @@ def stanchion():
     """Weighted base, slim shaft, a collar the rope clips to, and a ball on top. Origin on the floor."""
     b = M.Builder()
     brass = atlas.uv("brass")
-    r = D.POST_BASE_RADIUS
+    r = D.POST_BASE_R
     b.cylinder(r, r, 0.022, 0, brass, M.at(z=0.011), segments=32)
     b.cylinder(r * 0.94, 0.045, 0.05, 0, brass, M.at(z=0.047), segments=32)
-    top = D.ROPE_HOOK_HEIGHT - 0.025
-    b.cylinder(D.POST_SHAFT_RADIUS, D.POST_SHAFT_RADIUS, top - 0.072, 0, brass, M.at(z=(top + 0.072) / 2))
-    b.cylinder(0.036, 0.036, 0.05, 0, brass, M.at(z=D.ROPE_HOOK_HEIGHT))
-    b.cylinder(0.03, 0.018, 0.03, 0, brass, M.at(z=D.ROPE_HOOK_HEIGHT + 0.04))
+    top = D.ROPE_HOOK_Y - 0.025
+    b.cylinder(D.POST_SHAFT_R, D.POST_SHAFT_R, top - 0.072, 0, brass, M.at(z=(top + 0.072) / 2))
+    b.cylinder(0.036, 0.036, 0.05, 0, brass, M.at(z=D.ROPE_HOOK_Y))
+    b.cylinder(0.03, 0.018, 0.03, 0, brass, M.at(z=D.ROPE_HOOK_Y + 0.04))
     ball = 0.042
-    b.sphere(ball, 0, brass, M.at(z=D.POST_HEIGHT - ball))
+    b.sphere(ball, 0, brass, M.at(z=D.ROPE_POST_H - ball))
     return b.object("Stanchion", [BRASS])
 
 
@@ -41,13 +41,13 @@ def rope():
     """Hangs from a post at x = 0 to one at x = ROPE_SPAN, sagging in the middle, with a brass cap
     at each end. rope_barrier.gd stretches it along x for other spans."""
     b = M.Builder()
-    h, span, sag = D.ROPE_HOOK_HEIGHT, D.ROPE_SPAN, D.ROPE_SAG
+    h, span, sag = D.ROPE_HOOK_Y, D.ROPE_SPAN, D.ROPE_SAG
     start, end = 0.09, span - 0.09
     pts = []
     for i in range(29):
         t = i / 28
         pts.append((start + (end - start) * t, 0.0, h - 0.02 - sag * (1 - (2 * t - 1) ** 2)))
-    b.tube(pts, D.ROPE_RADIUS, 0, atlas.uv("velvet"), segments=12)
+    b.tube(pts, D.ROPE_R, 0, atlas.uv("velvet"), segments=12)
     for x, rot in ((0.062, -90), (span - 0.062, 90)):
         b.cylinder(0.026, 0.022, 0.06, 1, atlas.uv("brass"), M.at(x=x, z=h - 0.01, ry=rot))
         b.cylinder(0.012, 0.012, 0.05, 1, atlas.uv("brass"), M.at(x=x - 0.04 if rot < 0 else x + 0.04, z=h, ry=rot))
@@ -58,7 +58,7 @@ def bench():
     """A padded gallery bench, long side along x. Origin on the floor, in the middle."""
     b = M.Builder()
     wood, leather = atlas.uv("wood"), atlas.uv("leather")
-    length, depth, seat = D.BENCH_LENGTH, D.BENCH_DEPTH, D.BENCH_SEAT_HEIGHT
+    length, depth, seat = D.BENCH_L, D.BENCH_D, D.BENCH_H
     board_top = seat - 0.055
     for x in (-length / 2 + 0.16, length / 2 - 0.16):
         b.box(0.07, depth - 0.08, board_top - 0.03, 0, wood, M.at(x=x, z=(board_top - 0.03) / 2))

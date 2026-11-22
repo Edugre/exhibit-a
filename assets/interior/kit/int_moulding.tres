@@ -1,0 +1,18 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://assets/interior/kit/int_cornice.gdshader" id="s"]
+[ext_resource type="Texture2D" path="res://assets/interior/kit/int_plaster.png" id="t0"]
+[ext_resource type="Texture2D" path="res://assets/exterior/ext_trim_normal.png" id="t1"]
+[ext_resource type="Texture2D" path="res://assets/exterior/ext_trim_ao.png" id="t2"]
+
+[resource]
+shader = ExtResource("s")
+shader_parameter/plaster_map = ExtResource("t0")
+shader_parameter/carved_normal = ExtResource("t1")
+shader_parameter/carved_ao = ExtResource("t2")
+shader_parameter/tint = Color(0.930, 0.900, 0.840, 1)
+shader_parameter/band_bottom = 3.64
+shader_parameter/band_top = 4.0
+shader_parameter/metres_per_repeat = 0.5142857142857143
+shader_parameter/v_range = 0.7
+shader_parameter/recess_shade = 0.35

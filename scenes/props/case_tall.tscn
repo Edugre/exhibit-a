@@ -1,0 +1,26 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/cases/case_tall.glb" id="1_mesh"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_base"]
+size = Vector3(0.900, 0.800, 0.900)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_glass"]
+size = Vector3(0.900, 1.300, 0.900)
+
+[node name="CaseTall" type="Node3D"]
+editor_description = "Tall glass case, 2.1 m: an amphora with a familiar wooden horse on it. Not cover: the guard sees through the glass (group see_through), and the cabinet is only 0.8 m."
+
+[node name="Mesh" parent="." instance=ExtResource("1_mesh")]
+
+[node name="Body" type="StaticBody3D" parent="."]
+
+[node name="Shape" type="CollisionShape3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000, 0.400, 0.000)
+shape = SubResource("BoxShape3D_base")
+
+[node name="Glass" type="StaticBody3D" parent="." groups=["see_through"]]
+
+[node name="Shape" type="CollisionShape3D" parent="Glass"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000, 1.450, 0.000)
+shape = SubResource("BoxShape3D_glass")

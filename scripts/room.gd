@@ -23,7 +23,7 @@ extends Node3D
 ## (and one more physics frame for the navigation map to sync) before asking for paths.
 signal baked
 
-## The contract sizes. assets/interior/source/tools/int_dims.py mirrors them for the art.
+## The contract sizes. assets/interior/source/tools/int_dims.py (DOOR_W, WALL_H, WALL_T) mirrors them for the art.
 const DOOR_WIDTH := 3.0
 const WALL_HEIGHT := 4.0
 const WALL_THICKNESS := 0.5

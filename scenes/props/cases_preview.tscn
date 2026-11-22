@@ -1,0 +1,22 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/props/kit_preview.tscn" id="1_room"]
+[ext_resource type="PackedScene" path="res://scenes/props/case_tall.tscn" id="2_tall"]
+[ext_resource type="PackedScene" path="res://scenes/props/case_low.tscn" id="3_low"]
+
+[node name="CasesPreview" type="Node3D"]
+editor_description = "The P1.2 glass cases in the K0 preview room at night. Run it with F6. Not part of the game."
+
+[node name="Room" parent="." instance=ExtResource("1_room")]
+
+[node name="Plinth" parent="Room"]
+visible = false
+
+[node name="CoverBox" parent="Room"]
+visible = false
+
+[node name="TallCase" parent="." instance=ExtResource("2_tall")]
+transform = Transform3D(0.965926, 0, 0.258819, 0, 1, 0, -0.258819, 0, 0.965926, 2.6, 0, -2.4)
+
+[node name="LowCase" parent="." instance=ExtResource("3_low")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6, 0, -1.6)
