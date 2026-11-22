@@ -14,6 +14,9 @@
 [ext_resource type="PackedScene" path="res://scenes/props/donation_box.tscn" id="12_donation"]
 [ext_resource type="PackedScene" path="res://scenes/props/banner_book.tscn" id="13_banner_book"]
 [ext_resource type="PackedScene" path="res://scenes/props/banner_gift.tscn" id="14_banner_gift"]
+[ext_resource type="Script" path="res://scripts/room_tone.gd" id="p4_tone"]
+[ext_resource type="AudioStream" path="res://assets/interior/sounds/amb_hvac.wav" id="p4_amb_hvac"]
+[ext_resource type="AudioStream" path="res://assets/interior/sounds/amb_clock.wav" id="p4_amb_clock"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_room"]
 geometry_parsed_geometry_type = 1
@@ -198,3 +201,21 @@ interior = true
 ambient_mode = 2
 ambient_color = Color(0.3, 0.25, 0.22, 1)
 ambient_color_energy = 0.5
+
+[node name="Sounds" type="Node3D" parent="."]
+editor_description = "Asset P4: this room's background sound (RoomTone nodes). Cosmetic and local; nothing is synced."
+
+[node name="Hum" type="Node3D" parent="Sounds"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -3)
+script = ExtResource("p4_tone")
+loop = ExtResource("p4_amb_hvac")
+pitch = 1.0
+loop_volume_db = -24.0
+reach = 9.0
+
+[node name="Clock" type="Node3D" parent="Sounds"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.6, 2.6, -3.0)
+script = ExtResource("p4_tone")
+loop = ExtResource("p4_amb_clock")
+loop_volume_db = -20.0
+reach = 7.0

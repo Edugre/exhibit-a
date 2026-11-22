@@ -12,6 +12,8 @@
 [ext_resource type="PackedScene" path="res://scenes/coin.tscn" id="b5_coin"]
 [ext_resource type="PackedScene" path="res://scenes/props/doorway_portal.tscn" id="k1_portal"]
 [ext_resource type="PackedScene" path="res://scenes/props/room_plaque_vault.tscn" id="k1_plaque"]
+[ext_resource type="Script" path="res://scripts/room_tone.gd" id="p4_tone"]
+[ext_resource type="AudioStream" path="res://assets/interior/sounds/amb_hvac.wav" id="p4_amb_hvac"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_room"]
 geometry_parsed_geometry_type = 1
@@ -199,3 +201,14 @@ editor_description = "Asset K1: the stone arch and this room's plaque on the Ent
 [node name="EntryPortal" parent="Doorways" instance=ExtResource("k1_portal")]
 
 [node name="EntryPlaque" parent="Doorways" instance=ExtResource("k1_plaque")]
+
+[node name="Sounds" type="Node3D" parent="."]
+editor_description = "Asset P4: this room's background sound (RoomTone nodes). Cosmetic and local; nothing is synced."
+
+[node name="Hum" type="Node3D" parent="Sounds"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -6)
+script = ExtResource("p4_tone")
+loop = ExtResource("p4_amb_hvac")
+pitch = 0.88
+loop_volume_db = -24.0
+reach = 13.0

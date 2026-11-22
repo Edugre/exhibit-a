@@ -59,6 +59,7 @@ You have **3 minutes, plus 30 seconds for every room between the lobby and the g
 - **Procedural room ordering (HW #4):** every run, the host shuffles the four pool rooms with a seeded shuffle and keeps three that fit the building, in that order. The client gets the host's rooms, including after a restart or when joining late.
 - **Four pool rooms (HW #4):** Sculpture Hall, Twin Archives, Laser Corridor and Security Office (see the table above). Each has its own props and lighting, and most have a brass plaque over the doorway naming the room.
 - **Cooperative puzzles:** two pressure plinths that must be held at the same time open the vault door, and each plinth lights a picture lamp on the door while it is pressed. Twin Archives asks for two presses within 2 seconds from rooms apart. The Laser Corridor asks the players to hand the switches off between them.
+- **Room sounds (HW #4):** every room hums at its own pitch; clocks tick in the lobby and the archives, floorboards creak and pages rustle in Twin Archives, the security office buzzes under its tubes with radio chatter from the desk, and the laser grid hums while it's on and zaps when someone walks into it.
 - **Signal Jammer gadget (HW #4):** each player has two charges per heist (Q). A charge switches off every jammable thing within 6 m for 6 seconds, which right now means laser grids. The HUD shows the charges left. Everyone can see it working: the jammer rides on each player's belt and comes up into your view when you use it, a ring of light sweeps out to its range with a burst of radio static on both screens, and a jammed grid throws sparks while its beams sputter. A use that jams nothing just clicks.
 - **Artifact:** pick up, carry, drop, and deliver the book. Only one player can hold it at a time, and you can't carry the book and the heel at once.
 - **Guard AI:** patrols a waypoint loop, detects players with a flashlight vision cone blocked by walls, chases (through doorways into other rooms), investigates noises and last-seen positions, then returns to patrol. Catching a player ends the heist. A run has up to four guards across its rooms.
@@ -128,7 +129,8 @@ The game picks Low, Medium or High for each computer and steps down by itself if
    - GPUParticles3D (moths round the exterior's lamps, steam from the street, sparks off a jammed laser grid)
    - Transparent unshaded materials and Tween (the jammer's pulse sweeping out to its range)
    - MultiMeshInstance3D (the pigeons, plaza trees and traffic, drawn in batches)
-   - AudioStreamPlayer and AudioStreamPlayer3D (the city's soundscape, fountains, crickets, pigeons and car horns)
+   - AudioStreamPlayer and AudioStreamPlayer3D (the city's soundscape, fountains, crickets, pigeons and car horns, and each room's background sound)
+   - Looping WAV import (the room hums, clocks, fluorescent buzz and laser hum)
    - Global shader uniforms and a shader include (the alarm, rain and snow reaching every exterior material at once)
    - MultiMeshInstance3D with the fall worked out in the vertex shader (rain and snow, no simulation)
    - Screen-space reflections (puddles, on High only)
@@ -174,7 +176,6 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 - Exactly two players. There is no lobby or matchmaking: the client must type the host's IP address, and playing across different networks needs port 7777 forwarded on the host's router.
 - If the host quits, the client is sent back to the main menu; the session can't continue without the host.
 - There are two throwables, the heel and the fountain coins. Laser grids are the only thing the Signal Jammer can switch off so far. The Laser Corridor's switches are the plinth-style pressure plates, and its displays are the shared crates and cases until its own props are made.
-- The rooms have no sound of their own.
 - The whole game takes place at night.
 
 ## Asset credits
@@ -196,6 +197,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 - Rope barriers, gallery bench, wet-floor sign and "Do not touch" stand (`assets/interior/barrier_bench/`, `assets/interior/signs/`): made for this project. Modelled in Blender by script (`barrier_bench_build.py`, `signs_build.py`), with the textures drawn by script (`barrier_bench_art.py`, `signs_art.py`); lettering set in Palatino Linotype and Arial, rendered into the texture.
 - Doorway arches, exit jambs and room plaques (`assets/interior/doorways/`): made for this project. Modelled in Blender by script (`assets/interior/source/tools/doorway_build.py`), with the stone, the owl keystone and the engraved brass drawn by script (`make_doorway_art.py`). The room names are set in Palatino Linotype, rendered into the texture.
 - Framed paintings, title labels and picture lights (`assets/interior/paintings/`): made for this project. The six paintings are laid out and then repainted stroke by stroke by script (`assets/interior/source/tools/make_paintings_art.py`), which also draws the gilt frames and labels; modelled in Blender by script (`paintings_build.py`). Titles are set in Palatino Linotype, rendered into the texture.
+- The rooms' sounds (`assets/interior/sounds/`): the hums, clocks, fluorescent buzz, radio chatter, creaks, page rustles and the laser's hum and zap. Made for this project, generated by script from noise and sine waves (`assets/interior/source/tools/make_room_sounds.py`).
 - The Hermes Signal Jammer and its sounds (`assets/gadget/`): made for this project. Modelled in Blender by script (`assets/interior/source/tools/gadget_build.py`), with the texture drawn and the pulse and dud sounds generated by script from noise and sine waves (`gadget_art.py`). Lettering is set in Arial and Palatino Linotype, rendered into the texture.
 - Lobby set: ticket desk, coat check with its rack and coats, donation box, museum map and two banners (`assets/interior/lobby/`): made for this project. Modelled in Blender by script (`assets/interior/source/tools/lobby_build.py`), with the texture, signs, map and banners drawn by script (`lobby_art.py`). Lettering is set in Palatino Linotype and Arial, rendered into the texture.
 - Security office set: desk, monitor wall, lockers, chair with cardigan, key board (`assets/interior/office/`): made for this project. Modelled in Blender by script (`assets/interior/source/tools/office_build.py`), with the texture and the camera feeds on the screens drawn by script (`make_office_art.py`). Labels and screen text are set in Arial Bold, Consolas Bold and Ink Free, rendered into the texture.
