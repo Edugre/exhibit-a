@@ -17,6 +17,8 @@ const SLOT_PX := 84
 const ICON_PX := 128
 const ICON_ANGLE := Vector3(-0.7, 0.7, 0.0)  # how every icon sits; none of them turn
 const FULL_TEXT := "Hotbar full: drop something [G]"
+const PRY_TEXT := "Left click: pry it open (loud!)"
+const PRY_REACH := 2.6  # metres from the player to the middle of the case
 
 const BG := Color(0.06, 0.05, 0.04, 0.62)
 const BORDER := Color(0.85, 0.72, 0.45, 0.35)
@@ -82,6 +84,23 @@ func _use_hand() -> void:
 		_request_throw.rpc_id(1, item.get_path())
 	elif item is JammerPickup:
 		(player.get_node(^"Gadget") as GadgetJammer).request_use()
+	elif item is Crowbar:
+		var target := pry_target()
+		if target:
+			_request_pry.rpc_id(1, item.get_path(), target.get_path())
+		else:
+			(item as Crowbar).swing()  # a swing at nothing, just for the feel
+
+
+## Owner: the unbroken display case the crowbar in hand is aimed at, or null.
+func pry_target() -> DisplayCase:
+	if not (in_hand() is Crowbar):
+		return null
+	var ray := player.get_node(^"Head/Camera3D/InteractRay") as RayCast3D
+	if not ray.is_colliding():
+		return null
+	var case := DisplayCase.of(ray.get_collider() as Node)
+	return case if case != null and not case.broken else null
 
 
 func _process(delta: float) -> void:
@@ -115,6 +134,25 @@ func _request_throw(item_path: NodePath) -> void:
 	if item == null or item.holder_id != sender:
 		return
 	item.throw(-(player.get_node(^"Head") as Node3D).global_basis.z)
+
+
+@rpc("any_peer", "call_local", "reliable")
+func _request_pry(crowbar_path: NodePath, case_path: NodePath) -> void:
+	if not multiplayer.is_server():
+		return
+	var sender := multiplayer.get_remote_sender_id()
+	if sender != player.name.to_int() or player.get("holding"):
+		return
+	var crowbar := get_node_or_null(crowbar_path) as Crowbar
+	if crowbar == null or crowbar.holder_id != sender or crowbar.slot != player.get("selected_slot"):
+		return  # it has to be yours, and in your hand
+	var case := get_node_or_null(case_path) as DisplayCase
+	if case == null or case.broken:
+		return
+	if player.global_position.distance_to(case.global_position) > PRY_REACH:
+		return
+	case.pry()
+	crowbar.swung.rpc()
 
 
 @rpc("any_peer", "call_local", "reliable")
@@ -233,7 +271,11 @@ func _refresh_ui() -> void:
 		_hint_label.text = "1-4 / wheel: pick a slot" if Carryable.held_by(get_tree(), me).size() > 0 else ""
 	else:
 		_name_label.text = hand.display_name
-		var use := "LMB / Q: jam" if hand is JammerPickup else "LMB: throw"
+		var use := "LMB: throw"
+		if hand is JammerPickup:
+			use = "LMB / Q: jam"
+		elif hand is Crowbar:
+			use = "LMB: pry a case open (loud)"
 		_hint_label.text = "%s   ·   G: put down   ·   1-4 / wheel: pick a slot" % use
 
 

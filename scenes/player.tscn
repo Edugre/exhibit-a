@@ -38,7 +38,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
 
 [node name="InteractRay" type="RayCast3D" parent="Head/Camera3D" unique_id=171673026]
 target_position = Vector3(0, 0, -3)
-collision_mask = 3
+collision_mask = 7
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="." unique_id=1964695254]
 replication_config = SubResource("SceneReplicationConfig_g2els")
@@ -53,9 +53,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -110.0
-offset_top = -168.0
+offset_top = -192.0
 offset_right = 110.0
-offset_bottom = -145.0
+offset_bottom = -169.0
 grow_horizontal = 2
 grow_vertical = 0
 text = "Press E to interact"

@@ -26,6 +26,9 @@ var end_reason := ""
 var artifact_state: ArtifactState = ArtifactState.LOCKED
 var artifact_holder := 0  # peer id carrying the artifact, 0 if nobody
 var guard_alerted := false
+## The team's haul (stretch goal: scoring): dollars of loot pocketed this heist, by either player. It only
+## counts if they get away with the book; the end card says what happened to it. Synced.
+var loot_total := 0
 
 var _time_sync := 0.0
 
@@ -54,6 +57,7 @@ func start_heist(respawn_players := false) -> void:
 	if not multiplayer.is_server():
 		return
 	_apply_state.rpc(Phase.PLAYING, heist_duration, "", ArtifactState.LOCKED, 0, false)
+	_set_loot.rpc(0)
 	heist_reset.emit(respawn_players)  # on a restart the museum builds the new run here
 	_set_duration.rpc(_duration_for_run())
 
@@ -93,6 +97,13 @@ func set_alert(alerted: bool) -> void:
 	_apply_state.rpc(phase, time_left, end_reason, artifact_state, artifact_holder, alerted)
 
 
+## Loot reports a pocketed item. Only while the heist is on.
+func add_loot(value: int) -> void:
+	if not multiplayer.is_server() or phase != Phase.PLAYING:
+		return
+	_set_loot.rpc(loot_total + value)
+
+
 # --- Any peer ---------------------------------------------------------------
 
 func request_restart() -> void:
@@ -123,6 +134,11 @@ func _apply_state(new_phase: int, new_time: float, reason: String, new_artifact:
 		phase_changed.emit(phase)
 
 
+@rpc("authority", "call_local", "reliable")
+func _set_loot(total: int) -> void:
+	loot_total = total
+
+
 ## Host only. How long this run gets: the base time plus time for each pool room the museum built.
 func _duration_for_run() -> float:
 	var museum := get_tree().get_first_node_in_group("museum") as MuseumLayout
@@ -150,6 +166,7 @@ func _reset_local() -> void:
 	artifact_state = ArtifactState.LOCKED
 	artifact_holder = 0
 	guard_alerted = false
+	loot_total = 0
 	if phase_did_change:
 		phase_changed.emit(phase)
 

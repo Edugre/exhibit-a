@@ -1,6 +1,10 @@
 [gd_scene format=3]
 
-[ext_resource type="PackedScene" path="res://assets/interior/arms/shield_case.gltf" id="1_model"]
+[ext_resource type="Script" path="res://scripts/display_case.gd" id="1_case"]
+[ext_resource type="PackedScene" path="res://assets/interior/arms/shield_case.gltf" id="2_mesh"]
+[ext_resource type="PackedScene" path="res://assets/interior/arms/shield_case_glass.gltf" id="3_glass"]
+[ext_resource type="PackedScene" path="res://assets/interior/arms/shield_case_prize.gltf" id="4_prize"]
+[ext_resource type="Script" path="res://scripts/loot.gd" id="5_loot"]
 
 [sub_resource type="BoxShape3D" id="Shape_base"]
 size = Vector3(0.9, 0.8, 0.9)
@@ -8,10 +12,26 @@ size = Vector3(0.9, 0.8, 0.9)
 [sub_resource type="BoxShape3D" id="Shape_glass"]
 size = Vector3(0.9, 1.36, 0.9)
 
-[node name="ShieldCase" type="Node3D"]
-editor_description = "Asset P3.3: the Shield of Achilles under glass (\"Heel sold separately\"). Origin on the floor, facing +z. Built like the tall case: not cover, because the guard sees through the glass (group see_through) and the cabinet is only 0.8 m."
+[sub_resource type="BoxShape3D" id="Shape_prize"]
+size = Vector3(0.75, 0.75, 0.24)
 
-[node name="Mesh" parent="." instance=ExtResource("1_model")]
+[sub_resource type="SceneReplicationConfig" id="Sync_case"]
+properties/0/path = NodePath(".:broken")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+
+[sub_resource type="SceneReplicationConfig" id="Sync_prize"]
+properties/0/path = NodePath(".:taken")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+
+[node name="ShieldCase" type="Node3D"]
+editor_description = "Asset P3.3: the Shield of Achilles under glass (\"Heel sold separately\"). Origin on the floor, facing +z. Built like the tall case: not cover, because the guard sees through the glass (group see_through) and the cabinet is only 0.8 m. A crowbar breaks the glass (loud); then the shield is the museum's richest loot."
+script = ExtResource("1_case")
+
+[node name="Mesh" parent="." instance=ExtResource("2_mesh")]
+
+[node name="GlassMesh" parent="." instance=ExtResource("3_glass")]
 
 [node name="Body" type="StaticBody3D" parent="."]
 
@@ -24,3 +44,21 @@ shape = SubResource("Shape_base")
 [node name="Shape" type="CollisionShape3D" parent="Glass"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.48, 0)
 shape = SubResource("Shape_glass")
+
+[node name="Prize" type="StaticBody3D" parent="."]
+script = ExtResource("5_loot")
+display_name = "Shield of Achilles"
+value = 5000
+note = "By Hephaestus. Heel sold separately."
+
+[node name="Model" parent="Prize" instance=ExtResource("4_prize")]
+
+[node name="Shape" type="CollisionShape3D" parent="Prize"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.22, -0.02)
+shape = SubResource("Shape_prize")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Prize"]
+replication_config = SubResource("Sync_prize")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("Sync_case")

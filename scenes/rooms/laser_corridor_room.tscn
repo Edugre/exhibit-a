@@ -283,3 +283,15 @@ light_color = Color(1, 0.86, 0.64, 1)
 light_energy = 2.2
 spot_range = 4.5
 spot_angle = 16.0
+
+[node name="LootSpots" type="Node3D" parent="."]
+editor_description = "Stretch goal (scoring): surfaces where a small valuable may lie. MuseumLayout fills half of them, rounded up, from the run's seed (LootPlan); each marker sits on the surface, so a Loot's origin goes right on it. Art only, outside the navigation region."
+
+[node name="Spot1" type="Marker3D" parent="LootSpots"]
+transform = Transform3D(0.906308, 0, 0.422618, 0, 1, 0, -0.422618, 0, 0.906308, -4.85, 0.7, -1.4)
+
+[node name="Spot2" type="Marker3D" parent="LootSpots"]
+transform = Transform3D(0.173648, 0, -0.984808, 0, 1, 0, 0.984808, 0, 0.173648, 3, 0.14, -5.45)
+
+[node name="Spot3" type="Marker3D" parent="LootSpots"]
+transform = Transform3D(0.984808, 0, 0.173648, 0, 1, 0, -0.173648, 0, 0.984808, 4.8, 1.4, -9.8)

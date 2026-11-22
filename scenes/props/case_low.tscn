@@ -1,6 +1,10 @@
 [gd_scene format=3]
 
-[ext_resource type="PackedScene" path="res://assets/interior/cases/case_low.glb" id="1_mesh"]
+[ext_resource type="Script" path="res://scripts/display_case.gd" id="1_case"]
+[ext_resource type="PackedScene" path="res://assets/interior/cases/case_low.glb" id="2_mesh"]
+[ext_resource type="PackedScene" path="res://assets/interior/cases/case_low_glass.glb" id="3_glass"]
+[ext_resource type="PackedScene" path="res://assets/interior/cases/case_low_prize.glb" id="4_prize"]
+[ext_resource type="Script" path="res://scripts/loot.gd" id="5_loot"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_base"]
 size = Vector3(1.400, 0.850, 0.700)
@@ -8,10 +12,26 @@ size = Vector3(1.400, 0.850, 0.700)
 [sub_resource type="BoxShape3D" id="BoxShape3D_glass"]
 size = Vector3(1.400, 0.200, 0.700)
 
-[node name="CaseLow" type="Node3D"]
-editor_description = "Low glass case, 1.05 m: coins of Troy and an overdue scroll on velvet. Not cover. The glass is in group see_through."
+[sub_resource type="BoxShape3D" id="BoxShape3D_prize"]
+size = Vector3(1.200, 0.080, 0.500)
 
-[node name="Mesh" parent="." instance=ExtResource("1_mesh")]
+[sub_resource type="SceneReplicationConfig" id="Sync_case"]
+properties/0/path = NodePath(".:broken")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+
+[sub_resource type="SceneReplicationConfig" id="Sync_prize"]
+properties/0/path = NodePath(".:taken")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+
+[node name="CaseLow" type="Node3D"]
+editor_description = "Low glass case, 1.05 m: coins of Troy and an overdue scroll on velvet. Not cover. The glass is in group see_through. A crowbar breaks the glass (loud); then the coins are loot."
+script = ExtResource("1_case")
+
+[node name="Mesh" parent="." instance=ExtResource("2_mesh")]
+
+[node name="GlassMesh" parent="." instance=ExtResource("3_glass")]
 
 [node name="Body" type="StaticBody3D" parent="."]
 
@@ -24,3 +44,21 @@ shape = SubResource("BoxShape3D_base")
 [node name="Shape" type="CollisionShape3D" parent="Glass"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000, 0.950, 0.000)
 shape = SubResource("BoxShape3D_glass")
+
+[node name="Prize" type="StaticBody3D" parent="."]
+script = ExtResource("5_loot")
+display_name = "Coins of Troy"
+value = 1500
+note = "And one overdue scroll."
+
+[node name="Model" parent="Prize" instance=ExtResource("4_prize")]
+
+[node name="Shape" type="CollisionShape3D" parent="Prize"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000, 0.890, 0.000)
+shape = SubResource("BoxShape3D_prize")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Prize"]
+replication_config = SubResource("Sync_prize")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("Sync_case")

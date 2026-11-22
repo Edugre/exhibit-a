@@ -1,6 +1,10 @@
 [gd_scene format=3]
 
-[ext_resource type="PackedScene" path="res://assets/interior/cases/case_tall.glb" id="1_mesh"]
+[ext_resource type="Script" path="res://scripts/display_case.gd" id="1_case"]
+[ext_resource type="PackedScene" path="res://assets/interior/cases/case_tall.glb" id="2_mesh"]
+[ext_resource type="PackedScene" path="res://assets/interior/cases/case_tall_glass.glb" id="3_glass"]
+[ext_resource type="PackedScene" path="res://assets/interior/cases/case_tall_prize.glb" id="4_prize"]
+[ext_resource type="Script" path="res://scripts/loot.gd" id="5_loot"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_base"]
 size = Vector3(0.900, 0.800, 0.900)
@@ -8,10 +12,26 @@ size = Vector3(0.900, 0.800, 0.900)
 [sub_resource type="BoxShape3D" id="BoxShape3D_glass"]
 size = Vector3(0.900, 1.300, 0.900)
 
-[node name="CaseTall" type="Node3D"]
-editor_description = "Tall glass case, 2.1 m: an amphora with a familiar wooden horse on it. Not cover: the guard sees through the glass (group see_through), and the cabinet is only 0.8 m."
+[sub_resource type="BoxShape3D" id="BoxShape3D_prize"]
+size = Vector3(0.360, 0.620, 0.360)
 
-[node name="Mesh" parent="." instance=ExtResource("1_mesh")]
+[sub_resource type="SceneReplicationConfig" id="Sync_case"]
+properties/0/path = NodePath(".:broken")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+
+[sub_resource type="SceneReplicationConfig" id="Sync_prize"]
+properties/0/path = NodePath(".:taken")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+
+[node name="CaseTall" type="Node3D"]
+editor_description = "Tall glass case, 2.1 m: an amphora with a familiar wooden horse on it. Not cover: the guard sees through the glass (group see_through), and the cabinet is only 0.8 m. A crowbar breaks the glass (loud); then the amphora is loot."
+script = ExtResource("1_case")
+
+[node name="Mesh" parent="." instance=ExtResource("2_mesh")]
+
+[node name="GlassMesh" parent="." instance=ExtResource("3_glass")]
 
 [node name="Body" type="StaticBody3D" parent="."]
 
@@ -24,3 +44,21 @@ shape = SubResource("BoxShape3D_base")
 [node name="Shape" type="CollisionShape3D" parent="Glass"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000, 1.450, 0.000)
 shape = SubResource("BoxShape3D_glass")
+
+[node name="Prize" type="StaticBody3D" parent="."]
+script = ExtResource("5_loot")
+display_name = "Amphora with a wooden horse"
+value = 2500
+note = "A gift from the Greeks. Check inside."
+
+[node name="Model" parent="Prize" instance=ExtResource("4_prize")]
+
+[node name="Shape" type="CollisionShape3D" parent="Prize"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000, 1.110, -0.060)
+shape = SubResource("BoxShape3D_prize")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="Prize"]
+replication_config = SubResource("Sync_prize")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("Sync_case")

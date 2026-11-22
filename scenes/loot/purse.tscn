@@ -1,0 +1,28 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/loot.gd" id="1_loot"]
+[ext_resource type="PackedScene" path="res://assets/loot/purse.gltf" id="2_model"]
+
+[sub_resource type="BoxShape3D" id="Shape_1"]
+size = Vector3(0.2, 0.18, 0.2)
+
+[sub_resource type="SceneReplicationConfig" id="Sync_taken"]
+properties/0/path = NodePath(".:taken")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+
+[node name="Loot" type="StaticBody3D"]
+editor_description = "A small valuable to pocket (stretch goal: scoring). Origin on the surface it lies on. Rooms don't place these by hand: MuseumLayout fills each room's LootSpots from the run's seed (see LootCatalog)."
+script = ExtResource("1_loot")
+display_name = "Charon's purse"
+value = 150
+note = "Fare for the ferry. Exact change only."
+
+[node name="Model" parent="." instance=ExtResource("2_model")]
+
+[node name="Shape" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.08, 0)
+shape = SubResource("Shape_1")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("Sync_taken")
