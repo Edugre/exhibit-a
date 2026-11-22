@@ -94,13 +94,13 @@ P4 has **no dependencies**, so it can start on day one, in parallel with K0.
 
 ### Tier K: Kit foundation *(do first; small)*
 
-**K0: Dimensions + surfaces** · depends on: nothing (sizes must match the room contract from team-plan task A0: 3 m doorway, 4 m walls)
+**K0: Dimensions + surfaces** ✅ · depends on: nothing (sizes must match the room contract from team-plan task A0: 3 m doorway, 4 m walls)
 - `int_dims.py`, and the materials `int_floor_parquet.tres`, `int_floor_marble.tres` (reuse `assets/plates/marble.png`
   if it fits), `int_wall_paint.tres` (two or three wall colours, one per room mood), `int_ceiling.tres`, and
   `int_skirting.tres` plus `int_moulding.tres` (same carved look as `ext_trim`, so inside matches outside).
 - A tiny `scenes/props/prop_template.tscn` showing the expected layout (mesh, collision, optional light).
 
-**K1: Doorway frame + room plaque** · depends on: K0
+**K1: Doorway frame + room plaque** ✅ · depends on: K0
 - A carved frame for the 3 m doorway, in two variants: an open arch, and one with hinges for `RoomGate` doors.
 - A brass plaque above each doorway with the room's name ("Sculpture Hall", "The Twin Archives"...).
   The text is a texture per room, made the same way as the plinth labels (`make_card.py`).
@@ -112,9 +112,9 @@ In order. Cover comes first because guards and stealth depend on it.
 
 | ID | Asset | Notes |
 |---|---|---|
-| P1.1 | **Conservation crates + drop cloths** | Main stealth cover. Three crate sizes (stackable), plus a cloth-draped statue shape. Chest height or more, box collision. |
-| P1.2 | **Glass display cases** | Tall and low variants, with simple contents (pottery, coins, scrolls). The glass blocks movement but not sight, so collision is on and the guard's line of sight passes through. Check this with `guard.gd`'s ray (its collision mask). |
-| P1.3 | **Framed paintings + picture lights** | Five or six paintings in three frame sizes, with myth jokes (e.g. *"Narcissus, Self-Portrait #47"*). The picture light is a small emissive bar, not a real light, except for one optional real spot per room. |
+| P1.1 ✅ | **Conservation crates + drop cloths** | Main stealth cover. Three crate sizes (stackable), plus a cloth-draped statue shape. Chest height or more, box collision. |
+| P1.2 ✅ | **Glass display cases** | Tall and low variants, with simple contents (pottery, coins, scrolls). The glass blocks movement but not sight, so collision is on and the guard's line of sight passes through. Check this with `guard.gd`'s ray (its collision mask). |
+| P1.3 ✅ | **Framed paintings + picture lights** | Five or six paintings in three frame sizes, with myth jokes (e.g. *"Narcissus, Self-Portrait #47"*). The picture light is a small emissive bar, not a real light, except for one optional real spot per room. |
 | P1.4 ✅ | **Rope barriers + benches** | Brass posts and red rope (posts have collision, the rope doesn't), and a padded gallery bench. |
 | P1.5 | **Ceiling fixtures** | Pendant lamp, recessed light panel, an emissive EXIT sign (green, reads well at night), and a wall vent. |
 | P1.6 ✅ | **Info stand + floor sign** | "Do not touch" stand and "Wet floor" A-frame are done. A "Gallery closed" sign is still open. |
@@ -125,7 +125,7 @@ In order. Cover comes first because guards and stealth depend on it.
 |---|---|---|---|
 | P2.1 ✅ | **Laser emitter posts + beam look** | C2 laser grid, C3 Laser Corridor | A post mesh plus a beam material/shader (an additive red line with flicker) that turns off cleanly when `is_active` is false or jammed. The **behaviour stays in C2**; this item is only the look. |
 | P2.2 ✅ | **Switch panel** | C3 fallback switch | A wall- or floor-mounted panel that reads clearly as "stand here". It wraps the existing pressure-plate visuals or matches them. |
-| P2.3 | **Archive shelving walls** | B3 Twin Archives | Tall bookcases (2.5 m and up) that make the wall splitting the two alcoves, with box collision. Book spines come from one texture, varied by UV offset. |
+| P2.3 ✅ | **Archive shelving walls** | B3 Twin Archives | Tall bookcases (2.5 m and up) that make the wall splitting the two alcoves, with box collision. Book spines come from one texture, varied by UV offset. |
 | P2.4 ✅ | **Gadget prop + jammed effect** | C1/C4 gadget | The held gadget model and a small "jammed" spark or flicker for targets. Done: the Hermes Signal Jammer on every belt and raised in your own view, a pulse with sound on every screen, sparks and sputtering beams on a jammed grid. |
 
 ### Tier P3: Room identity *(one set per pool room; the sets can run in parallel)*
@@ -135,9 +135,9 @@ Each set gives a room its own silhouette and colour, so a shuffled run is still 
 | ID | Set | Room | Contents |
 |---|---|---|---|
 | P3.1 | `sculpture` | Sculpture Hall | Three statues on plinths: a discus thrower, a Venus with broken arms, a bust. Icarus's wings hung from the ceiling. One empty plinth labelled "away for cleaning". It reuses `statue_marble.tres`. |
-| P3.2 | `archives` | Twin Archives | Card-catalogue cabinets, a rolling ladder, scroll racks, green reading lamps (emissive), a reading table with open books. |
+| P3.2 ✅ | `archives` | Twin Archives | Card-catalogue cabinets, a rolling ladder, scroll racks, green reading lamps (emissive), a reading table with open books. |
 | P3.3 | `arms` | Laser Corridor ("Hall of Arms") | Two or three suits of armour, a spear rack, and Achilles' shield in a case ("heel sold separately"). |
-| P3.4 | `office` | Security Office | A CCTV monitor wall (screen material only here; the static effect is in P5.2), a desk with a coffee mug and logbook, a key board, lockers, and the librarian's cardigan over a chair. |
+| P3.4 ✅ | `office` | Security Office | A CCTV monitor wall (screen material only here; the static effect is in P5.2), a desk with a coffee mug and logbook, a key board, lockers, and the librarian's cardigan over a chair. |
 | P3.5 ✅ | `lobby` | Entrance lobby | A ticket desk, coat check, donation box, a "Today: The Last Book of Alexandria" banner, and a museum map board. The lobby connects to the exterior's front doors. Done, plus a gift shop banner, the kit surfaces, trim and doorways on the lobby. |
 
 ### Tier P4: Ambient sound *(independent: start any time)*

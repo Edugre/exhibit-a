@@ -1,0 +1,17 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/archives/scroll_rack.glb" id="1_mesh"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_body"]
+size = Vector3(1.000, 1.800, 0.400)
+
+[node name="ScrollRack" type="Node3D"]
+editor_description = "A scroll rack: pigeonholes full of scrolls. 1.8 m tall, back against a wall."
+
+[node name="Mesh" parent="." instance=ExtResource("1_mesh")]
+
+[node name="Body" type="StaticBody3D" parent="."]
+
+[node name="Shape" type="CollisionShape3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000, 0.900, 0.000)
+shape = SubResource("BoxShape3D_body")
