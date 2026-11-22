@@ -48,3 +48,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 31.95, -4.110, 24.4)
 transform = Transform3D(-0.83092, 0.172478, -0.528983, -0.177245, 0.819152, 0.545504, 0.527404, 0.54703, -0.650079, -4.5, -4.372, 30.5)
 
 [node name="Rooms" type="Node3D" parent="."]
+
+[node name="RoomSpawner" type="MultiplayerSpawner" parent="."]
+spawn_path = NodePath("../Rooms")

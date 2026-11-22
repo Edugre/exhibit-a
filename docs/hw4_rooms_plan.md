@@ -53,16 +53,16 @@ Start a new room by duplicating `scenes/rooms/room_template.tscn`. Gadget target
 
 ## Networking approach
 
-- Add a **`RoomSpawner` (MultiplayerSpawner)** under `World/Museum`, with a `spawn_function`,
-  using the same pattern as `PlayerSpawner`. The host spawns rooms with `{index, room_id, position}`.
+- *(Done in A2.)* A **`RoomSpawner` (MultiplayerSpawner)** under `World/Museum`, with a `spawn_function`,
+  using the same pattern as `PlayerSpawner`. The host spawns rooms with `{path, name, door}`.
   The spawner rebuilds them on the client, replays them to a peer who joins late, and makes sure
   synchronizers inside rooms (guards, doors, plates) exist before they sync.
 - **Host is the referee for the order.** `scripts/museum_layout.gd` (host only) picks the rooms with
   our own seeded Fisher–Yates shuffle on a `RandomNumberGenerator`, written by the team.
   `Array.shuffle()` isn't seedable per call, so we don't use it. Only the result is sent; clients never roll.
-- **Restart:** the host frees the old rooms and spawns a new order. It waits for the navigation map
-  to sync before guards move, then respawns the players at the entrance. Room node names
-  include a build counter (`Room_3_1`) so old and new paths never collide.
+- **Restart:** *(done in A2)* the host frees the old rooms and spawns new ones; the players respawn on the plaza.
+  Each guard waits for her room's navmesh to reach the navigation server before she moves. Room node names
+  include a build counter (`vault_room_3`) so old and new paths never collide. Only the host bakes navmeshes.
 - **Hard-coded paths to remove:** `artifact.gd` (`../Museum/ArtifactSpot`), `drop_zone.gd`
   (`../Museum/ExtractionSpot`), `guard.gd` (`../Museum/GuardWaypoints`), and `main.gd`
   (`World/Museum/SpawnPoints`). These are looked up from the built layout instead, and the

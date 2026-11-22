@@ -1,10 +1,10 @@
 class_name MuseumLayout
 extends Node3D
-## The museum (task A1): the plaza outside, and the chain of rooms behind the front doors.
-## Builds the rooms in a line from the doorway inward: the entrance lobby, the pool rooms, then
-## the vault. For now every peer builds the same fixed order in _ready, so node paths match for
-## the synchronizers and interact requests. Task A2 moves the building to the host and a spawner;
-## task A3 picks the pool rooms.
+## The museum (tasks A1, A2): the plaza outside, and the chain of rooms behind the front doors.
+## The host builds the rooms in a line from the doorway inward (the entrance lobby, the pool
+## rooms, then the vault) when it starts hosting, and again on every restart. The RoomSpawner
+## (MultiplayerSpawner) builds the same rooms on the client, including one who joins late, so
+## node paths match for the synchronizers and interact requests. Task A3 picks the pool rooms.
 ##
 ## Other systems ask this node (group "museum") where things are, instead of hard-coding paths.
 
@@ -18,24 +18,31 @@ const DEPTH := 60.0
 ## World/Museum in main.tscn to try your room in a real run. Empty plays like HW #3.
 @export var debug_order: PackedInt32Array = []
 
-var _rooms: Array[Room] = []
+## Counts builds, so a rebuilt room never shares a node path with the one it replaces.
+var _build := 0
 
 @onready var _rooms_root: Node3D = $Rooms
 @onready var _plaza: Node3D = $Plaza
+@onready var _spawner: MultiplayerSpawner = $RoomSpawner
 
 
 func _ready() -> void:
 	add_to_group("museum")
-	build(debug_order)
+	_spawner.spawn_function = _create_room
+	GameState.heist_reset.connect(_on_heist_reset)  # only fires on the host
 
 
-## Replaces the rooms with entrance, the given pool rooms, then the vault.
-func build(pool_order: PackedInt32Array) -> void:
-	for room in _rooms:
-		room.queue_free()
-	_rooms.clear()
+## Host only. Replaces the rooms with entrance, the pool rooms, then the vault. Called when hosting
+## starts and on every restart; the spawner copies each room to the client. For now the pool rooms
+## are `debug_order`; task A3 picks them.
+func build() -> void:
+	if not multiplayer.is_server():
+		return
+	for room in get_rooms():
+		room.queue_free()  # the spawner removes it on the client too
+	_build += 1
 	var paths: Array[String] = [RoomCatalog.ENTRANCE]
-	for index in pool_order:
+	for index in debug_order:
 		if index < 0 or index >= RoomCatalog.POOL.size() or not ResourceLoader.exists(RoomCatalog.POOL[index]):
 			push_warning("MuseumLayout: no pool room %d yet, skipping it." % index)
 			continue
@@ -43,24 +50,41 @@ func build(pool_order: PackedInt32Array) -> void:
 	paths.append(RoomCatalog.VAULT)
 
 	var door := FRONT_DOOR
+	var last: Room = null
 	for path in paths:
-		var room := (load(path) as PackedScene).instantiate() as Room
-		room.name = path.get_file().get_basename()  # the same on every peer
-		# Place it before it enters the tree, so its colliders and navmesh are built where it stays
-		room.position = door - (room.get_node(^"Entry") as Node3D).position
-		_rooms_root.add_child(room)
-		_rooms.append(room)
-		var exit := room.get_node_or_null(^"Exit") as Node3D
-		if exit:
-			door = room.position + exit.position
-	var last: Room = _rooms.back()
+		last = _spawner.spawn({
+			"path": path,
+			"name": "%s_%d" % [path.get_file().get_basename(), _build],
+			"door": door,
+		})
+		if last.exit:
+			door = last.position + last.exit.position
 	var back := last.position.z + _deepest_z(last)
 	if FRONT_DOOR.z - back > DEPTH + 0.01:
 		push_warning("MuseumLayout: the rooms reach %.1f m deep; the building only has %.0f m." % [FRONT_DOOR.z - back, DEPTH])
 
 
+## Runs on every peer with the data the host passed to spawn(), so all peers build the same room.
+## It's placed before it enters the tree, so its colliders and navmesh are built where it stays.
+func _create_room(data: Dictionary) -> Node:
+	var room := (load(data.path) as PackedScene).instantiate() as Room
+	room.name = data.name
+	room.position = data.door - (room.get_node(^"Entry") as Node3D).position
+	return room
+
+
+func _on_heist_reset(respawn_players: bool) -> void:
+	if respawn_players:
+		build()  # a restart gets fresh rooms: doors shut, guards back on patrol (A3: a new order)
+
+
+## The rooms in the current build, front to back. Rooms on their way out are left out.
 func get_rooms() -> Array[Room]:
-	return _rooms
+	var rooms: Array[Room] = []
+	for child in _rooms_root.get_children():
+		if child is Room and not child.is_queued_for_deletion():
+			rooms.append(child)
+	return rooms
 
 
 ## Where players start: on the plaza, by the van.
@@ -76,9 +100,10 @@ func get_extraction_spot() -> Marker3D:
 	return _plaza.get_node(^"ExtractionSpot") as Marker3D
 
 
-## Where the artifact rests at the start of a heist: in the vault, the last room.
+## Where the artifact rests at the start of a heist: in the vault. null until the rooms exist
+## (in the menu, or on a client while the spawner is still building them).
 func get_artifact_spot() -> Marker3D:
-	for room in _rooms:
+	for room in get_rooms():
 		var spot := room.get_artifact_spot()
 		if spot:
 			return spot

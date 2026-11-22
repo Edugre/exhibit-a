@@ -44,18 +44,27 @@ const JAMMABLE_GROUP := &"jammable"
 
 func _ready() -> void:
 	add_to_group("rooms")
-	if bake_on_ready:
-		# CSG builds its shapes at the end of the frame it enters the tree, so wait for them.
+	if not bake_on_ready:
+		return
+	if not multiplayer.is_server():
+		# Guards only think on the host, so a client never needs the navmesh.
+		baked.emit.call_deferred()
+		return
+	# CSG builds its shapes at the end of the frame it enters the tree, so wait for them.
+	await get_tree().process_frame
+	for i in 10:
+		if _csg_built():
+			break
 		await get_tree().process_frame
-		# Rooms bake at a 0.1 m cell height so a 0.46 m bench isn't a step guards can climb.
-		# The map has to match, or it warns and merges coarser. The plaza's navmesh uses 0.1 too.
-		NavigationServer3D.map_set_cell_height(get_world_3d().navigation_map, NAV_CELL_HEIGHT)
-		# Every instance of a room scene shares its NavigationMesh resource; bake into a copy of our own.
-		var mesh := nav_region.navigation_mesh.duplicate() as NavigationMesh
-		NavigationServer3D.bake_from_source_geometry_data(mesh, _source_geometry(mesh))  # a few milliseconds
-		nav_region.navigation_mesh = mesh
-		await _confirm_on_server(mesh)
-		baked.emit()
+	# Rooms bake at a 0.1 m cell height so a 0.46 m bench isn't a step guards can climb.
+	# The map has to match, or it warns and merges coarser. The plaza's navmesh uses 0.1 too.
+	NavigationServer3D.map_set_cell_height(get_world_3d().navigation_map, NAV_CELL_HEIGHT)
+	# Every instance of a room scene shares its NavigationMesh resource; bake into a copy of our own.
+	var mesh := nav_region.navigation_mesh.duplicate() as NavigationMesh
+	NavigationServer3D.bake_from_source_geometry_data(mesh, _source_geometry(mesh))  # a few milliseconds
+	nav_region.navigation_mesh = mesh
+	await _confirm_on_server(mesh)
+	baked.emit()
 
 
 ## For a room added after startup, the server can drop the baked mesh if it arrives while the
@@ -94,9 +103,19 @@ func _source_geometry(mesh: NavigationMesh) -> NavigationMeshSourceGeometryData3
 	for i in csg_roots.size():
 		csg_roots[i].collision_layer = layers[i]
 		var shape := csg_roots[i].bake_collision_shape()
-		if shape:
+		if shape and not shape.get_faces().is_empty():
 			source.add_faces(shape.get_faces(), csg_roots[i].global_transform)  # world space, like the parser
 	return source
+
+
+func _csg_built() -> bool:
+	for node in nav_region.find_children("*", "CSGShape3D", true, false):
+		var csg := node as CSGShape3D
+		if csg.is_root_shape() and csg.use_collision:
+			var shape := csg.bake_collision_shape()
+			if shape == null or shape.get_faces().is_empty():
+				return false
+	return true
 
 
 ## Moves the room so its Entry sits on `point` (the previous room's Exit, in world space).
