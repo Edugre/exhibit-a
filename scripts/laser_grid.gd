@@ -39,6 +39,7 @@ var _powered := true
 var _jam_left := 0.0
 var _next_alarm: Dictionary[int, float] = {}  # peer id -> time (s) the alarm may go off again for them
 var _beam_material := StandardMaterial3D.new()
+var _sputter_left := 0.0  # every peer: how long the jammed look lasts
 
 
 func _ready() -> void:
@@ -114,6 +115,54 @@ func _on_heist_reset(_respawn_players: bool) -> void:
 
 
 # --- Every peer --------------------------------------------------------------
+
+## The Signal Jammer hit this grid (asset item P2.4). Cosmetic, on every peer: sparks fly off both
+## posts and the beams sputter until it comes back, so a jammed grid doesn't look like one that a
+## switch turned off.
+func show_jammed(seconds: float) -> void:
+	_sputter_left = seconds
+	for side: float in [-1.0, 1.0]:
+		_spark(Vector3(side * (width / 2.0 + POST_SIZE / 2.0), height * 0.6, 0.0))
+
+
+func _process(delta: float) -> void:
+	if _sputter_left <= 0.0:
+		return
+	_sputter_left -= delta
+	if is_active or _sputter_left <= 0.0:
+		_sputter_left = 0.0
+		_beam_material.emission_energy_multiplier = 2.0
+		_show_active()
+		return
+	# Off, but now and then a beam stutters back for a frame, dimmer than it should be
+	_beam_material.emission_energy_multiplier = 0.7
+	beams_root.visible = randf() < 0.07
+
+
+func _spark(at: Vector3) -> void:
+	var process := ParticleProcessMaterial.new()
+	process.direction = Vector3.UP
+	process.spread = 75.0
+	process.initial_velocity_min = 1.5
+	process.initial_velocity_max = 3.5
+	process.gravity = Vector3(0.0, -9.8, 0.0)
+	var spark_material := StandardMaterial3D.new()
+	spark_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	spark_material.albedo_color = Color(1.0, 0.75, 0.35)
+	var mesh := BoxMesh.new()
+	mesh.size = Vector3.ONE * 0.015
+	mesh.material = spark_material
+	var sparks := GPUParticles3D.new()
+	sparks.amount = 24
+	sparks.lifetime = 0.5
+	sparks.one_shot = true
+	sparks.explosiveness = 0.9
+	sparks.process_material = process
+	sparks.draw_pass_1 = mesh
+	sparks.position = at
+	add_child(sparks)
+	sparks.emitting = true
+	get_tree().create_timer(1.2).timeout.connect(sparks.queue_free)
 
 ## A short flare on every screen when someone sets it off.
 @rpc("authority", "call_local", "reliable")

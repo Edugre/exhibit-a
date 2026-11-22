@@ -33,6 +33,8 @@ Plain Python, run by hand, writing into `assets/interior/`. Same pipeline as the
   gallery bench. From the repo root: `python assets/interior/source/tools/barrier_bench_art.py assets/interior/barrier_bench`,
   then `blender -b --factory-startup --python assets/interior/source/tools/barrier_bench_build.py -- assets/interior/barrier_bench`.
   Each prop is a `.gltf` with the set's one atlas kept beside it, so the three share a texture.
+- `gadget_art.py`, `gadget_build.py` (P2.4): the Hermes Signal Jammer, its texture, and its pulse and dud sounds, into
+  `assets/gadget` (it's carried, not part of a room, so it lives outside `assets/interior`).
 - `lobby_art.py`, `lobby_build.py` (P3.5): the lobby set (ticket desk, coat check, donation box, map board, two
   banners), the same way, into `assets/interior/lobby`. `int_mesh.material()` takes `alpha` (the donation box's glass)
   and `emission` (the desk lamp's shade).

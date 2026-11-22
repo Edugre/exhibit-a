@@ -1,0 +1,54 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/jam_pulse.gd" id="1_script"]
+[ext_resource type="AudioStream" path="res://assets/gadget/jam_pulse.wav" id="2_sound"]
+
+[sub_resource type="StandardMaterial3D" id="Material_shell"]
+transparency = 1
+cull_mode = 2
+shading_mode = 0
+albedo_color = Color(0.45, 0.78, 1, 0.2)
+
+[sub_resource type="SphereMesh" id="Mesh_shell"]
+material = SubResource("Material_shell")
+radius = 1.0
+height = 2.0
+radial_segments = 32
+rings = 16
+
+[sub_resource type="StandardMaterial3D" id="Material_ring"]
+transparency = 1
+cull_mode = 2
+shading_mode = 0
+albedo_color = Color(0.6, 0.88, 1, 0.9)
+
+[sub_resource type="TorusMesh" id="Mesh_ring"]
+material = SubResource("Material_ring")
+inner_radius = 0.96
+outer_radius = 1.0
+rings = 48
+ring_segments = 6
+
+[node name="JamPulse" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="Shell" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1, 0)
+cast_shadow = 0
+mesh = SubResource("Mesh_shell")
+
+[node name="Ring" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+cast_shadow = 0
+mesh = SubResource("Mesh_ring")
+
+[node name="Flash" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+light_color = Color(0.55, 0.8, 1, 1)
+light_energy = 3.0
+omni_range = 6.0
+
+[node name="Sound" type="AudioStreamPlayer3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+stream = ExtResource("2_sound")
+max_distance = 35.0
