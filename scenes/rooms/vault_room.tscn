@@ -10,6 +10,8 @@
 [ext_resource type="PackedScene" path="res://assets/artifact/book_stand.glb" id="8_stand"]
 [ext_resource type="PackedScene" uid="uid://c7djabat5ogge" path="res://scenes/guard.tscn" id="9_guard"]
 [ext_resource type="PackedScene" path="res://scenes/coin.tscn" id="b5_coin"]
+[ext_resource type="PackedScene" path="res://scenes/props/doorway_portal.tscn" id="k1_portal"]
+[ext_resource type="PackedScene" path="res://scenes/props/room_plaque_vault.tscn" id="k1_plaque"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_room"]
 geometry_parsed_geometry_type = 1
@@ -190,3 +192,10 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, -10)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1.05, -3)
 
 [node name="Coin" parent="ThrowableSpots/Spot1" instance=ExtResource("b5_coin")]
+
+[node name="Doorways" type="Node3D" parent="."]
+editor_description = "Asset K1: the stone arch and this room's plaque on the Entry (no Exit: the vault is the end of the run). Art only, outside the navigation region."
+
+[node name="EntryPortal" parent="Doorways" instance=ExtResource("k1_portal")]
+
+[node name="EntryPlaque" parent="Doorways" instance=ExtResource("k1_plaque")]
