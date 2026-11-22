@@ -1,0 +1,17 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/office/lockers.glb" id="1_mesh"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_body"]
+size = Vector3(1.500, 1.930, 0.500)
+
+[node name="Lockers" type="Node3D"]
+editor_description = "A row of three steel lockers, 1.9 m: cover. The third is hers: L. KEEP OUT, with a SHH sticker."
+
+[node name="Mesh" parent="." instance=ExtResource("1_mesh")]
+
+[node name="Body" type="StaticBody3D" parent="."]
+
+[node name="Shape" type="CollisionShape3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000, 0.965, 0.000)
+shape = SubResource("BoxShape3D_body")
