@@ -1,0 +1,19 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://assets/interior/kit/int_surface.gdshader" id="s"]
+[ext_resource type="Texture2D" path="res://assets/interior/kit/int_marble.png" id="t0"]
+[ext_resource type="Texture2D" path="res://assets/interior/kit/int_wear.png" id="t1"]
+
+[resource]
+shader = ExtResource("s")
+shader_parameter/albedo_map = ExtResource("t0")
+shader_parameter/wear_map = ExtResource("t1")
+shader_parameter/use_normal_map = false
+shader_parameter/tint = Color(0.160, 0.180, 0.170, 1)
+shader_parameter/metres_per_tile = 1.0
+shader_parameter/roughness = 0.3
+shader_parameter/specular = 0.5
+shader_parameter/wear_tile = 3.1
+shader_parameter/dirt = 0.1
+shader_parameter/scratches = 0.6
+shader_parameter/dullness = 0.4

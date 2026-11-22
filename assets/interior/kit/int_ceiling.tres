@@ -1,0 +1,19 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://assets/interior/kit/int_surface.gdshader" id="s"]
+[ext_resource type="Texture2D" path="res://assets/interior/kit/int_plaster.png" id="t0"]
+[ext_resource type="Texture2D" path="res://assets/interior/kit/int_plaster_normal.png" id="t1"]
+[ext_resource type="Texture2D" path="res://assets/interior/kit/int_wear.png" id="t2"]
+
+[resource]
+shader = ExtResource("s")
+shader_parameter/albedo_map = ExtResource("t0")
+shader_parameter/normal_map = ExtResource("t1")
+shader_parameter/wear_map = ExtResource("t2")
+shader_parameter/tint = Color(0.800, 0.780, 0.740, 1)
+shader_parameter/metres_per_tile = 2.5
+shader_parameter/roughness = 0.9
+shader_parameter/specular = 0.25
+shader_parameter/normal_strength = 0.7
+shader_parameter/wear_tile = 3.1
+shader_parameter/dirt = 0.1
