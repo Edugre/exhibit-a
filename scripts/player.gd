@@ -183,8 +183,13 @@ func _update_interact_target() -> void:
 			new_target = collider
 
 	current_interactable = new_target
-	interact_prompt.visible = holding or current_interactable != null
+	var pry := not holding and current_interactable == null and hotbar.pry_target() != null
+	interact_prompt.visible = holding or current_interactable != null or pry
 	interact_prompt.text = DROP_PROMPT if holding else INTERACT_PROMPT
+	if not holding and current_interactable != null and current_interactable.has_method("prompt"):
+		interact_prompt.text = current_interactable.prompt()
+	if pry:
+		interact_prompt.text = Hotbar.PRY_TEXT
 	if not holding and current_interactable is Carryable and hotbar.is_full():
 		interact_prompt.text = Hotbar.FULL_TEXT
 		

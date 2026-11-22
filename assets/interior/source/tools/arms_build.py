@@ -125,13 +125,14 @@ CASE = (0.9, 0.8, 1.3)  # the shield case: footprint, cabinet height, glass heig
 
 
 def shield_case():
-    """The Shield of Achilles on a stand, under glass, on a wooden cabinet with its label."""
-    b = M.Builder()
+    """The Shield of Achilles on a stand, under glass, on a wooden cabinet with its label. Three meshes, so it can
+    be broken into: the case, its glass, and the shield (the prize, a Loot in shield_case.tscn)."""
+    b, pane, prize = M.Builder(), M.Builder(), M.Builder()
     s, cab, glass = CASE
     b.box(s, s, cab, W, UV("wood"), M.at(z=cab / 2), bevel=0.01)
     label_plate(b, "label_shield", M.at(y=-s / 2 - 0.004, z=cab - 0.18))
     top = cab + glass
-    b.box(s - 0.02, s - 0.02, glass, G, UV("glass"), M.at(z=cab + glass / 2))
+    pane.box(s - 0.02, s - 0.02, glass, G, UV("glass"), M.at(z=cab + glass / 2))
     for x in (-1, 1):                                                               # brass corner posts
         for y in (-1, 1):
             b.box(0.03, 0.03, glass, B, UV("bronze"), M.at(x=x * (s / 2 - 0.015), y=y * (s / 2 - 0.015), z=cab + glass / 2))
@@ -140,15 +141,15 @@ def shield_case():
     b.box(0.08, 0.05, 0.6, W, UV("wood"), M.at(y=0.16, z=cab + 0.3, rx=12))
     b.box(0.5, 0.08, 0.04, W, UV("wood"), M.at(y=-0.06, z=cab + 0.04))
     place = M.at(y=0.02, z=cab + 0.42, rx=78)
-    painted_disc(b, 0.36, 0.035, B, "shield_achilles", place, segments=40)
-    b.sphere(0.05, B, UV("bronze"), place @ Matrix.Translation((0, 0, 0.02)), squash=0.5, segments=12, rings=6)
-    return b.object("ShieldCase", MATS)
+    painted_disc(prize, 0.36, 0.035, B, "shield_achilles", place, segments=40)
+    prize.sphere(0.05, B, UV("bronze"), place @ Matrix.Translation((0, 0, 0.02)), squash=0.5, segments=12, rings=6)
+    return b.object("ShieldCase", MATS), pane.object("ShieldCaseGlass", MATS), prize.object("ShieldCasePrize", MATS)
 
 
 for obj, name in ((armour("ArmourAjax", "crest_red", "label_ajax", hoplon="hoplon_a"), "armour_ajax"),
                   (armour("ArmourPatroclus", "crest_white", "label_patroclus", hoplon="hoplon_b"), "armour_patroclus"),
                   (armour("ArmourOdysseus", "crest_black", "label_odysseus", spear=True), "armour_odysseus"),
                   (spear_rack(), "spear_rack"),
-                  (shield_case(), "shield_case")):
+                  *zip(shield_case(), ("shield_case", "shield_case_glass", "shield_case_prize"))):
     print(name, len(obj.data.polygons), "faces")
     M.export(obj, OUT / f"{name}.gltf")

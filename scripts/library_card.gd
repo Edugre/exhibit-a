@@ -43,7 +43,7 @@ func _ready() -> void:
 	var typewriter := SystemFont.new()
 	typewriter.font_names = PackedStringArray(["Courier New", "Liberation Mono", "DejaVu Sans Mono", "monospace"])
 	typewriter.font_weight = 600
-	for i in 4:
+	for i in 5:
 		var row := Label.new()
 		_lines.add_child(row)
 		_lines.move_child(row, i + 1)
@@ -75,7 +75,7 @@ func _ready() -> void:
 
 
 ## Fill in the card for this ending and play it out.
-func stamp_card(won: bool, reason: String, seconds_taken: float, had_book: bool, out_of_time: bool) -> void:
+func stamp_card(won: bool, reason: String, seconds_taken: float, had_book: bool, out_of_time: bool, haul: int = 0) -> void:
 	var fine: int = Time.get_date_dict_from_system().year + DUE_YEAR_BC - 1    # there was no year zero
 	var years := _with_comma(fine)
 	_rows[1].text = "  TITLE    The Last Book of Alexandria"
@@ -89,7 +89,14 @@ func stamp_card(won: bool, reason: String, seconds_taken: float, had_book: bool,
 		if had_book:
 			book = "Back on the shelf by closing." if out_of_time else "Checked out by the guard."
 		_rows[4].text = "  BOOK     %s" % book
-	_rows[5].text = "  NOTE     %s" % reason
+	var cash := "$" + Loot.dollars(haul)
+	if haul <= 0:
+		_rows[5].text = "  HAUL     Nothing. Very honest."
+	elif won:
+		_rows[5].text = "  HAUL     %s. Non-refundable." % cash
+	else:
+		_rows[5].text = "  HAUL     %s, left on the floor." % cash
+	_rows[6].text = "  NOTE     %s" % reason
 	_stamp.texture = WITHDRAWN if won else (CLOSED if out_of_time else REVOKED)
 	_stamp.visible = false
 	var fill := clampf(get_viewport_rect().size.y / 1080.0, 1.0, 1.6)

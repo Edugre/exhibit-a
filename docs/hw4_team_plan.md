@@ -273,7 +273,7 @@ take one each.
 1. **Sneak matters:** sneaking lowers how fast guards notice you and makes footsteps quieter
    (today it only slows you down; this is in Known limitations).
 2. **Security cameras:** a second `"jammable"` target that sweeps and raises the alert. It reuses the gadget.
-3. **Scoring:** a time bonus, an alert penalty, and optional loot in pool rooms. Show a score on the end screen.
+3. **Scoring:** a time bonus, an alert penalty, and optional loot in pool rooms. Show a score on the end screen. *Partly done: loot in every room and in the display cases (a crowbar breaks them open), one shared haul that only counts on a win, shown on the HUD and the end card. No time bonus or alert penalty yet.*
 4. **Room progress HUD:** "Room 2 / 5" plus a small strip showing the run's order and seed.
 5. **Difficulty by depth:** rooms later in the order get faster guards or wider vision cones.
 6. **Grappling hook:** (a stretch goal in the spec) a vertical shortcut in one room.

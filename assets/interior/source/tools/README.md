@@ -65,6 +65,9 @@ Plain Python, run by hand, writing into `assets/interior/`. Same pipeline as the
   `scenes/props/ceiling_fan.tscn`, where `scripts/ambient/ceiling_fan.gd` turns the blades.
 - `vault_art.py`, `vault_build.py` (P3.6): the gallery's two empty frames with their cards and labels, and the vault's
   empty library shelving (plain, and one with the library's sign), the same way, into `assets/interior/vault`.
+- `loot_art.py`, `loot_build.py` (stretch goal: scoring): six small valuables, the crowbar, and the chink, glass-break
+  and crowbar-creak sounds, into `assets/loot` (they move between rooms, like the gadget). `cases_build.py` and
+  `arms_build.py` write each display case as three meshes (the case, its glass, the prize) so it can be broken into.
 - `make_wear_art.py` (P6.1): the floor wear and threshold scuff decals, into `assets/interior/wear`.
 
 ## Using the kit in a room

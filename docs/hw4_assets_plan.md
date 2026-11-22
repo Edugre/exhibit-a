@@ -197,7 +197,7 @@ Any tier P3, P4 or P5 item can move to whoever is free. They share no files.
 
 1. **A creaky floorboard that makes noise**: a real noise source through `NoiseSystem`, not just a sound (gameplay, so the team writes the rule).
 2. **Security camera model**: for the stretch "security cameras" goal in the team plan; it would be the second jammable target.
-3. **Optional loot props**: small valuables in each room for the "scoring" stretch goal.
+3. **Optional loot props** ✅: small valuables in each room for the "scoring" stretch goal. Done: six valuables and the crowbar (`assets/loot/`), and the display cases split so their prizes can be taken.
 4. **Skylight with moonlight and rain**: hooks into the exterior's weather (`exterior_wet` shader global).
 5. **Pigeon inside**: one pigeon that got into the Sculpture Hall, reusing `pigeon.glb`, and flies off when players come near.
 6. **Painting that watches you**: the eyes in one portrait follow the nearest player (a pure shader joke).

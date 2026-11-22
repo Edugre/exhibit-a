@@ -5,7 +5,8 @@ extends Node3D
 ## rooms, then the vault) when it starts hosting, and again on every restart. The RoomSpawner
 ## (MultiplayerSpawner) builds the same rooms on the client, including one who joins late, so
 ## node paths match for the synchronizers and interact requests. RoomOrder (task A3) picks the pool
-## rooms and their order from a new seed every build, and GuardBudget picks which night staff stay.
+## rooms and their order from a new seed every build, GuardBudget picks which night staff stay, and
+## LootPlan lays out the small loot on each room's LootSpots.
 ##
 ## Other systems ask this node (group "museum") where things are, instead of hard-coding paths.
 
@@ -38,6 +39,8 @@ var _seeds := RandomNumberGenerator.new()
 var _depths := {}
 ## Room scene path -> the names of its night staff, in scene order, read once.
 var _staff := {}
+## Room scene path -> how many LootSpots markers it has, read once.
+var _loot_spots := {}
 ## How many night staff the current build kept, for debugging.
 var last_staff := 0
 
@@ -86,6 +89,10 @@ func build() -> void:
 	for names: PackedStringArray in keep:
 		last_staff += names.size()
 	print("  night staff: %d of %d, and the librarian" % [last_staff, _count(behind)])
+	var spot_counts: Array = []
+	for path in paths:
+		spot_counts.append(_loot_spots_of(path))
+	var loot := LootPlan.pick(spot_counts, last_seed)
 
 	var door := FRONT_DOOR
 	var last: Room = null
@@ -96,6 +103,7 @@ func build() -> void:
 			"name": "%s_%d" % [path.get_file().get_basename(), _build],
 			"door": door,
 			"staff": _staff_of(path) if i == 0 else keep[i - 1],
+			"loot": loot[i],
 		})
 		if last.exit:
 			door = last.position + last.exit.position
@@ -116,6 +124,13 @@ func _create_room(data: Dictionary) -> Node:
 		if child is Staff and not keep.has(child.name):
 			room.remove_child(child)
 			child.free()
+	# The host's LootPlan: what lies on which of the room's LootSpots, the same on every peer
+	var spots := room.get_node_or_null(^"LootSpots")
+	for pair: Array in data.get("loot", []):
+		if spots and pair[0] < spots.get_child_count() and pair[1] < LootPlan.KINDS.size():
+			var item := (load(LootPlan.KINDS[pair[1]]) as PackedScene).instantiate()
+			item.name = "Loot"
+			spots.get_child(pair[0]).add_child(item)
 	return room
 
 
@@ -166,6 +181,16 @@ func _staff_of(path: String) -> PackedStringArray:
 		room.free()
 		_staff[path] = names
 	return _staff[path]
+
+
+## How many LootSpots a room scene has, read once from a throwaway copy.
+func _loot_spots_of(path: String) -> int:
+	if not _loot_spots.has(path):
+		var room := (load(path) as PackedScene).instantiate()
+		var spots := room.get_node_or_null(^"LootSpots")
+		_loot_spots[path] = spots.get_child_count() if spots else 0
+		room.free()
+	return _loot_spots[path]
 
 
 func _count(lists: Array) -> int:
