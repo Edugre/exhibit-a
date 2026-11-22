@@ -1,0 +1,17 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/archives/rolling_ladder.glb" id="1_mesh"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_body"]
+size = Vector3(0.560, 1.600, 0.300)
+
+[node name="RollingLadder" type="Node3D"]
+editor_description = "A rolling library ladder leaning back 14 degrees; its top hooks sit 0.67 m behind its feet, so stand its feet that far out from a bookcase."
+
+[node name="Mesh" parent="." instance=ExtResource("1_mesh")]
+
+[node name="Body" type="StaticBody3D" parent="."]
+
+[node name="Shape" type="CollisionShape3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000, 0.800, -0.150)
+shape = SubResource("BoxShape3D_body")

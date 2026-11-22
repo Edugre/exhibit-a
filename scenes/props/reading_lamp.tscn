@@ -1,0 +1,15 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/archives/reading_lamp.glb" id="1_mesh"]
+
+[node name="ReadingLamp" type="Node3D"]
+editor_description = "A green banker's lamp, lit. Origin under its base: set it on a table or cabinet top. Its small warm light has no shadows."
+
+[node name="Mesh" parent="." instance=ExtResource("1_mesh")]
+
+[node name="Glow" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000, 0.280, 0.050)
+light_color = Color(1, 0.85, 0.62, 1)
+light_energy = 0.55
+omni_range = 1.8
+omni_attenuation = 1.5
