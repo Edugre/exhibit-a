@@ -57,9 +57,12 @@ Start a new room by duplicating `scenes/rooms/room_template.tscn`. Gadget target
   using the same pattern as `PlayerSpawner`. The host spawns rooms with `{path, name, door}`.
   The spawner rebuilds them on the client, replays them to a peer who joins late, and makes sure
   synchronizers inside rooms (guards, doors, plates) exist before they sync.
-- **Host is the referee for the order.** `scripts/museum_layout.gd` (host only) picks the rooms with
-  our own seeded Fisher–Yates shuffle on a `RandomNumberGenerator`, written by the team.
-  `Array.shuffle()` isn't seedable per call, so we don't use it. Only the result is sent; clients never roll.
+- **Host is the referee for the order.** *(Done in A3.)* `scripts/room_order.gd` (`RoomOrder`) shuffles the
+  finished pool rooms with our own seeded Fisher–Yates on a `RandomNumberGenerator`, then keeps rooms in that
+  order while they still fit the depth budget, up to 3. A room that doesn't fit is skipped, so an oversized room
+  makes a run shorter rather than too deep. `Array.shuffle()` uses the global random state, so we don't use it.
+  Only the result is sent; clients never roll. The host prints `Museum run N (seed S): ...`; set `debug_seed`
+  on `World/Museum` to replay a run, or `debug_order` to force one.
 - **Restart:** *(done in A2)* the host frees the old rooms and spawns new ones; the players respawn on the plaza.
   Each guard waits for her room's navmesh to reach the navigation server before she moves. Room node names
   include a build counter (`vault_room_3`) so old and new paths never collide. Only the host bakes navmeshes.
