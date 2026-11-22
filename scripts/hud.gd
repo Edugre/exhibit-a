@@ -3,6 +3,7 @@ extends CanvasLayer
 ## Only reads GameState; the one thing it asks for is a restart. Loot calls toast() on whoever pockets it.
 
 const TOAST_SECONDS := 2.2
+const CARD_AT_START := 8.0  # seconds the controls card stays up when a heist begins
 
 @onready var top_bar: Control = %TopBar
 @onready var time_label: Label = %TimeLabel
@@ -20,6 +21,9 @@ var _loot_label: Label
 var _toast: Label
 var _toast_note: Label
 var _toast_left := 0.0
+var _card: ControlsCard
+var _card_hint: Label
+var _card_left := 0.0
 
 
 func _ready() -> void:
@@ -28,6 +32,15 @@ func _ready() -> void:
 	top_bar.add_child(_loot_label)
 	top_bar.move_child(_loot_label, artifact_label.get_index() + 1)
 	_build_toast()
+	_card = ControlsCard.new()
+	_card.visible = false
+	add_child(_card)
+	_card.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP, Control.PRESET_MODE_MINSIZE, 40)
+	_card.grow_horizontal = Control.GROW_DIRECTION_BOTH  # under the top bar, clear of the hotbar
+	_card_hint = Label.new()
+	_card_hint.text = "Tab: controls"
+	_card_hint.modulate = Color(1, 1, 1, 0.6)
+	top_bar.add_child(_card_hint)
 	restart_button.pressed.connect(GameState.request_restart)
 	GameState.phase_changed.connect(_on_phase_changed)
 	_on_phase_changed(GameState.phase)
@@ -48,6 +61,9 @@ func _process(_delta: float) -> void:
 		_toast.visible = _toast_left > 0.0
 	alert_label.text = "ALERT!" if GameState.guard_alerted else "Quiet"
 	alert_label.modulate = Color(1.0, 0.3, 0.3) if GameState.guard_alerted else Color.WHITE
+	_card_left = maxf(_card_left - get_process_delta_time(), 0.0)
+	var playing := GameState.phase == GameState.Phase.PLAYING and not _watching_getaway
+	_card.visible = playing and (_card_left > 0.0 or Input.is_action_pressed("show_controls"))
 
 
 func _on_phase_changed(phase: GameState.Phase) -> void:
@@ -70,6 +86,7 @@ func _on_phase_changed(phase: GameState.Phase) -> void:
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE  # so the Restart button can be clicked
 	elif phase == GameState.Phase.PLAYING:
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED  # the card may have left the mouse free
+		_card_left = CARD_AT_START  # every heist starts with the job and the keys on screen
 	_last_phase = phase
 
 
