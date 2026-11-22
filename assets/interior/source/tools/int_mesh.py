@@ -25,7 +25,8 @@ class Atlas:
         return ((x0 + inset) / self.w, 1 - (y1 - inset) / self.h, (x1 - inset) / self.w, 1 - (y0 + inset) / self.h)
 
 
-def material(name, image, metallic=0.0, roughness=0.5):
+def material(name, image, metallic=0.0, roughness=0.5, alpha=1.0, emission=0.0):
+    """alpha below 1 makes it see-through (glass); emission above 0 makes the texture glow (lamp shades)."""
     m = bpy.data.materials.new(name)
     if hasattr(m, "use_nodes") and not m.use_nodes:
         m.use_nodes = True
@@ -40,6 +41,15 @@ def material(name, image, metallic=0.0, roughness=0.5):
     links.new(tex.outputs["Color"], bsdf.inputs["Base Color"])
     bsdf.inputs["Metallic"].default_value = metallic
     bsdf.inputs["Roughness"].default_value = roughness
+    if alpha < 1.0:
+        bsdf.inputs["Alpha"].default_value = alpha
+        if hasattr(m, "surface_render_method"):
+            m.surface_render_method = "BLENDED"
+        elif hasattr(m, "blend_method"):
+            m.blend_method = "BLEND"
+    if emission > 0.0:
+        links.new(tex.outputs["Color"], bsdf.inputs["Emission Color"])
+        bsdf.inputs["Emission Strength"].default_value = emission
     return m
 
 

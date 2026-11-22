@@ -1,6 +1,19 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/room.gd" id="1_room"]
+[ext_resource type="Material" path="res://assets/interior/kit/int_floor_marble.tres" id="2_marble"]
+[ext_resource type="Material" path="res://assets/interior/kit/int_wall_paint.tres" id="3_paint"]
+[ext_resource type="Material" path="res://assets/interior/kit/int_ceiling.tres" id="4_ceiling"]
+[ext_resource type="Material" path="res://assets/interior/kit/int_skirting.tres" id="5_skirting"]
+[ext_resource type="Material" path="res://assets/interior/kit/int_moulding.tres" id="6_moulding"]
+[ext_resource type="PackedScene" path="res://scenes/props/doorway_portal.tscn" id="7_portal"]
+[ext_resource type="PackedScene" path="res://scenes/props/doorway_jambs.tscn" id="8_jambs"]
+[ext_resource type="PackedScene" path="res://scenes/props/ticket_desk.tscn" id="9_desk"]
+[ext_resource type="PackedScene" path="res://scenes/props/coat_check.tscn" id="10_coats"]
+[ext_resource type="PackedScene" path="res://scenes/props/map_board.tscn" id="11_map"]
+[ext_resource type="PackedScene" path="res://scenes/props/donation_box.tscn" id="12_donation"]
+[ext_resource type="PackedScene" path="res://scenes/props/banner_book.tscn" id="13_banner_book"]
+[ext_resource type="PackedScene" path="res://scenes/props/banner_gift.tscn" id="14_banner_gift"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_room"]
 geometry_parsed_geometry_type = 1
@@ -10,7 +23,7 @@ agent_radius = 0.25
 agent_max_climb = 0.2
 
 [node name="EntranceRoom" type="Node3D"]
-editor_description = "The lobby, just inside the front doors (the exterior's doorway is at x = 0). Greybox for now: asset item P3.5 dresses it. Kept short (6 m) because the rooms have 60 m of depth in all; see MuseumLayout.DEPTH."
+editor_description = "The lobby, just inside the front doors (the exterior's doorway is at x = 0). Kept short (6 m) because the rooms have 60 m of depth in all; see MuseumLayout.DEPTH. Dressed by asset item P3.5: the ticket desk (west) and coat check (east) face the 3 m path down the middle, which stays clear from door to door; the map greets you at the door and the banners face you on the far wall."
 script = ExtResource("1_room")
 
 [node name="Entry" type="Marker3D" parent="."]
@@ -27,35 +40,136 @@ use_collision = true
 [node name="Floor" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, -3)
 size = Vector3(12, 1, 6)
+material = ExtResource("2_marble")
 
 [node name="Wall_West" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.75, 2, -3)
 size = Vector3(0.5, 4, 6)
+material = ExtResource("3_paint")
 
 [node name="Wall_East" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.75, 2, -3)
 size = Vector3(0.5, 4, 6)
+material = ExtResource("3_paint")
 
 [node name="Wall_Entry_Left" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.75, 2, -0.25)
 size = Vector3(4.5, 4, 0.5)
+material = ExtResource("3_paint")
 
 [node name="Wall_Entry_Right" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.75, 2, -0.25)
 size = Vector3(4.5, 4, 0.5)
+material = ExtResource("3_paint")
 
 [node name="Wall_Exit_Left" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.75, 2, -5.75)
 size = Vector3(4.5, 4, 0.5)
+material = ExtResource("3_paint")
 
 [node name="Wall_Exit_Right" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.75, 2, -5.75)
 size = Vector3(4.5, 4, 0.5)
+material = ExtResource("3_paint")
+
+[node name="Props" type="Node3D" parent="NavigationRegion3D"]
+
+[node name="TicketDesk" parent="NavigationRegion3D/Props" instance=ExtResource("9_desk")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -4.3, 0, -3)
+
+[node name="CoatCheck" parent="NavigationRegion3D/Props" instance=ExtResource("10_coats")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 4.3, 0, -3.2)
+
+[node name="MapBoard" parent="NavigationRegion3D/Props" instance=ExtResource("11_map")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6, 0, -1.3)
+
+[node name="DonationBox" parent="NavigationRegion3D/Props" instance=ExtResource("12_donation")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4, 0, -4.7)
+
+[node name="Trim" type="Node3D" parent="."]
+
+[node name="SkirtingWest" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.485, 0.09, -3)
+size = Vector3(0.03, 0.18, 5)
+material = ExtResource("5_skirting")
+
+[node name="SkirtingEast" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.485, 0.09, -3)
+size = Vector3(0.03, 0.18, 5)
+material = ExtResource("5_skirting")
+
+[node name="SkirtingEntryLeft" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0.09, -0.515)
+size = Vector3(4, 0.18, 0.03)
+material = ExtResource("5_skirting")
+
+[node name="SkirtingEntryRight" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0.09, -0.515)
+size = Vector3(4, 0.18, 0.03)
+material = ExtResource("5_skirting")
+
+[node name="SkirtingExitLeft" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0.09, -5.485)
+size = Vector3(4, 0.18, 0.03)
+material = ExtResource("5_skirting")
+
+[node name="SkirtingExitRight" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0.09, -5.485)
+size = Vector3(4, 0.18, 0.03)
+material = ExtResource("5_skirting")
+
+[node name="CorniceWest" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.47, 3.82, -3)
+size = Vector3(0.06, 0.36, 5)
+material = ExtResource("6_moulding")
+
+[node name="CorniceEast" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.47, 3.82, -3)
+size = Vector3(0.06, 0.36, 5)
+material = ExtResource("6_moulding")
+
+[node name="CorniceEntryLeft" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 3.82, -0.53)
+size = Vector3(4, 0.36, 0.06)
+material = ExtResource("6_moulding")
+
+[node name="CorniceEntryRight" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 3.82, -0.53)
+size = Vector3(4, 0.36, 0.06)
+material = ExtResource("6_moulding")
+
+[node name="CorniceExitLeft" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 3.82, -5.47)
+size = Vector3(4, 0.36, 0.06)
+material = ExtResource("6_moulding")
+
+[node name="CorniceExitRight" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 3.82, -5.47)
+size = Vector3(4, 0.36, 0.06)
+material = ExtResource("6_moulding")
 
 [node name="Ceiling" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.25, -3)
 use_collision = true
 size = Vector3(12, 0.5, 6)
+material = ExtResource("4_ceiling")
+
+[node name="Doorways" type="Node3D" parent="."]
+editor_description = "Asset K1: the stone arch on the Entry (from the vestibule), the carved jambs on the Exit. Art only, outside the navigation region. The lobby has no plaque: it's where everyone starts."
+
+[node name="EntryPortal" parent="Doorways" instance=ExtResource("7_portal")]
+
+[node name="ExitJambs" parent="Doorways" instance=ExtResource("8_jambs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -6)
+
+[node name="Banners" type="Node3D" parent="."]
+editor_description = "On the far wall, facing everyone who comes in. Hung flat, no collision."
+
+[node name="BannerBook" parent="Banners" instance=ExtResource("13_banner_book")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5, 0.8, -5.47)
+
+[node name="BannerGift" parent="Banners" instance=ExtResource("14_banner_gift")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 0.8, -5.47)
 
 [node name="EntryLink" type="NavigationLink3D" parent="."]
 start_position = Vector3(0, 0, 1)
@@ -67,6 +181,14 @@ light_color = Color(1, 0.82, 0.62, 1)
 light_energy = 1.2
 omni_range = 8.0
 omni_attenuation = 1.1
+shadow_enabled = true
+
+[node name="BannerLight" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.866, -0.5, 0, 0.5, 0.866, 0, 3.6, -3.2)
+light_color = Color(1, 0.84, 0.64, 1)
+light_energy = 1.4
+spot_range = 6.0
+spot_angle = 65.0
 
 [node name="RoomAir" type="ReflectionProbe" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -3)

@@ -76,3 +76,18 @@ WETFLOOR_SPLAY = 0.30   # distance between the two feet, front to back
 PLACARD_POST_H = 0.98
 PLACARD_W = 0.36
 PLACARD_H = 0.26
+
+# P3.5 lobby set
+DESK_W = 2.4            # the ticket desk, long side along x
+DESK_D = 0.7
+DESK_H = 1.05           # counter height, to the top of the marble
+COAT_W = 1.8            # the coat check counter
+COAT_D = 0.6
+COAT_H = 1.0
+RACK_H = 1.8            # the coat rack behind it
+DONATION_H = 1.28       # pedestal and glass box together
+MAP_W = 1.0
+MAP_H = 0.7
+MAP_Y = 0.85            # bottom edge of the map board
+BANNER_W = 1.2
+BANNER_H = 2.4

@@ -173,7 +173,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 - Exactly two players. There is no lobby or matchmaking: the client must type the host's IP address, and playing across different networks needs port 7777 forwarded on the host's router.
 - If the host quits, the client is sent back to the main menu; the session can't continue without the host.
 - There are two throwables, the heel and the fountain coins. Laser grids are the only thing the Signal Jammer can switch off so far. The Laser Corridor's switches are the plinth-style pressure plates, and its displays are the shared crates and cases until its own props are made.
-- The lobby is still a plain greybox room, the Laser Corridor and the vault have no doorway plaque yet, and the rooms have no sound of their own.
+- The Laser Corridor and the vault have no doorway plaque yet, and the rooms have no sound of their own.
 - The whole game takes place at night.
 
 ## Asset credits
@@ -195,6 +195,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 - Rope barriers, gallery bench, wet-floor sign and "Do not touch" stand (`assets/interior/barrier_bench/`, `assets/interior/signs/`): made for this project. Modelled in Blender by script (`barrier_bench_build.py`, `signs_build.py`), with the textures drawn by script (`barrier_bench_art.py`, `signs_art.py`); lettering set in Palatino Linotype and Arial, rendered into the texture.
 - Doorway arches, exit jambs and room plaques (`assets/interior/doorways/`): made for this project. Modelled in Blender by script (`assets/interior/source/tools/doorway_build.py`), with the stone, the owl keystone and the engraved brass drawn by script (`make_doorway_art.py`). The room names are set in Palatino Linotype, rendered into the texture.
 - Framed paintings, title labels and picture lights (`assets/interior/paintings/`): made for this project. The six paintings are laid out and then repainted stroke by stroke by script (`assets/interior/source/tools/make_paintings_art.py`), which also draws the gilt frames and labels; modelled in Blender by script (`paintings_build.py`). Titles are set in Palatino Linotype, rendered into the texture.
+- Lobby set: ticket desk, coat check with its rack and coats, donation box, museum map and two banners (`assets/interior/lobby/`): made for this project. Modelled in Blender by script (`assets/interior/source/tools/lobby_build.py`), with the texture, signs, map and banners drawn by script (`lobby_art.py`). Lettering is set in Palatino Linotype and Arial, rendered into the texture.
 - Security office set: desk, monitor wall, lockers, chair with cardigan, key board (`assets/interior/office/`): made for this project. Modelled in Blender by script (`assets/interior/source/tools/office_build.py`), with the texture and the camera feeds on the screens drawn by script (`make_office_art.py`). Labels and screen text are set in Arial Bold, Consolas Bold and Ink Free, rendered into the texture.
 
 ## Contributions
