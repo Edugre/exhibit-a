@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/doorways/doorway_jambs.glb" id="1_mesh"]
+
+[node name="DoorwayJambs" type="Node3D"]
+editor_description = "A room's exit (asset K1): carved sides, open to the ceiling, so the next room's arch and plaque show through and the RoomGate can slide up. Put it on the room's Exit marker, unturned, outside the NavigationRegion3D like the Trim."
+
+[node name="Mesh" parent="." instance=ExtResource("1_mesh")]

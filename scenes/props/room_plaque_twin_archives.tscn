@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/doorways/room_plaque_twin_archives.glb" id="1_mesh"]
+
+[node name="RoomPlaqueTwinArchives" type="Node3D"]
+editor_description = "The The Twin Archives plaque (asset K1), over the arch on the side facing the room you come from, with a small lamp. Put it on the room's Entry marker, unturned, outside the NavigationRegion3D like the Trim."
+
+[node name="Mesh" parent="." instance=ExtResource("1_mesh")]

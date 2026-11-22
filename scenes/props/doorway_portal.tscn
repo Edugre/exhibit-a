@@ -1,0 +1,17 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/doorways/doorway_portal.glb" id="1_mesh"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_body"]
+size = Vector3(3.000, 0.800, 0.500)
+
+[node name="DoorwayPortal" type="Node3D"]
+editor_description = "A room's entrance (asset K1): a stone arch in the half of the doorway the room owns, with an owl on the keystone. The opening stays 3 m wide and 3.2 m high. Pair it with the room's plaque. Put it on the room's Entry marker, unturned, outside the NavigationRegion3D like the Trim."
+
+[node name="Mesh" parent="." instance=ExtResource("1_mesh")]
+
+[node name="Body" type="StaticBody3D" parent="."]
+
+[node name="Shape" type="CollisionShape3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000, 3.600, -0.250)
+shape = SubResource("BoxShape3D_body")
