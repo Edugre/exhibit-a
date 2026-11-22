@@ -134,7 +134,7 @@ Each set gives a room its own silhouette and colour, so a shuffled run is still 
 
 | ID | Set | Room | Contents |
 |---|---|---|---|
-| P3.1 | `sculpture` | Sculpture Hall | Three statues on plinths: a discus thrower, a Venus with broken arms, a bust. Icarus's wings hung from the ceiling. One empty plinth labelled "away for cleaning". It reuses `statue_marble.tres`. |
+| P3.1 ✅ | `sculpture` | Sculpture Hall | Three statues on plinths: a discus thrower, a Venus with broken arms, a bust. Icarus's wings hung from the ceiling. One empty plinth labelled "away for cleaning". It reuses `statue_marble.tres`. Done: Venus and the Discus Thrower flank the exit, Homer's bust stands on a green marble pier, the wings hang just below the middle lamp, and the east posing plinth's Galatea is away for cleaning. |
 | P3.2 ✅ | `archives` | Twin Archives | Card-catalogue cabinets, a rolling ladder, scroll racks, green reading lamps (emissive), a reading table with open books. |
 | P3.3 | `arms` | Laser Corridor ("Hall of Arms") | Two or three suits of armour, a spear rack, and Achilles' shield in a case ("heel sold separately"). |
 | P3.4 ✅ | `office` | Security Office | A CCTV monitor wall (screen material only here; the static effect is in P5.2), a desk with a coffee mug and logbook, a key board, lockers, and the librarian's cardigan over a chair. |
