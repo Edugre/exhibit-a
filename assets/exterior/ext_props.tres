@@ -1,0 +1,10 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://assets/exterior/ext_props.gdshader" id="s"]
+[ext_resource type="Texture2D" path="res://assets/exterior/ext_props.png" id="t0"]
+[ext_resource type="Texture2D" path="res://assets/exterior/ext_props_glow.png" id="t1"]
+
+[resource]
+shader = ExtResource("s")
+shader_parameter/paint = ExtResource("t0")
+shader_parameter/glow = ExtResource("t1")

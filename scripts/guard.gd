@@ -16,6 +16,9 @@ const PATROL_SPEED := 2.0
 const INVESTIGATE_SPEED := 3.0
 const CHASE_SPEED := 4.5          # slower than walking (5), faster than sneaking (2.5)
 const TURN_SPEED := 6.0
+## She moves on physics steps. Her model glides between them, so she doesn't stutter on a fast screen.
+const GLIDE_SPEED := 22.0
+const SNAP_DISTANCE := 3.0
 
 # Spotting uses the beam players can see, so those numbers live with the beam.
 const VIEW_DISTANCE := GuardModel.BEAM_RANGE
@@ -26,6 +29,7 @@ const CHASE_VIEW_HALF_ANGLE := 35.0
 const DETECT_TIME := 0.6          # seconds of continuous sight before a chase starts
 const LOSE_SIGHT_TIME := 2.0      # seconds out of sight before the guard gives up
 const CATCH_DISTANCE := 1.2
+const CATCH_HEIGHT := 2.0         # she can pull someone down off a crate, not off a terrace
 const PATROL_PAUSE := 1.0
 const LOOK_AROUND_TIME := 3.0
 const LOOK_AROUND_SPEED := 1.5    # radians per second while searching
@@ -57,11 +61,14 @@ const ALERT_LIGHT := Color(1.0, 0.2, 0.2)
 @onready var flashlight: SpotLight3D = model.flashlight
 
 var state := State.PATROL
+var _model_at := Vector3.ZERO
 var _waypoints: Array[Vector3] = []
 var _waypoint_index := 0
 var _wait_timer := 0.0
 var _suspicion := 0.0
 var _target: Node3D = null
+## The player her suspicion is building on. Climbing onto a plinth won't fool her about this one.
+var _watched: Node3D = null
 var _last_seen := Vector3.ZERO
 var _lost_sight_timer := 0.0
 var _start_transform: Transform3D
@@ -74,6 +81,13 @@ func _ready() -> void:
 		_waypoints.append((marker as Node3D).global_position)
 	flashlight.light_color = CALM_LIGHT
 	GameState.heist_reset.connect(_on_heist_reset)  # only fires on the host
+
+
+func _process(delta: float) -> void:
+	_model_at = _model_at.lerp(global_position, 1.0 - exp(-GLIDE_SPEED * delta))
+	if _model_at.distance_to(global_position) > SNAP_DISTANCE:
+		_model_at = global_position
+	model.global_position = _model_at
 
 
 func _physics_process(delta: float) -> void:
@@ -94,6 +108,10 @@ func _physics_process(delta: float) -> void:
 				_start_chase(seen)
 		else:
 			_suspicion = maxf(_suspicion - delta / DETECT_TIME, 0.0)
+	if seen != null:
+		_watched = seen
+	elif _suspicion <= 0.0:
+		_watched = null
 
 	if _suspicion > 0.0:
 		_stop(delta)  # she stops to look until she's sure, or has lost them
@@ -155,7 +173,7 @@ func _chase(delta: float, seen: Node3D) -> void:
 			_investigate_at(_last_seen)  # go check where they were last seen
 			return
 
-	if is_instance_valid(_target) and global_position.distance_to(_target.global_position) <= CATCH_DISTANCE:
+	if is_instance_valid(_target) and _within_reach(_target):
 		_stop(delta)
 		state = State.CAUGHT
 		GameState.end_heist(false, "Caught by the guard!")
@@ -163,6 +181,11 @@ func _chase(delta: float, seen: Node3D) -> void:
 
 	agent.target_position = _last_seen
 	_move_along_path(CHASE_SPEED, delta)
+
+
+func _within_reach(player: Node3D) -> bool:
+	var to_player := player.global_position - global_position
+	return Vector2(to_player.x, to_player.z).length() <= CATCH_DISTANCE and absf(to_player.y) <= CATCH_HEIGHT
 
 
 # --- Transitions -------------------------------------------------------------
@@ -195,6 +218,7 @@ func _return_to_patrol() -> void:
 
 
 func _on_heist_reset(_respawn_players: bool) -> void:
+	_watched = null
 	global_transform = _start_transform
 	velocity = Vector3.ZERO
 	_suspicion = 0.0
@@ -236,6 +260,8 @@ func _find_visible_player() -> Node3D:
 	var best_distance := INF
 
 	for player: Node3D in get_tree().get_nodes_in_group("players"):
+		if not chasing and player != _watched and player.is_posing_as_statue():
+			continue  # one more statue, unless she was already watching them
 		var chest := player.global_position + Vector3.UP * 1.2
 		var to_player := chest - eye
 		var distance := to_player.length()

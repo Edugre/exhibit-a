@@ -9,6 +9,10 @@ const MOUSE_SENSITIVITY := 0.002
 const INTERACT_RANGE := 4.0
 const INTERACT_PROMPT := "Press E to interact"
 const DROP_PROMPT := "Press E to drop"
+## Physics runs 60 times a second, far less often than a fast screen draws, so the camera and a
+## teammate's model are drawn between steps. Only what's seen moves; the body and its sync don't change.
+const GLIDE_SPEED := 22.0
+const SNAP_DISTANCE := 3.0
 
 ## Accent colour, picked by the host and set before this node enters the tree.
 var variant: int = 0
@@ -21,6 +25,11 @@ var variant: int = 0
 
 var current_interactable: Node = null
 var holding: bool = false
+var _view_from: Vector3
+var _view_to: Vector3
+var _head_offset: Vector3
+var _model_at: Vector3
+var _model_offset: Vector3
 
 
 func _enter_tree() -> void:
@@ -37,6 +46,9 @@ func _ready() -> void:
 	if is_multiplayer_authority():
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
 	interact_ray.add_exception(self)
+	_head_offset = head.position
+	_model_offset = model.position
+	reset_view_smoothing()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -57,11 +69,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		
 	elif event.is_action_pressed("ui_cancel"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE  # Esc frees the mouse
-	elif event is InputEventMouseButton and event.pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
+	elif event is InputEventMouseButton and event.pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED and _can_recapture_mouse():
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED  # click to recapture
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	_glide_between_steps(delta)
+
 	# You only vanish from your own view while you're looking out through this body.
 	if is_multiplayer_authority():
 		model.visible = not camera.current
@@ -72,14 +86,63 @@ func _process(_delta: float) -> void:
 		model.carrying = holding
 
 	# Every peer can see for itself who's on a plinth, so being a statue needs no network traffic.
-	model.statue = not holding and _is_on_plinth()
+	model.statue = not holding and not _holding_throwable() and _is_on_plinth()
+
+
+## While the end card is up, the mouse belongs to its Restart button.
+func _can_recapture_mouse() -> bool:
+	return _heist_is_open()
+
+
+## Bodies stand still once a heist is decided, so nobody wanders through the getaway shot.
+func _heist_is_open() -> bool:
+	return GameState.phase == GameState.Phase.LOBBY or GameState.phase == GameState.Phase.PLAYING
 
 
 func _is_on_plinth() -> bool:
 	for plate: PressurePlate in get_tree().get_nodes_in_group("plates"):
 		if plate.overlaps_body(self):
 			return true
+	return _is_on_statue_spot()
+
+
+func _is_on_statue_spot() -> bool:
+	for spot: Area3D in get_tree().get_nodes_in_group("statue_spots"):
+		if spot.overlaps_body(self):
+			return true
 	return false
+
+
+## True while standing on one of the empty plinths outside with nothing to give them away. The guard
+## takes them for one more statue. The plates indoors don't count: she knows what belongs on those.
+func is_posing_as_statue() -> bool:
+	return not holding and not _holding_throwable() and _is_on_statue_spot()
+
+
+## A statue doesn't hold a marble foot or a handful of coins.
+func _holding_throwable() -> bool:
+	for throwable: Throwable in get_tree().get_nodes_in_group("throwables"):
+		if throwable.holder_id == name.to_int():
+			return true
+	return false
+
+
+func _glide_between_steps(delta: float) -> void:
+	if is_multiplayer_authority():
+		var between := _view_from.lerp(_view_to, Engine.get_physics_interpolation_fraction())
+		head.global_position = between + global_basis * _head_offset
+		return
+	_model_at = _model_at.lerp(global_position, 1.0 - exp(-GLIDE_SPEED * delta))
+	if _model_at.distance_to(global_position) > SNAP_DISTANCE:
+		_model_at = global_position
+	model.global_position = _model_at + _model_offset
+
+
+## Jump straight to where the body is, after a teleport.
+func reset_view_smoothing() -> void:
+	_view_from = global_position
+	_view_to = global_position
+	_model_at = global_position
 
 
 func _physics_process(delta: float) -> void:
@@ -91,11 +154,12 @@ func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 
-	if Input.is_action_just_pressed("jump") and is_on_floor():
+	var free_to_move := _heist_is_open()
+	if free_to_move and Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
 
 	var speed := SNEAK_SPEED if Input.is_action_pressed("sneak") else WALK_SPEED
-	var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+	var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_back") if free_to_move else Vector2.ZERO
 	var direction := (transform.basis * Vector3(input_dir.x, 0.0, input_dir.y)).normalized()
 
 	if direction:
@@ -106,6 +170,10 @@ func _physics_process(delta: float) -> void:
 		velocity.z = move_toward(velocity.z, 0.0, speed)
 
 	move_and_slide()
+	_view_from = _view_to
+	_view_to = global_position
+	if _view_from.distance_to(_view_to) > SNAP_DISTANCE:
+		_view_from = _view_to
 
 
 func _update_interact_target() -> void:
@@ -162,6 +230,7 @@ func teleport(to: Vector3) -> void:
 	if multiplayer.get_remote_sender_id() != 1:
 		return  # only the host may teleport players
 	global_position = to
+	reset_view_smoothing()
 	velocity = Vector3.ZERO
 	rotation.y = 0.0
 	head.rotation.x = 0.0

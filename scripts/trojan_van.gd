@@ -13,11 +13,6 @@ const DRIVE_TIME := 4.2
 const DRIVE_DISTANCE := 80.0
 const DRIVE_SPEED_SCALE := 1.5
 
-## How far the van has come when its bumper meets the exit barrier, and what that does to the barrier.
-const BARRIER_HIT_DISTANCE := 3.65
-const BARRIER_SWING_TIME := 0.55
-const BARRIER_SWING_DEGREES := 118.0
-
 ## The bay light glows brighter while someone's carrying the artifact.
 const BAY_ENERGY_CALM := 1.1
 const BAY_ENERGY_CARRIED := 2.4
@@ -27,7 +22,6 @@ const CAMERA_AIM_HEIGHT := 2.0
 
 var _start: Vector3
 var _sequence: Tween
-var _barrier_hit: bool = false
 var _return_camera: Camera3D
 var _aim: Vector3
 
@@ -38,7 +32,6 @@ var _aim: Vector3
 @onready var exhaust: GPUParticles3D = $Exhaust
 @onready var bay_light: OmniLight3D = $BayLight
 @onready var win_camera: Camera3D = $"../GetawayCamera"
-@onready var barrier_arm: Node3D = $"../ExitBarrier/Hinge"
 
 
 func _ready() -> void:
@@ -57,9 +50,6 @@ func _process(delta: float) -> void:
 	var target := global_position + Vector3.UP * CAMERA_AIM_HEIGHT
 	_aim = _aim.lerp(target, 1.0 - exp(-CAMERA_FOLLOW_SPEED * delta))
 	win_camera.look_at(_aim)
-	if not _barrier_hit and position.x - _start.x >= BARRIER_HIT_DISTANCE:
-		_barrier_hit = true
-		_knock_barrier()
 
 
 func _on_phase_changed(phase: GameState.Phase) -> void:
@@ -96,18 +86,10 @@ func _gallop() -> void:
 	ramp_shape.set_deferred("disabled", true)
 
 
-func _knock_barrier() -> void:
-	var swing := create_tween()
-	swing.tween_property(barrier_arm, "rotation_degrees:y", BARRIER_SWING_DEGREES, BARRIER_SWING_TIME) \
-			.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-
-
 func _reset() -> void:
 	if _sequence:
 		_sequence.kill()
 	position = _start
-	_barrier_hit = false
-	barrier_arm.rotation_degrees.y = 0.0
 	animation.speed_scale = 1.0
 	animation.play(&"van_idle", 0.1)
 	exhaust.emitting = false

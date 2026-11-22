@@ -6,36 +6,44 @@
 [ext_resource type="PackedScene" uid="uid://c7djabat5ogge" path="res://scenes/guard.tscn" id="4_jyhfs"]
 [ext_resource type="PackedScene" path="res://scenes/getaway.tscn" id="5_getaway"]
 [ext_resource type="PackedScene" path="res://scenes/artifact.tscn" id="6_artifact"]
+[ext_resource type="PackedScene" path="res://scenes/exterior_night.tscn" id="7_exterior"]
+[ext_resource type="Script" path="res://scripts/menu_camera.gd" id="8_menu_camera"]
 
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0wfyh"]
-sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
-ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+[sub_resource type="Gradient" id="shade_gradient"]
+offsets = PackedFloat32Array(0, 0.55, 1)
+colors = PackedColorArray(0.02, 0.03, 0.07, 0.82, 0.02, 0.03, 0.07, 0.6, 0.02, 0.03, 0.07, 0)
 
-[sub_resource type="Sky" id="Sky_sugp2"]
-sky_material = SubResource("ProceduralSkyMaterial_0wfyh")
+[sub_resource type="GradientTexture2D" id="shade_texture"]
+gradient = SubResource("shade_gradient")
+width = 256
+height = 4
 
-[sub_resource type="Environment" id="Environment_jyhfs"]
-background_mode = 2
-sky = SubResource("Sky_sugp2")
-glow_enabled = true
+[sub_resource type="SystemFont" id="title_font"]
+font_names = PackedStringArray("Palatino Linotype", "Book Antiqua", "Georgia", "serif")
+font_weight = 700
+
+[sub_resource type="SystemFont" id="tagline_font"]
+font_names = PackedStringArray("Palatino Linotype", "Book Antiqua", "Georgia", "serif")
+font_italic = true
 
 [node name="Main" type="Node" unique_id=1070285452]
 script = ExtResource("1_o5qli")
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1332265728]
-environment = SubResource("Environment_jyhfs")
-
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1992047428]
-transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
-shadow_enabled = true
 
 [node name="World" type="Node3D" parent="." unique_id=1981863584]
 
 [node name="Museum" parent="World" unique_id=810531496 instance=ExtResource("2_0wfyh")]
 
+[node name="Exterior" parent="World" instance=ExtResource("7_exterior")]
+
 [node name="Getaway" parent="World" instance=ExtResource("5_getaway")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, -4.65, 24.6)
 
 [node name="Artifact" parent="World" instance=ExtResource("6_artifact")]
+
+[node name="MenuCamera" type="Camera3D" parent="World"]
+script = ExtResource("8_menu_camera")
+menu_path = NodePath("../../UI/Menu")
+shade_path = NodePath("../../UI/MenuShade")
 
 [node name="Players" type="Node3D" parent="World" unique_id=1009031655]
 
@@ -48,19 +56,48 @@ spawn_path = NodePath("../World/Players")
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=707257813]
 
+[node name="MenuShade" type="TextureRect" parent="UI"]
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 620.0
+grow_vertical = 2
+mouse_filter = 2
+texture = SubResource("shade_texture")
+expand_mode = 1
+
 [node name="Menu" type="VBoxContainer" parent="UI" unique_id=154981161]
 unique_name_in_owner = true
-anchors_preset = 8
-anchor_left = 0.5
+anchors_preset = 4
 anchor_top = 0.5
-anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -20.0
+offset_left = 72.0
 offset_top = -20.0
-offset_right = 20.0
+offset_right = 432.0
 offset_bottom = 20.0
-grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 8
+
+[node name="Title" type="Label" parent="UI/Menu"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.94, 0.85, 0.66, 1)
+theme_override_colors/font_outline_color = Color(0.03, 0.04, 0.09, 0.8)
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = SubResource("title_font")
+theme_override_font_sizes/font_size = 72
+text = "EXHIBIT A"
+
+[node name="Tagline" type="Label" parent="UI/Menu"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.88, 0.84, 0.76, 1)
+theme_override_colors/font_outline_color = Color(0.03, 0.04, 0.09, 0.8)
+theme_override_constants/outline_size = 5
+theme_override_fonts/font = SubResource("tagline_font")
+theme_override_font_sizes/font_size = 24
+text = "Please do not touch. She will know."
+
+[node name="Gap" type="Control" parent="UI/Menu"]
+custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
 
 [node name="AddressInput" type="LineEdit" parent="UI/Menu" unique_id=677970089]
 unique_name_in_owner = true
@@ -77,6 +114,36 @@ unique_name_in_owner = true
 layout_mode = 2
 text = "Join
 "
+
+[node name="GraphicsOption" type="OptionButton" parent="UI/Menu"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Auto picks for this computer. Low is for weak laptops."
+selected = 0
+item_count = 4
+popup/item_0/text = "Graphics: Auto"
+popup/item_0/id = 0
+popup/item_1/text = "Graphics: Low"
+popup/item_1/id = 1
+popup/item_2/text = "Graphics: Medium"
+popup/item_2/id = 2
+popup/item_3/text = "Graphics: High"
+popup/item_3/id = 3
+
+[node name="WeatherOption" type="OptionButton" parent="UI/Menu"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "Only the host's choice counts. Surprise rolls a new night every heist."
+selected = 0
+item_count = 4
+popup/item_0/text = "Weather: Surprise"
+popup/item_0/id = 0
+popup/item_1/text = "Weather: Clear"
+popup/item_1/id = 1
+popup/item_2/text = "Weather: Rain"
+popup/item_2/id = 2
+popup/item_3/text = "Weather: Snow"
+popup/item_3/id = 3
 
 [node name="StatusLabel" type="Label" parent="UI/Menu" unique_id=214250854]
 unique_name_in_owner = true

@@ -1,6 +1,8 @@
 [gd_scene format=3 uid="uid://drakn8smska4a"]
 
 [ext_resource type="Script" uid="uid://8toj8wgs1qrn" path="res://scripts/hud.gd" id="1_rbyyf"]
+[ext_resource type="Script" path="res://scripts/library_card.gd" id="card"]
+[ext_resource type="AudioStream" path="res://assets/exterior/stamp.wav" id="stamp_sound"]
 
 [node name="Hud" type="CanvasLayer" unique_id=2078204040]
 script = ExtResource("1_rbyyf")
@@ -47,12 +49,14 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
+offset_left = -380.0
+offset_top = -235.0
+offset_right = 380.0
+offset_bottom = 235.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("card")
+stamp_sound_path = NodePath("StampSound")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="EndPanel" unique_id=240589983]
 layout_mode = 2
@@ -69,3 +73,6 @@ layout_mode = 2
 unique_name_in_owner = true
 layout_mode = 2
 text = "Restart"
+
+[node name="StampSound" type="AudioStreamPlayer" parent="EndPanel"]
+stream = ExtResource("stamp_sound")

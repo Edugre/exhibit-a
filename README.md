@@ -38,20 +38,26 @@ You have **3 minutes**. The librarian patrols the gallery with a flashlight: if 
 | Look | Mouse |
 | Jump | Space |
 | Sneak (move slower) | Ctrl |
-| Interact: pick up the book or the heel, drop the book | E |
-| Throw the heel | Left mouse button |
+| Interact: pick up the book, the heel or a coin; drop the book | E |
+| Throw the heel or a coin | Left mouse button |
 | Free / recapture the mouse | Esc / click |
 
 ## Implemented features
 - **Online co-op for two players:** one player hosts, the other joins by IP. The host runs all game rules and both screens stay in sync.
-- **One museum gallery, a vault, and an outdoor extraction area** with the getaway van.
+- **One museum gallery and a vault inside a full museum exterior.** The heist starts on the plaza at night in front of a Fifth Avenue-style museum front, built at true scale from OpenStreetMap data, with the getaway van parked at the curb. The block is walkable all the way round, with traffic, pigeons, fountains and sound.
 - **Cooperative puzzle:** two pressure plinths that must be held at the same time open the vault door. Each plinth lights a picture lamp on the door while it is pressed.
 - **Artifact:** pick up, carry, drop, and deliver the book. Only one player can hold it at a time, and you can't carry the book and the heel at once.
 - **Guard AI:** patrols a waypoint loop, detects players with a flashlight vision cone blocked by walls, chases, investigates noises and last-seen positions, then returns to patrol. Catching a player ends the heist.
 - **Throwable and noise:** the Heel of Achilles can be thrown. Its impact makes a noise that sends the guard within 8 m to investigate.
 - **Heist rules:** 3-minute countdown, win/lose outcomes, and a synchronized restart that resets the players, guard, door, plinths, book, and heel.
 - **HUD:** time remaining, artifact status (locked / vault open / carried by you or your partner / dropped / in the van), guard alert indicator, waiting-for-partner message, and the end screen.
-- **Getaway cutscene** on a win: the van drives off through the exit barrier before the end screen appears.
+- **Getaway cutscene** on a win: the van gallops off down the avenue before the end screen appears.
+- **More ways to sneak and distract:** fountain coins are a second, quieter throwable. Standing still on an empty plinth outside passes you off as a statue, unless the guard was already watching you. A flock of pigeons scared into the air brings her over.
+- **She Will Know alarm:** once the book leaves its stand, the floodlights go red, a bell and siren start, and the stone librarian on the roof turns to watch.
+- **Weather:** the host rolls clear, rain or snow for every heist (or picks one in the menu), and both players see the same night.
+- **Library card end screen:** the result is typed onto the book's library card and stamped.
+- **Opening shot:** the menu opens on a camera move from the moon down to the curb.
+- **Graphics levels:** Low, Medium and High, picked per computer and lowered automatically on a weak laptop. The menu can override it.
 
 ## Technology stack & dependencies
 - **Godot 4.7.2 stable**, Standard edition, scripted entirely in **GDScript**.
@@ -66,6 +72,9 @@ You have **3 minutes**. The librarian patrols the gallery with a flashlight: if 
 3. **Two players on one machine:** Debug → Customize Run Instances → Enable Multiple Instances, set to 2, then press F5. Click **Host** in one window and **Join** in the other (leave the address blank for `127.0.0.1`).
 4. **Two machines on the same network:** each player runs the project. One clicks **Host**; the other types the host's local IP address and clicks **Join**. The host's firewall must allow UDP port 7777.
 5. The heist starts automatically once both players are connected.
+
+### Graphics levels
+The game picks Low, Medium or High for each computer and steps down by itself if it runs slowly. The Graphics option in the menu overrides that. Low is built for weak laptops: it draws at a lower resolution and scales up, and the floodlights and their shadows come from a baked texture instead of real lights.
 
 ## Engine abstraction disclosure
 | Engine features used | External packages/assets | Systems our team wrote |
@@ -91,6 +100,25 @@ You have **3 minutes**. The librarian patrols the gallery with a flashlight: if 
    - GPUParticles3D and a second Camera3D (the van's exhaust and the getaway shot)
    - RigidBody3D, continuous collision and contact monitoring (throwable physics and impacts)
    - AudioStreamPlayer3D (the heel's landing sound)
+   - StaticBody3D with box, cylinder, convex and concave collision shapes (the museum exterior, including the smooth ramp under the stairs and the block's full outline)
+   - Spatial and sky shaders, ShaderMaterial (the exterior's world-space limestone, carved stone, cast bronze, windblown banners, pigeon wings, asphalt, plaza paving, leaves, flags, steam, headlamp pools, night glass, the distant city's windows, fountain water and jets, and night sky)
+   - WorldEnvironment, tonemapping, SSAO, glow and fog (the exterior's night look)
+   - DirectionalLight3D and shadowed SpotLight3D (moonlight and floodlights on the exterior)
+   - SpotLight3D projector texture (the window's star lattice thrown across the terrace)
+   - GPUParticles3D (moths round the exterior's lamps, steam from the street)
+   - MultiMeshInstance3D (the pigeons, plaza trees and traffic, drawn in batches)
+   - AudioStreamPlayer and AudioStreamPlayer3D (the city's soundscape, fountains, crickets, pigeons and car horns)
+   - Global shader uniforms and a shader include (the alarm, rain and snow reaching every exterior material at once)
+   - MultiMeshInstance3D with the fall worked out in the vertex shader (rain and snow, no simulation)
+   - Screen-space reflections (puddles, on High only)
+   - SystemFont, StyleBoxTexture and Tween (the library card and the alarm's words)
+   - GradientTexture2D and a Camera3D move (the opening shot behind the menu)
+   - Automatic mesh LOD from the glTF importer (carved stone at a distance)
+   - Viewport 3D scaling with FSR, FXAA and MSAA (the graphics levels in scripts/exterior_quality.gd)
+   - ConfigFile (remembering the graphics level picked in the menu)
+   - Physics interpolation fraction (drawing the camera and models between physics steps, so movement is smooth on fast screens)
+   - ReflectionProbe with custom ambient light (the rooms' dim indoor air at night)
+   - NavigationServer3D baking from collision shapes (the guard's map, out through the doors to the curb)
 
 ### Systems we wrote
 - Heist timer, outcome and synchronized restart (scripts/game_state.gd)
@@ -101,14 +129,22 @@ You have **3 minutes**. The librarian patrols the gallery with a flashlight: if 
 - Artifact pickup, carrying and dropping (scripts/artifact.gd)
 - Delivery and win condition (scripts/drop_zone.gd)
 - Player movement, interaction and throw requests (scripts/player.gd)
-- HUD and end screen (scripts/hud.gd)
+- HUD and end screen (scripts/hud.gd), and the library card it fills in (scripts/library_card.gd)
+- Pigeons as an alarm: a scared flock calls the guard (scripts/pigeon_noise.gd). The host runs the flock and tells the client, so both players see the same birds (scripts/exterior_pigeons.gd)
+- Passing for a statue on the plinths outside (scripts/player.gd, scripts/guard.gd)
+- Fountain coins as a second, quieter throwable (scenes/coin.tscn, scripts/throwable.gd)
+- Weather per heist, rolled by the host and sent to the client (scripts/exterior_weather.gd)
+- The She Will Know alarm, played by each peer from the artifact state it already has (scripts/exterior_alarm.gd)
+- Graphics levels and the automatic step down (scripts/exterior_quality.gd)
+- Cosmetic exterior life: flickering lanterns, front doors that open for anyone near them, traffic that obeys the signal and honks at people in the road, and the opening shot (scripts/exterior_flicker.gd, scripts/exterior_doors.gd, scripts/exterior_traffic.gd, scripts/menu_camera.gd). Each peer runs its own, and none of it touches game state
 
 ## Known limitations
 - Only one gallery room, one vault, and one guard. Additional rooms and procedural room ordering are planned for HW #4.
 - Sneaking only slows the player down. It doesn't yet affect how quickly the guard notices you or make footsteps quieter.
 - Exactly two players. There is no lobby or matchmaking: the client must type the host's IP address, and playing across different networks needs port 7777 forwarded on the host's router.
 - If the host quits, the client is sent back to the main menu; the session can't continue without the host.
-- There is one throwable, and the heel is the only gadget so far.
+- There are two throwables, the heel and the fountain coins, and no other gadget yet.
+- The whole game takes place at night.
 
 ## Asset credits
 - Player and guard characters (`assets/characters/`): made for this project in Blender. Editable sources are in `assets/characters/source/`.
@@ -117,6 +153,11 @@ You have **3 minutes**. The librarian patrols the gallery with a flashlight: if 
 - The portrait door and its label (`assets/door/`): made for this project in Blender. Editable source is in `assets/door/source/`.
 - The Last Book of Alexandria and its display stand (`assets/artifact/`): made for this project in Blender. Editable source is in `assets/artifact/source/`.
 - Trojan Van, drop zone and road (`assets/getaway/`): made for this project in Blender. Editable source is in `assets/getaway/source/`.
+- Museum exterior (`assets/exterior/`): made for this project in Blender. Editable source is in `assets/exterior/source/`.
+- The museum's outline, street layout and the positions of trees, benches and the obelisk come from OpenStreetMap data, © OpenStreetMap contributors, available under the Open Database License (openstreetmap.org/copyright).
+- Lettering on the exterior's banners, carvings and signs is set in Palatino Linotype and Arial, rendered into the textures.
+- The exterior's sounds (`assets/exterior/*.wav`), including the alarm and the card's stamp: made for this project, generated by script from noise and sine waves.
+- The library card and its stamps (`ui/library_card.png`, `ui/stamp_*.png`): made for this project, drawn by script (`assets/exterior/source/tools/make_card.py`).
 
 ## Contributions
 Eduardo Goncalvez (PID: 6526311)

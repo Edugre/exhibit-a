@@ -10,6 +10,8 @@ const PLAYER_SCENE := preload("res://scenes/player.tscn")
 @onready var host_button: Button = %HostButton
 @onready var join_button: Button = %JoinButton
 @onready var status_label: Label = %StatusLabel
+@onready var graphics_option: OptionButton = %GraphicsOption
+@onready var weather_option: OptionButton = %WeatherOption
 @onready var players_root: Node3D = $World/Players
 @onready var spawn_points: Array[Node] = $World/Museum/SpawnPoints.get_children()
 @onready var player_spawner: MultiplayerSpawner = $PlayerSpawner
@@ -19,9 +21,16 @@ func _ready() -> void:
 	player_spawner.spawn_function = _create_player
 	host_button.pressed.connect(_on_host_pressed)
 	join_button.pressed.connect(_on_join_pressed)
+	graphics_option.selected = _graphics().choice + 1  # Auto is -1, so the list runs Auto, Low, Medium, High
+	graphics_option.item_selected.connect(func(index: int) -> void: _graphics().choose(index - 1))
+	weather_option.item_selected.connect(func(index: int) -> void: get_tree().get_first_node_in_group("exterior_weather").forced = index - 1)  # Surprise is -1, then Clear, Rain, Snow
 	NetworkManager.connected_to_host.connect(_on_connected_to_host)
 	NetworkManager.connection_failed.connect(_on_connection_failed)
 	NetworkManager.host_disconnected.connect(_on_host_disconnected)
+
+
+func _graphics() -> Node:
+	return get_tree().get_first_node_in_group("graphics_quality")
 
 
 # --- Menu buttons ---------------------------------------------------------
@@ -57,7 +66,7 @@ func _on_connected_to_host() -> void:
 
 
 func _on_connection_failed() -> void:
-	status_label.text = "Couldn't connect. Check the IP and that the host is running."
+	status_label.text = "Couldn't connect. Check the IP, that the host is running, and that the game isn't full."
 	_set_buttons_enabled(true)
 
 
@@ -77,6 +86,9 @@ func _spawn_player(peer_id: int) -> void:
 		"variant": _next_free_variant(),
 	})
 	if players_root.get_child_count() == 2:
+		# Whoever was waiting may have wandered, even into the vault that's about to close.
+		var waiting := players_root.get_child(0)
+		waiting.teleport.rpc_id(waiting.name.to_int(), spawn_points[0].global_position)
 		GameState.start_heist()  # both players are in: the heist begins
 
 

@@ -73,6 +73,23 @@ throw={
 
 3d/physics_engine="Jolt Physics"
 
+[shader_globals]
+
+exterior_alarm={
+"type": "float",
+"value": 0.0
+}
+
+exterior_snow={
+"type": "float",
+"value": 0.0
+}
+
+exterior_wet={
+"type": "float",
+"value": 0.0
+}
+
 [rendering]
 
 rendering_device/driver.windows="d3d12"
