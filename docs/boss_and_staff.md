@@ -33,6 +33,20 @@ calmer, and the one deadly thing in the building is her.
 **Warnings**
 - The bell is heard where it rings, and "She's coming…" shows on both players' screens.
 
+## How many staff (added later)
+Every room scene still comes with its own staff, but a run doesn't keep them all: it used to get up to five,
+plus the librarian, which was too many. `scripts/guard_budget.gd` decides, on the host, at every build:
+
+1. A room keeps at most one of its staff (the Security Office loses its second).
+2. The run gets one staff for every two rooms behind the lobby, rounded up: three pool rooms and the vault
+   make four rooms, so **two staff**, and three guards in all with the librarian.
+3. The vault gallery keeps hers first: the plates are the last test.
+4. The rest are drawn from the pool rooms that have staff, by Fisher–Yates on the run's seed.
+
+The host sends each room's surviving staff with the room's spawn data, and every peer drops the others
+before the room enters the tree, so the client always has the same guards. Tune it with
+`GuardBudget.ROOMS_PER_STAFF`.
+
 ## Where it changes things
 | Change | File(s) | Owner |
 |---|---|---|

@@ -33,6 +33,12 @@ uniform float dullness = 0.0;
 // Walls: scuffs and grime gather below this height, where feet, bags and trolleys hit. 0 = all over.
 uniform float scuff_height = 0.0;
 
+// Something that moves, like a door, can keep the pattern it has at rest instead of sliding through it:
+// turn on rest_space and keep rest_matrix set to its transform at rest (scripts/vault_door.gd does).
+// Off by default, so every other surface is laid on exactly as before.
+uniform bool rest_space = false;
+uniform mat4 rest_matrix = mat4(1.0);
+
 varying vec3 world_pos;
 varying vec3 world_nor;
 
@@ -41,8 +47,9 @@ float hash(vec2 p) {
 }
 
 void vertex() {
-	world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
-	world_nor = normalize((MODEL_MATRIX * vec4(NORMAL, 0.0)).xyz);
+	mat4 placed = rest_space ? rest_matrix : MODEL_MATRIX;
+	world_pos = (placed * vec4(VERTEX, 1.0)).xyz;
+	world_nor = normalize((placed * vec4(NORMAL, 0.0)).xyz);
 }
 
 void fragment() {
