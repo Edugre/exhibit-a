@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/lobby/banner_gift.gltf" id="1_model"]
+
+[node name="BannerGift" type="Node3D"]
+
+[node name="Mesh" parent="." instance=ExtResource("1_model")]
+

@@ -1,0 +1,22 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/lobby/ticket_desk.gltf" id="1_model"]
+
+[sub_resource type="BoxShape3D" id="Shape_desk"]
+size = Vector3(2.5, 1.05, 0.78)
+
+[node name="TicketDesk" type="Node3D"]
+
+[node name="Mesh" parent="." instance=ExtResource("1_model")]
+
+[node name="Body" type="StaticBody3D" parent="."]
+
+[node name="Shape" type="CollisionShape3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.525, 0)
+shape = SubResource("Shape_desk")
+
+[node name="LampLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.85, 1.36, -0.04)
+light_color = Color(1, 0.86, 0.6, 1)
+light_energy = 0.6
+omni_range = 2.5

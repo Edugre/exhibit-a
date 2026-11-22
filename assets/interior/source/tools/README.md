@@ -33,6 +33,9 @@ Plain Python, run by hand, writing into `assets/interior/`. Same pipeline as the
   gallery bench. From the repo root: `python assets/interior/source/tools/barrier_bench_art.py assets/interior/barrier_bench`,
   then `blender -b --factory-startup --python assets/interior/source/tools/barrier_bench_build.py -- assets/interior/barrier_bench`.
   Each prop is a `.gltf` with the set's one atlas kept beside it, so the three share a texture.
+- `lobby_art.py`, `lobby_build.py` (P3.5): the lobby set (ticket desk, coat check, donation box, map board, two
+  banners), the same way, into `assets/interior/lobby`. `int_mesh.material()` takes `alpha` (the donation box's glass)
+  and `emission` (the desk lamp's shade).
 - `signs_art.py`, `signs_build.py` (P1.6): the wet-floor A-frame and the "Do not touch" stand, the same way,
   into `assets/interior/signs`.
 

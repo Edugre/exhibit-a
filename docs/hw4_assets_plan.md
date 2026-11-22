@@ -138,7 +138,7 @@ Each set gives a room its own silhouette and colour, so a shuffled run is still 
 | P3.2 | `archives` | Twin Archives | Card-catalogue cabinets, a rolling ladder, scroll racks, green reading lamps (emissive), a reading table with open books. |
 | P3.3 | `arms` | Laser Corridor ("Hall of Arms") | Two or three suits of armour, a spear rack, and Achilles' shield in a case ("heel sold separately"). |
 | P3.4 | `office` | Security Office | A CCTV monitor wall (screen material only here; the static effect is in P5.2), a desk with a coffee mug and logbook, a key board, lockers, and the librarian's cardigan over a chair. |
-| P3.5 | `lobby` | Entrance lobby | A ticket desk, coat check, donation box, a "Today: The Last Book of Alexandria" banner, and a museum map board. The lobby connects to the exterior's front doors. |
+| P3.5 ✅ | `lobby` | Entrance lobby | A ticket desk, coat check, donation box, a "Today: The Last Book of Alexandria" banner, and a museum map board. The lobby connects to the exterior's front doors. Done, plus a gift shop banner, the kit surfaces, trim and doorways on the lobby. |
 
 ### Tier P4: Ambient sound *(independent: start any time)*
 
