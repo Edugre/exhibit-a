@@ -27,6 +27,17 @@ Plain Python, run by hand, writing into `assets/interior/`. Same pipeline as the
   `blender -b --factory-startup --python shelves_build.py -- assets/interior/shelves scenes/props`, then
   `python make_shelves_art.py assets/interior/shelves`.
 
+- `sculpture_figures.py`, `sculpture_layout.py`, `sculpture_build.py`, `make_sculpture_art.py` (P3.1): the Sculpture Hall's
+  Venus, Discus Thrower and bust of Homer, Homer's pier, Icarus's wings and the "away for cleaning" plinth. The statues are
+  carved in plain numpy as distance fields (smooth unions of round cones and ellipsoids, chips and breaks cut out of them)
+  and turned into a mesh by surface nets. `sculpture_build.py` thins each to about 3k triangles (faces and hands keep the
+  most), bakes the shadow in the fine carving into `assets/interior/source/sculpture_<statue>_ao.png`, builds the pier and
+  wings, and writes the `.glb`s, their import settings and the prop scenes. Then `make_sculpture_art.py` draws the one
+  texture: the labels, the statues' grime (from their meshes and bakes), the pier's green marble and the feathers.
+  The statues wear `assets/plates/statue_marble.tres`, the marble players turn into, with the grime as a multiplying overlay.
+  `blender -b --factory-startup --python sculpture_build.py -- assets/interior/sculpture scenes/props`, then
+  `python make_sculpture_art.py assets/interior/sculpture`. Both rebuild their outputs exactly.
+
 - `int_mesh.py`, `int_art.py`: small shared helpers for script-built props. `int_mesh.py` (Blender) makes parts,
   fits them into an atlas and lays printed faces; `int_art.py` (Pillow) has noise, streaks and fitted fonts.
 - `barrier_bench_art.py`, `barrier_bench_build.py` (P1.4): the brass rope-barrier post, the velvet rope and the

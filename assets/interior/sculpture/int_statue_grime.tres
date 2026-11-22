@@ -1,0 +1,9 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/interior/sculpture/int_sculpture_albedo.png" id="1_albedo"]
+
+[resource]
+blend_mode = 3
+shading_mode = 0
+disable_fog = true
+albedo_texture = ExtResource("1_albedo")

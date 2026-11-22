@@ -1,0 +1,39 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/sculpture/bust_homer.glb" id="2_mesh"]
+[ext_resource type="Material" path="res://assets/interior/sculpture/int_statue_grime.tres" id="3_grime"]
+[ext_resource type="Material" path="res://assets/interior/sculpture/int_label_bust_homer.tres" id="4_label"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_pier"]
+size = Vector3(0.440, 1.090, 0.440)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_bust"]
+size = Vector3(0.351, 0.674, 0.225)
+
+[sub_resource type="QuadMesh" id="QuadMesh_label"]
+material = ExtResource("4_label")
+size = Vector2(0.260, 0.112)
+
+[node name="StatueBustHomer" type="Node3D"]
+editor_description = "Homer: a bearded marble bust, the tip of his nose long gone, on a green marble pier (asset P3.1). 1.76 m to the top: as tall as cover, but too narrow to hide behind. Origin on the floor; the label faces +z."
+
+[node name="Mesh" parent="." instance=ExtResource("2_mesh")]
+
+[node name="bust_homer" parent="Mesh"]
+material_overlay = ExtResource("3_grime")
+
+[node name="Plaque" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000, 0.780, 0.165)
+mesh = SubResource("QuadMesh_label")
+
+[node name="Body" type="StaticBody3D" parent="."]
+
+[node name="Pier" type="CollisionShape3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000, 0.545, 0.000)
+shape = SubResource("BoxShape3D_pier")
+
+[node name="Bust" type="CollisionShape3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.003, 1.427, 0.011)
+shape = SubResource("BoxShape3D_bust")
+
+[editable path="Mesh"]

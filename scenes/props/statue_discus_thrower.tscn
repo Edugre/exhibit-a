@@ -1,0 +1,42 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/plates/plinth.glb" id="1_plinth"]
+[ext_resource type="PackedScene" path="res://assets/interior/sculpture/discus_thrower.glb" id="2_mesh"]
+[ext_resource type="Material" path="res://assets/interior/sculpture/int_statue_grime.tres" id="3_grime"]
+[ext_resource type="Material" path="res://assets/interior/sculpture/int_label_discus_thrower.tres" id="4_label"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_plinth"]
+size = Vector3(1.120, 0.600, 1.120)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_figure"]
+size = Vector3(0.720, 1.230, 0.400)
+
+[sub_resource type="QuadMesh" id="QuadMesh_label"]
+material = ExtResource("4_label")
+size = Vector2(0.780, 0.335)
+
+[node name="StatueDiscusThrower" type="Node3D"]
+editor_description = "The Discus Thrower, wound up to throw, on a museum plinth (asset P3.1). He moves towards -x with the discus swung back high towards +x. Origin on the floor; the label faces +z."
+
+[node name="Plinth" parent="." instance=ExtResource("1_plinth")]
+
+[node name="Mesh" parent="." instance=ExtResource("2_mesh")]
+
+[node name="discus_thrower" parent="Mesh"]
+material_overlay = ExtResource("3_grime")
+
+[node name="Plaque" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000, 0.275, 0.504)
+mesh = SubResource("QuadMesh_label")
+
+[node name="Body" type="StaticBody3D" parent="."]
+
+[node name="Plinth" type="CollisionShape3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000, 0.300, 0.000)
+shape = SubResource("BoxShape3D_plinth")
+
+[node name="Figure" type="CollisionShape3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.060, 1.285, -0.000)
+shape = SubResource("BoxShape3D_figure")
+
+[editable path="Mesh"]

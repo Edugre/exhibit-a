@@ -1,0 +1,14 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/statue_plinth.tscn" id="1_plinth"]
+[ext_resource type="Material" path="res://assets/interior/sculpture/int_label_galatea.tres" id="2_label"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_label"]
+material = ExtResource("2_label")
+size = Vector2(0.780, 0.335)
+
+[node name="PlinthAwayForCleaning" instance=ExtResource("1_plinth")]
+editor_description = "An empty plinth: Galatea is away for cleaning (asset P3.1). It is scenes/statue_plinth.tscn with its own label, so a player standing on it empty-handed still passes for a statue."
+
+[node name="Plaque" parent="."]
+mesh = SubResource("QuadMesh_label")

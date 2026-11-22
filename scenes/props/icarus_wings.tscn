@@ -1,0 +1,13 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/sculpture/icarus_wings.glb" id="1_mesh"]
+
+[node name="IcarusWings" type="Node3D"]
+editor_description = "Icarus's wings: feathers bound to a reed frame with leather and wax, the wax melted and a few feathers lost (asset P3.1). 3.5 m across, hung on three wires; the origin is the harness, to be placed 3.2 m up so the wires reach a 4 m ceiling. Art only: no collision. Their lowest feather stays above 2.6 m."
+
+[node name="Mesh" parent="." instance=ExtResource("1_mesh")]
+
+[node name="wires" parent="Mesh"]
+cast_shadow = 0
+
+[editable path="Mesh"]
