@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/fixtures/exit_sign.glb" id="1_mesh"]
+
+[node name="ExitSign" type="Node3D"]
+editor_description = "A lit green EXIT sign (asset P1.5). Origin: the centre of its back, on the wall, facing +z. The arrow points to its right as you face it, so hang it to the left of the way out. No collision."
+
+[node name="Mesh" parent="." instance=ExtResource("1_mesh")]

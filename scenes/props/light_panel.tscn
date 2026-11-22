@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/fixtures/light_panel.glb" id="1_mesh"]
+
+[node name="LightPanel" type="Node3D"]
+editor_description = "An office light panel, flush with the ceiling (asset P1.5). Origin: the centre of its face at ceiling height, facing down. No collision."
+
+[node name="Mesh" parent="." instance=ExtResource("1_mesh")]

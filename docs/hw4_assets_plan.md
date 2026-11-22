@@ -116,7 +116,7 @@ In order. Cover comes first because guards and stealth depend on it.
 | P1.2 ✅ | **Glass display cases** | Tall and low variants, with simple contents (pottery, coins, scrolls). The glass blocks movement but not sight, so collision is on and the guard's line of sight passes through. Check this with `guard.gd`'s ray (its collision mask). |
 | P1.3 ✅ | **Framed paintings + picture lights** | Five or six paintings in three frame sizes, with myth jokes (e.g. *"Narcissus, Self-Portrait #47"*). The picture light is a small emissive bar, not a real light, except for one optional real spot per room. |
 | P1.4 ✅ | **Rope barriers + benches** | Brass posts and red rope (posts have collision, the rope doesn't), and a padded gallery bench. |
-| P1.5 | **Ceiling fixtures** | Pendant lamp, recessed light panel, an emissive EXIT sign (green, reads well at night), and a wall vent. |
+| P1.5 ✅ | **Ceiling fixtures** | Pendant lamp, recessed light panel, an emissive EXIT sign (green, reads well at night), and a wall vent. |
 | P1.6 ✅ | **Info stand + floor sign** | "Do not touch" stand and "Wet floor" A-frame are done. A "Gallery closed" sign is still open. |
 
 ### Tier P2: Gameplay props *(the room tasks need these to be fully playable)*
