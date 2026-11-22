@@ -5,7 +5,7 @@ extends Node3D
 ## rooms, then the vault) when it starts hosting, and again on every restart. The RoomSpawner
 ## (MultiplayerSpawner) builds the same rooms on the client, including one who joins late, so
 ## node paths match for the synchronizers and interact requests. RoomOrder (task A3) picks the pool
-## rooms and their order from a new seed every build.
+## rooms and their order from a new seed every build, and GuardBudget picks which night staff stay.
 ##
 ## Other systems ask this node (group "museum") where things are, instead of hard-coding paths.
 
@@ -32,6 +32,10 @@ var _build := 0
 var _seeds := RandomNumberGenerator.new()
 ## Room scene path -> depth in metres, measured once.
 var _depths := {}
+## Room scene path -> the names of its night staff, in scene order, read once.
+var _staff := {}
+## How many night staff the current build kept, for debugging.
+var last_staff := 0
 
 @onready var _rooms_root: Node3D = $Rooms
 @onready var _plaza: Node3D = $Plaza
@@ -64,13 +68,25 @@ func build() -> void:
 		paths.append(RoomCatalog.POOL[index])
 	paths.append(RoomCatalog.VAULT)
 
+	# Which staff stay: GuardBudget's rule, over every room behind the lobby (the vault keeps hers first)
+	var behind: Array = []
+	for path in paths.slice(1):
+		behind.append(_staff_of(path))
+	var keep := GuardBudget.pick(behind, behind.size() - 1, last_seed)
+	last_staff = 0
+	for names: PackedStringArray in keep:
+		last_staff += names.size()
+	print("  night staff: %d of %d, and the librarian" % [last_staff, _count(behind)])
+
 	var door := FRONT_DOOR
 	var last: Room = null
-	for path in paths:
+	for i in paths.size():
+		var path := paths[i]
 		last = _spawner.spawn({
 			"path": path,
 			"name": "%s_%d" % [path.get_file().get_basename(), _build],
 			"door": door,
+			"staff": _staff_of(path) if i == 0 else keep[i - 1],
 		})
 		if last.exit:
 			door = last.position + last.exit.position
@@ -85,6 +101,12 @@ func _create_room(data: Dictionary) -> Node:
 	var room := (load(data.path) as PackedScene).instantiate() as Room
 	room.name = data.name
 	room.position = data.door - (room.get_node(^"Entry") as Node3D).position
+	# The staff the host's GuardBudget left out never enter the tree, on any peer
+	var keep: PackedStringArray = data.get("staff", PackedStringArray())
+	for child in room.get_children():
+		if child is Staff and not keep.has(child.name):
+			room.remove_child(child)
+			child.free()
 	return room
 
 
@@ -111,6 +133,26 @@ func _depth_of(path: String) -> float:
 		_depths[path] = entry_z - _deepest_z(room)
 		room.free()
 	return _depths[path]
+
+
+## The names of a room scene's night staff, in scene order, read once from a throwaway copy.
+func _staff_of(path: String) -> PackedStringArray:
+	if not _staff.has(path):
+		var names := PackedStringArray()
+		var room := (load(path) as PackedScene).instantiate()
+		for child in room.get_children():
+			if child is Staff:
+				names.append(child.name)
+		room.free()
+		_staff[path] = names
+	return _staff[path]
+
+
+func _count(lists: Array) -> int:
+	var total := 0
+	for names: PackedStringArray in lists:
+		total += names.size()
+	return total
 
 
 func _names(order: PackedInt32Array) -> PackedStringArray:

@@ -15,8 +15,7 @@ extends Node
 const SLOTS := Carryable.SLOTS
 const SLOT_PX := 84
 const ICON_PX := 128
-const SPIN_SPEED := 0.8  # radians a second, for the item in hand's icon
-const ICON_ANGLE := Vector3(-0.7, 0.7, 0.0)  # how the other icons sit
+const ICON_ANGLE := Vector3(-0.7, 0.7, 0.0)  # how every icon sits; none of them turn
 const FULL_TEXT := "Hotbar full: drop something [G]"
 
 const BG := Color(0.06, 0.05, 0.04, 0.62)
@@ -100,7 +99,7 @@ func _process(delta: float) -> void:
 	_known = now
 
 	if _root:
-		_refresh_ui(delta)
+		_refresh_ui()
 
 
 # --- Host only ------------------------------------------------------------------------
@@ -169,7 +168,7 @@ func _make_cell(index: int) -> Control:
 	panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	panel.add_theme_stylebox_override("panel", _style_idle)
 
-	# The icon: the item's own model, in a little world of its own, lit and turning
+	# The icon: the item's own model, in a little world of its own, lit and still
 	var view_box := SubViewportContainer.new()
 	view_box.stretch = true
 	view_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -211,7 +210,7 @@ func _make_cell(index: int) -> Control:
 	return panel
 
 
-func _refresh_ui(delta: float) -> void:
+func _refresh_ui() -> void:
 	var me := player.name.to_int()
 	var book := player.get("holding") as bool
 	var hand := in_hand()
@@ -222,11 +221,6 @@ func _refresh_ui(delta: float) -> void:
 			_set_icon(cell, item)
 		var picked: bool = index == player.selected_slot
 		(cell.panel as PanelContainer).add_theme_stylebox_override("panel", _style_picked if picked else _style_idle)
-		var spin := cell.spin as Node3D
-		if picked and item != null and not book:
-			spin.rotation.y += SPIN_SPEED * delta
-		else:
-			spin.rotation = ICON_ANGLE
 		var count := cell.count as Label
 		count.text = "%d/%d " % [item.charges, JammerPickup.MAX_CHARGES] if item is JammerPickup else ""
 	_root.modulate.a = 0.45 if book else 1.0

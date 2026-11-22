@@ -29,8 +29,18 @@ var _swing: Tween
 @onready var lamp_right: SpotLight3D = $Leaf/LampRight
 
 
+## The kit's paint and skirting, so the door's wall matches the gallery wall it sits in.
+const WALL_PAINT := preload("res://assets/interior/kit/int_wall_paint.tres")
+const SKIRTING := preload("res://assets/interior/kit/int_skirting.tres")
+const SKIRTING_SIZE := Vector3(2.976, 0.18, 0.03)  # along the door's wall, at the foot of its gallery face
+const SKIRTING_AT := Vector3(1.5, 0.09, 0.515)     # in the leaf's space
+
+var _rest_dressed: Array[GeometryInstance3D] = []  # the painted parts, whose pattern stays put as it swings
+
+
 func _ready() -> void:
 	_apply(false)
+	_dress_leaf()
 	_wire_lamp(plate_left, lamp_left, "LampLeftGlow", $Leaf/GemLeft)
 	_wire_lamp(plate_right, lamp_right, "LampRightGlow", $Leaf/GemRight)
 
@@ -69,3 +79,40 @@ func _wire_lamp(plate: PressurePlate, spot: SpotLight3D, bulb_name: String, gem:
 
 	plate.pressed_changed.connect(show_lamp)
 	show_lamp.call(plate.is_pressed)
+
+
+# --- The look: the door's wall dressed like the gallery wall (cosmetic, every peer) -------------
+
+func _dress_leaf() -> void:
+	for mesh: MeshInstance3D in $Leaf.find_children("*", "MeshInstance3D", true, false):
+		if mesh.mesh and mesh.mesh.get_surface_count() > 0:
+			var surface := mesh.mesh.surface_get_material(0)
+			if surface and surface.resource_name == "Door_Wall":
+				mesh.set_surface_override_material(0, _rest_copy(WALL_PAINT))
+				_rest_dressed.append(mesh)
+	var skirting := MeshInstance3D.new()
+	var box := BoxMesh.new()
+	box.size = SKIRTING_SIZE
+	skirting.mesh = box
+	skirting.position = SKIRTING_AT
+	skirting.material_override = _rest_copy(SKIRTING)
+	$Leaf.add_child(skirting)
+	_rest_dressed.append(skirting)
+
+
+## A copy of a kit material that lays its pattern on where the part sits with the door shut.
+func _rest_copy(material: ShaderMaterial) -> ShaderMaterial:
+	var copy := material.duplicate() as ShaderMaterial
+	copy.set_shader_parameter("rest_space", true)
+	return copy
+
+
+func _process(_delta: float) -> void:
+	if _rest_dressed.is_empty() or not is_inside_tree():
+		return
+	# Where the door stands when shut: here, turned back to 0. Each part keeps its place on the leaf.
+	var shut := (get_parent() as Node3D).global_transform * Transform3D(Basis(), position)
+	var to_local := global_transform.affine_inverse()
+	for part in _rest_dressed:
+		var material := (part.material_override if part.material_override else (part as MeshInstance3D).get_surface_override_material(0)) as ShaderMaterial
+		material.set_shader_parameter("rest_matrix", Projection(shut * to_local * part.global_transform))
