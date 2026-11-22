@@ -36,7 +36,7 @@ back out to the van. Every room is crossed twice, so the stealth matters more.
 | `EntryLink` (NavigationLink3D) | yes | Joins this room's navmesh to the previous room's through the Entry doorway. |
 | `Ceiling` | yes | Outside the region, so its top isn't baked as floor. |
 | `GuardWaypoints` | optional | Patrol loop for this room's guard(s). Guards are children of the room. |
-| `ThrowableSpots` (Marker3Ds) | optional | Where throwables are placed. |
+| `ThrowableSpots` (Marker3Ds) | optional | Where throwables go: instance `scenes/throwable.tscn` (the Heel, 8 m noise) or `scenes/coin.tscn` (6 m) as a child of a spot. |
 | `ExitGate` (`scenes/room_gate.tscn`, `RoomGate`) | optional | A door across the Exit. `starts_open` for rooms with no puzzle. A puzzle rule calls `open()`. It opens by itself once the artifact is taken (`stays_open_on_return`). |
 | `GadgetSocket` | optional | Marks where the HW #4 gadget can act (laser grid, camera...). |
 | `ArtifactSpot` | vault only | Where the artifact rests. (Spawns and the extraction spot are outside, under `Museum/Plaza`.) |

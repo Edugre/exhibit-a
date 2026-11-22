@@ -20,6 +20,8 @@
 [ext_resource type="PackedScene" path="res://scenes/props/doorway_portal.tscn" id="k1_portal"]
 [ext_resource type="PackedScene" path="res://scenes/props/doorway_jambs.tscn" id="k1_jambs"]
 [ext_resource type="PackedScene" path="res://scenes/props/room_plaque_security_office.tscn" id="k1_plaque"]
+[ext_resource type="PackedScene" uid="uid://boemyyhoc6dtn" path="res://scenes/throwable.tscn" id="b5_heel"]
+[ext_resource type="PackedScene" path="res://scenes/coin.tscn" id="b5_coin"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_room"]
 geometry_parsed_geometry_type = 1
@@ -266,3 +268,7 @@ editor_description = "Asset K1: the stone arch and this room's plaque on the Ent
 
 [node name="ExitJambs" parent="Doorways" instance=ExtResource("k1_jambs")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -12)
+
+[node name="Heel" parent="ThrowableSpots/Spot1" instance=ExtResource("b5_heel")]
+
+[node name="Coin" parent="ThrowableSpots/Spot2" instance=ExtResource("b5_coin")]

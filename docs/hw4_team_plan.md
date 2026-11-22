@@ -173,6 +173,22 @@ Task IDs are used for branch names (`hw4/a1-split-museum`) and PR titles.
 **B5: Throwable placement pass** · hard: CP3
 - Balance throwable spots across all rooms, including C's corridor (coordinate with C), and check that they reset after a restart.
 
+*B5 status: done.* Each throwable is an instance placed under a `ThrowableSpots/SpotN` marker in its room scene,
+so it's spawned with the room. That puts it on both peers, and a restart rebuild gives a fresh one on its spot.
+
+| Room | Guards | Throwables |
+|---|---|---|
+| Lobby | 0 | none (the plaza's Heel and 4 coins are just outside) |
+| Sculpture Hall | 1 | Heel by the entry |
+| Twin Archives | 0 | none (nobody to distract) |
+| Laser Corridor *(C's room)* | 1 | coin by the entry. The grid's alarm is already the loud noise, so the coin is the quiet one (6 m vs 8 m) |
+| Security Office | 2 | Heel by the entry, coin at the back |
+| Gallery + vault | 1 | coin on top of the crate (new spot). The plaza Heel is now 2–3 rooms away |
+
+Also fixed in `throwable.gd`: a throwable spawned after the client connected never froze on the client, so it would
+have run its own physics against the host's. Checked headless on host and client: same 5 room throwables at the same
+spots, all frozen on the client, a throw lands in the same place on both, and a restart puts fresh ones back.
+
 ### Track C: Gadget & Laser Corridor
 
 **C0: Gadget decision** · *no dependency* · **team decision at kickoff; blocks C1**
