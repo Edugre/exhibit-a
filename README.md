@@ -121,11 +121,13 @@ The game picks Low, Medium or High for each computer and steps down by itself if
    - ReflectionProbe with custom ambient light (the rooms' dim indoor air at night)
    - NavigationServer3D baking from collision shapes (the guard's map, out through the doors to the curb)
    - NavigationRegion3D baked at runtime per room, and NavigationLink3D through each doorway (HW #4 rooms: guards can follow you from room to room)
+   - RandomNumberGenerator with a seed (the random source for the room shuffle, so a run can be replayed from its seed)
 
 ### Systems we wrote
 - Heist timer, outcome and synchronized restart (scripts/game_state.gd)
 - Host/join flow, player spawning and restart respawns (scripts/network_manager.gd, scripts/main.gd)
 - Pressure plate puzzle condition and vault door (scripts/vault_puzzle.gd, scripts/pressure_plate.gd, scripts/vault_door.gd)
+- Procedural room ordering: each run shuffles the finished pool rooms with our own seeded Fisher–Yates, then keeps rooms in that order while they still fit the 60 m behind the front doors, up to three. A restart draws a new seed; the host prints each run's seed and order (scripts/room_order.gd)
 - Museum layout: the host builds the rooms in a line from the front doors (lobby, then the gallery and vault) when it starts hosting and again on every restart, and tells the artifact, drop zone and spawning where things are (scripts/museum_layout.gd)
 - Room contract for HW #4: how rooms line up door to door, what each room provides, and the exit gate that stays open once the artifact is taken (scripts/room.gd, scripts/room_gate.gd, scripts/room_catalog.gd, scenes/rooms/room_template.tscn)
 - Two-plate timing gate for Twin Archives: the gate opens when both plates are pressed within 2 seconds of each other (scripts/gates/twin_plate_gate.gd)
@@ -146,7 +148,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 - Cosmetic exterior life: flickering lanterns, front doors that open for anyone near them, traffic that obeys the signal and honks at people in the road, and the opening shot (scripts/exterior_flicker.gd, scripts/exterior_doors.gd, scripts/exterior_traffic.gd, scripts/menu_camera.gd). Each peer runs its own, and none of it touches game state
 
 ## Known limitations
-- Only a lobby, one gallery room, one vault, and one guard. Additional rooms and procedural room ordering are planned for HW #4.
+- The shuffle can only pick from pool rooms that are finished, so until all four are in, runs are shorter and repeat more.
 - Sneaking only slows the player down. It doesn't yet affect how quickly the guard notices you or make footsteps quieter.
 - Exactly two players. There is no lobby or matchmaking: the client must type the host's IP address, and playing across different networks needs port 7777 forwarded on the host's router.
 - If the host quits, the client is sent back to the main menu; the session can't continue without the host.
