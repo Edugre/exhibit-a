@@ -30,6 +30,7 @@ var _raises := 0    # counts each raise, so a bell waiting from an earlier one s
 var _level: float = 0.0
 var _clock: float = 0.0
 var _lamps: Array[Dictionary] = []
+var _flood_count := 0   # the first this many lamps are the exterior's; the rest belong to this run's rooms
 var _words: Label
 var _words_age: float = -1.0
 
@@ -78,6 +79,8 @@ func _process(delta: float) -> void:
 	RenderingServer.global_shader_parameter_set("exterior_alarm", _level)
 	var pulse := 1.0 - PULSE_DEPTH * (0.5 + 0.5 * sin(_clock * PULSE_SPEED))
 	for lamp in _lamps:
+		if not is_instance_valid(lamp.light):
+			continue  # a restart rebuilt its room while the alarm was still fading
 		var light: Light3D = lamp.light
 		light.light_color = (lamp.color as Color).lerp(ALARM_COLOR, _level)
 		light.light_energy = float(lamp.energy) * lerpf(1.0, pulse * 1.15, _level)
@@ -116,17 +119,21 @@ func _stand_down() -> void:
 	(get_node(mask_path) as Node3D).rotation.y = 0.0
 
 
-## The lights are read the first time the alarm goes up, while they still hold their own colours.
+## The exterior's floodlights are read the first time the alarm goes up, while they still hold their own
+## colours. Every restart rebuilds the rooms (task A2), so their lights are read afresh each time it goes
+## up, and the last run's, freed with their rooms, are forgotten.
 func _gather_lamps() -> void:
-	if not _lamps.is_empty():
-		return
-	var lights := get_node_or_null(lights_path)
-	if lights != null:
-		for child in lights.get_children():
-			for group in FLOOD_NAMES:
-				if child.name.begins_with(group):
-					_lamps.append({"light": child, "color": child.light_color, "energy": child.light_energy})
-					break
+	if _flood_count == 0:
+		_lamps.clear()
+		var lights := get_node_or_null(lights_path)
+		if lights != null:
+			for child in lights.get_children():
+				for group in FLOOD_NAMES:
+					if child.name.begins_with(group):
+						_lamps.append({"light": child, "color": child.light_color, "energy": child.light_energy})
+						break
+		_flood_count = _lamps.size()
+	_lamps.resize(_flood_count)
 	var rooms := get_tree().current_scene.find_child("NightLights", true, false)
 	if rooms != null:
 		for child in rooms.get_children():
