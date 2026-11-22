@@ -162,6 +162,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 - Interior surfaces (`assets/interior/kit/`): made for this project. The parquet, marble and plaster are drawn by script (`assets/interior/source/tools/make_kit.py`), and the carved cornice reuses the exterior's moulding maps.
 - Conservation crates and the draped statue (`assets/interior/crates/`): made for this project. Modelled in Blender by script (`assets/interior/source/tools/crates_build.py`, using Blender's cloth simulation for the drop cloth), with the texture drawn by script (`make_crates_art.py`). The stencils and labels are set in Impact, Courier New, Arial Black and Ink Free, rendered into the texture.
 - Glass display cases (`assets/interior/cases/`): made for this project. Modelled in Blender by script (`assets/interior/source/tools/cases_build.py`), with the texture drawn by script (`make_cases_art.py`). The curators' cards and the brass plate are set in Palatino Linotype, rendered into the texture.
+- Archive bookcases (`assets/interior/shelves/`): made for this project. Modelled in Blender by script (`assets/interior/source/tools/shelves_build.py`), with the spines and the rest of the texture drawn by script (`make_shelves_art.py`). Spine titles and shelf marks are set in Palatino Linotype, rendered into the texture.
 
 ## Contributions
 Eduardo Goncalvez (PID: 6526311)

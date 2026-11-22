@@ -1,0 +1,35 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://scenes/props/kit_preview.tscn" id="1_room"]
+[ext_resource type="PackedScene" path="res://scenes/props/bookcase_double.tscn" id="2_double"]
+[ext_resource type="PackedScene" path="res://scenes/props/bookcase_wall.tscn" id="3_wall"]
+
+[node name="ShelvesPreview" type="Node3D"]
+editor_description = "The P2.3 bookcases in the K0 preview room at night: three double-sided units in a row, the way they'd wall off Twin Archives' two alcoves, and one against the green wall. Run it with F6. Not part of the game."
+
+[node name="Room" parent="." instance=ExtResource("1_room")]
+
+[node name="Plinth" parent="Room"]
+visible = false
+
+[node name="CoverBox" parent="Room"]
+visible = false
+
+[node name="DoubleLeft" parent="." instance=ExtResource("2_double")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 0, -1.8)
+
+[node name="DoubleMiddle" parent="." instance=ExtResource("2_double")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1.8)
+
+[node name="DoubleRight" parent="." instance=ExtResource("2_double")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2, 0, -1.8)
+
+[node name="AgainstWall" parent="." instance=ExtResource("3_wall")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 4.78, 0, 1.2)
+
+[node name="AlcoveLight" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.3, -3.3)
+light_color = Color(1, 0.82, 0.62, 1)
+light_energy = 1.4
+omni_range = 6.0
+omni_attenuation = 1.1
