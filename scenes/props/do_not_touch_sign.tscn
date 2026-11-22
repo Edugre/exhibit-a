@@ -1,0 +1,15 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/signs/do_not_touch.gltf" id="1_model"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_post"]
+height = 1.1
+radius = 0.14
+
+[node name="DoNotTouchSign" type="StaticBody3D"]
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+shape = SubResource("CylinderShape3D_post")

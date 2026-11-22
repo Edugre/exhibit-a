@@ -1,0 +1,14 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/signs/wet_floor.gltf" id="1_model"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_sign"]
+size = Vector3(0.32, 0.68, 0.32)
+
+[node name="WetFloorSign" type="StaticBody3D"]
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.34, 0)
+shape = SubResource("BoxShape3D_sign")

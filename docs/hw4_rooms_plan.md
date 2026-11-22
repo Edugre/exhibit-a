@@ -30,16 +30,20 @@ back out to the van. Every room is crossed twice, so the stealth matters more.
 
 | Child | Required | Purpose |
 |---|---|---|
-| `Entry`, `Exit` (Marker3D) | yes | Doorway centres. The rooms run along -Z, Entry at local z = 0. |
-| `NavigationRegion3D` | yes | This room's own baked navmesh, so doorway edges line up between rooms. |
-| `Geometry` (CSGCombiner3D) | yes | Floor and walls, plus a doorway of fixed width (3 m) at Entry/Exit. |
+| `Entry`, `Exit` (Marker3D) | yes (vault: no Exit) | Doorway centres, on the floor. The rooms run along -Z, Entry at local z = 0. |
+| `NavigationRegion3D` | yes | This room's own navmesh, **baked at runtime** a frame after the room loads (0.1 m cell height, so benches aren't steps). Put the `Geometry` *and every blocking prop* under it. Moving parts like gates stay outside it. |
+| `NavigationRegion3D/Geometry` (CSGCombiner3D, `use_collision`) | yes | Floor and walls, with a doorway of fixed width (3 m) at Entry and Exit. **All geometry stays inside the room's footprint**, so the walls of two neighbouring rooms sit back to back and never overlap. |
+| `EntryLink` (NavigationLink3D) | yes | Joins this room's navmesh to the previous room's through the Entry doorway. |
+| `Ceiling` | yes | Outside the region, so its top isn't baked as floor. |
 | `GuardWaypoints` | optional | Patrol loop for this room's guard(s). Guards are children of the room. |
 | `ThrowableSpots` (Marker3Ds) | optional | Where throwables are placed. |
-| `ExitGate` | optional | A door that stays closed until this room's puzzle is solved. |
+| `ExitGate` (`scenes/room_gate.tscn`, `RoomGate`) | optional | A door across the Exit. `starts_open` for rooms with no puzzle. A puzzle rule calls `open()`. It opens by itself once the artifact is taken (`stays_open_on_return`). |
 | `GadgetSocket` | optional | Marks where the HW #4 gadget can act (laser grid, camera...). |
 | `SpawnPoints` / `ArtifactSpot` / `ExtractionSpot` | entrance/vault only | Same as today. |
 
-The builder places room N+1 so its `Entry` sits on room N's `Exit`. No rotation is needed.
+The builder places room N+1 so its `Entry` sits on room N's `Exit` (`Room.snap_entry_to()`). No rotation is needed.
+Start a new room by duplicating `scenes/rooms/room_template.tscn`. Gadget targets join the
+`"jammable"` group (`Room.JAMMABLE_GROUP`) and implement a host-only `jam(seconds: float)`.
 
 ## Networking approach
 

@@ -1,0 +1,38 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/room_gate.gd" id="1_gate"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_leaf"]
+albedo_color = Color(0.32, 0.3, 0.29, 1)
+metallic = 0.6
+roughness = 0.45
+
+[sub_resource type="BoxMesh" id="BoxMesh_leaf"]
+material = SubResource("StandardMaterial3D_leaf")
+size = Vector3(3, 4, 0.3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_leaf"]
+size = Vector3(3, 4, 0.3)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_gate"]
+properties/0/path = NodePath(".:is_open")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+
+[node name="RoomGate" type="Node3D"]
+script = ExtResource("1_gate")
+
+[node name="Leaf" type="Node3D" parent="."]
+
+[node name="Mesh" type="MeshInstance3D" parent="Leaf"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+mesh = SubResource("BoxMesh_leaf")
+
+[node name="Body" type="StaticBody3D" parent="Leaf"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Leaf/Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+shape = SubResource("BoxShape3D_leaf")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_gate")

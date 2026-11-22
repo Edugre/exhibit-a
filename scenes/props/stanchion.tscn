@@ -1,0 +1,15 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/barrier_bench/stanchion.gltf" id="1_model"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_post"]
+height = 0.96
+radius = 0.12
+
+[node name="Stanchion" type="StaticBody3D"]
+
+[node name="Model" parent="." instance=ExtResource("1_model")]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.48, 0)
+shape = SubResource("CylinderShape3D_post")
