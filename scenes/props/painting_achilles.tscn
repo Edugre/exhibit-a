@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/paintings/painting_achilles.glb" id="1_mesh"]
+
+[node name="PaintingAchilles" type="Node3D"]
+editor_description = "Achilles, Full-Length Portrait (Feet cropped at the sitter’s request). A large frame, 1.00 x 1.60 m, with its label below and a picture light above (asset P1.3). The origin is the painting's centre on the wall's surface, facing +z: turn it to face into the room. No collision, like the trim."
+
+[node name="Mesh" parent="." instance=ExtResource("1_mesh")]

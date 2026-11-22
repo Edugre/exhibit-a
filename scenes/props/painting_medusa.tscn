@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/paintings/painting_medusa.glb" id="1_mesh"]
+
+[node name="PaintingMedusa" type="Node3D"]
+editor_description = "Portrait of Medusa (Rear View) (Hung this way for visitors’ safety). A small frame, 0.60 x 0.75 m, with its label below and a picture light above (asset P1.3). The origin is the painting's centre on the wall's surface, facing +z: turn it to face into the room. No collision, like the trim."
+
+[node name="Mesh" parent="." instance=ExtResource("1_mesh")]
