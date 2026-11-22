@@ -123,8 +123,8 @@ In order. Cover comes first because guards and stealth depend on it.
 
 | ID | Asset | Needed by | Notes |
 |---|---|---|---|
-| P2.1 | **Laser emitter posts + beam look** | C2 laser grid, C3 Laser Corridor | A post mesh plus a beam material/shader (an additive red line with flicker) that turns off cleanly when `is_active` is false or jammed. The **behaviour stays in C2**; this item is only the look. |
-| P2.2 | **Switch panel** | C3 fallback switch | A wall- or floor-mounted panel that reads clearly as "stand here". It wraps the existing pressure-plate visuals or matches them. |
+| P2.1 ✅ | **Laser emitter posts + beam look** | C2 laser grid, C3 Laser Corridor | A post mesh plus a beam material/shader (an additive red line with flicker) that turns off cleanly when `is_active` is false or jammed. The **behaviour stays in C2**; this item is only the look. |
+| P2.2 ✅ | **Switch panel** | C3 fallback switch | A wall- or floor-mounted panel that reads clearly as "stand here". It wraps the existing pressure-plate visuals or matches them. |
 | P2.3 | **Archive shelving walls** | B3 Twin Archives | Tall bookcases (2.5 m and up) that make the wall splitting the two alcoves, with box collision. Book spines come from one texture, varied by UV offset. |
 | P2.4 ✅ | **Gadget prop + jammed effect** | C1/C4 gadget | The held gadget model and a small "jammed" spark or flicker for targets. Done: the Hermes Signal Jammer on every belt and raised in your own view, a pulse with sound on every screen, sparks and sputtering beams on a jammed grid. |
 

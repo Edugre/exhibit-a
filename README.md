@@ -144,7 +144,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
    - NavigationServer3D baking from collision shapes (the guard's map of the steps and plaza out to the curb, and each room's map when it is built)
    - NavigationRegion3D baked at runtime per room, and NavigationLink3D through each doorway (HW #4 rooms: guards can follow you from room to room)
    - RandomNumberGenerator with a seed (the random source for the room shuffle, so a run can be replayed from its seed)
-   - Spatial shaders (the interior's world-space parquet, marble, plaster and carved cornice, so they work on plain CSG boxes)
+   - Spatial shaders (the interior's world-space parquet, marble, plaster and carved cornice, so they work on plain CSG boxes; the laser beams, drawn as added light with a flicker)
 
 ### Systems we wrote
 - Heist timer, outcome and synchronized restart. The timer is 180 s plus 30 s for each pool room in the run, set by the host when the heist starts (scripts/game_state.gd)
@@ -165,7 +165,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 - Fountain coins as a second, quieter throwable (scenes/coin.tscn, scripts/throwable.gd)
 - Signal Jammer gadget: each player has 2 charges per heist. The host checks the charges and the range (6 m), spends a charge only when something is jammed, and disables every jammable object in range for 6 seconds (scripts/gadget_jammer.gd, scripts/gadget_hud.gd). The host tells every peer when a charge is spent and what it jammed, and each peer plays the pulse and the jammed look from that (scripts/jam_pulse.gd, scripts/signal_jammer_model.gd, show_jammed in scripts/laser_grid.gd)
 - Laser grid: walking through an active grid sets off an alarm, a loud noise (20 m) that sends guards to look, repeated every 1.5 s while someone stays in the beams. It is on while powered and not jammed; standing in it when it comes back on trips it at once (scripts/laser_grid.gd)
-- Laser Corridor room rule: a switch on each side of the grid drops it while anyone stands on it, so the players hand off (one holds the near switch while the other crosses, then the far switch brings the first one over), or spend a jammer charge to cross together. Once the artifact is taken, the grid stays off for the way back (scripts/laser_corridor.gd, scenes/rooms/laser_corridor_room.tscn)
+- Laser Corridor room rule: a switch on each side of the grid drops it while anyone stands on it, so the players hand off (one holds the near switch while the other crosses, then the far switch brings the first one over), or spend a jammer charge to cross together. Once the artifact is taken, the grid stays off for the way back. The switches are floor pads, so standing on one doesn't pass you off as a statue the way the plinths do (scripts/laser_corridor.gd, scenes/rooms/laser_corridor_room.tscn)
 - Weather per heist, rolled by the host and sent to the client (scripts/exterior_weather.gd)
 - The She Will Know alarm, played by each peer from the artifact state it already has (scripts/exterior_alarm.gd)
 - Graphics levels and the automatic step down (scripts/exterior_quality.gd)
@@ -175,7 +175,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 - Sneaking only slows the player down. It doesn't yet affect how quickly the guard notices you or make footsteps quieter.
 - Exactly two players. There is no lobby or matchmaking: the client must type the host's IP address, and playing across different networks needs port 7777 forwarded on the host's router.
 - If the host quits, the client is sent back to the main menu; the session can't continue without the host.
-- There are two throwables, the heel and the fountain coins. Laser grids are the only thing the Signal Jammer can switch off so far. The Laser Corridor's switches are the plinth-style pressure plates, and its displays are the shared crates and cases until its own props are made.
+- There are two throwables, the heel and the fountain coins. Laser grids are the only thing the Signal Jammer can switch off so far. The Laser Corridor's displays are the shared crates and cases until its own props are made.
 - The whole game takes place at night.
 
 ## Asset credits
@@ -197,6 +197,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 - Rope barriers, gallery bench, wet-floor sign and "Do not touch" stand (`assets/interior/barrier_bench/`, `assets/interior/signs/`): made for this project. Modelled in Blender by script (`barrier_bench_build.py`, `signs_build.py`), with the textures drawn by script (`barrier_bench_art.py`, `signs_art.py`); lettering set in Palatino Linotype and Arial, rendered into the texture.
 - Doorway arches, exit jambs and room plaques (`assets/interior/doorways/`): made for this project. Modelled in Blender by script (`assets/interior/source/tools/doorway_build.py`), with the stone, the owl keystone and the engraved brass drawn by script (`make_doorway_art.py`). The room names are set in Palatino Linotype, rendered into the texture.
 - Framed paintings, title labels and picture lights (`assets/interior/paintings/`): made for this project. The six paintings are laid out and then repainted stroke by stroke by script (`assets/interior/source/tools/make_paintings_art.py`), which also draws the gilt frames and labels; modelled in Blender by script (`paintings_build.py`). Titles are set in Palatino Linotype, rendered into the texture.
+- Laser grid posts and switch pads (`assets/interior/laser/`): made for this project. Modelled in Blender by script (`assets/interior/source/tools/laser_build.py`), with the texture and the switch label drawn by script (`laser_art.py`); the beam shader is ours (`laser_beam.gdshader`). Lettering is set in Arial and Palatino Linotype, rendered into the texture.
 - The rooms' sounds (`assets/interior/sounds/`): the hums, clocks, fluorescent buzz, radio chatter, creaks, page rustles and the laser's hum and zap. Made for this project, generated by script from noise and sine waves (`assets/interior/source/tools/make_room_sounds.py`).
 - The Hermes Signal Jammer and its sounds (`assets/gadget/`): made for this project. Modelled in Blender by script (`assets/interior/source/tools/gadget_build.py`), with the texture drawn and the pulse and dud sounds generated by script from noise and sine waves (`gadget_art.py`). Lettering is set in Arial and Palatino Linotype, rendered into the texture.
 - Lobby set: ticket desk, coat check with its rack and coats, donation box, museum map and two banners (`assets/interior/lobby/`): made for this project. Modelled in Blender by script (`assets/interior/source/tools/lobby_build.py`), with the texture, signs, map and banners drawn by script (`lobby_art.py`). Lettering is set in Palatino Linotype and Arial, rendered into the texture.

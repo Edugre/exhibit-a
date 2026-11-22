@@ -3,9 +3,8 @@
 [ext_resource type="Script" path="res://scripts/room.gd" id="1_room"]
 [ext_resource type="PackedScene" path="res://scenes/guard.tscn" id="2_guard"]
 [ext_resource type="PackedScene" path="res://scenes/laser_grid.tscn" id="3_grid"]
-[ext_resource type="PackedScene" path="res://scenes/pressure_plate.tscn" id="4_plate"]
+[ext_resource type="PackedScene" path="res://scenes/laser_switch.tscn" id="4_plate"]
 [ext_resource type="Script" path="res://scripts/laser_corridor.gd" id="5_rule"]
-[ext_resource type="Texture2D" path="res://assets/plates/label_pending.png" id="6_label"]
 [ext_resource type="Material" path="res://assets/interior/kit/int_floor_parquet.tres" id="7_floor"]
 [ext_resource type="Material" path="res://assets/interior/kit/int_wall_paint_red.tres" id="8_paint"]
 [ext_resource type="Material" path="res://assets/interior/kit/int_ceiling.tres" id="9_ceiling"]
@@ -91,11 +90,9 @@ material = ExtResource("8_paint")
 
 [node name="SwitchNear" parent="NavigationRegion3D/Props" instance=ExtResource("4_plate")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.3, 0, -3.9)
-label = ExtResource("6_label")
 
 [node name="SwitchFar" parent="NavigationRegion3D/Props" instance=ExtResource("4_plate")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.3, 0, -8.1)
-label = ExtResource("6_label")
 
 [node name="CaseNear" parent="NavigationRegion3D/Props" instance=ExtResource("12_case_low")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 0, -3.3)
