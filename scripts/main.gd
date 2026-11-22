@@ -12,6 +12,7 @@ const PLAYER_SCENE := preload("res://scenes/player.tscn")
 @onready var status_label: Label = %StatusLabel
 @onready var graphics_option: OptionButton = %GraphicsOption
 @onready var weather_option: OptionButton = %WeatherOption
+@onready var seed_input: LineEdit = %SeedInput
 @onready var players_root: Node3D = $World/Players
 @onready var spawn_points: Array[Marker3D] = ($World/Museum as MuseumLayout).get_spawn_points()
 @onready var player_spawner: MultiplayerSpawner = $PlayerSpawner
@@ -40,7 +41,9 @@ func _on_host_pressed() -> void:
 	if err != OK:
 		status_label.text = "Couldn't host (error %d). Is something else using port %d?" % [err, NetworkManager.DEFAULT_PORT]
 		return
-	($World/Museum as MuseumLayout).build()  # the rooms exist before anyone can walk in, or join
+	var museum := $World/Museum as MuseumLayout
+	museum.chosen_seed = MuseumLayout.seed_from_text(seed_input.text)  # the same rooms every run, if one was typed
+	museum.build()  # the rooms exist before anyone can walk in, or join
 	multiplayer.peer_connected.connect(_spawn_player)
 	multiplayer.peer_disconnected.connect(_remove_player)
 	GameState.heist_reset.connect(_on_heist_reset)

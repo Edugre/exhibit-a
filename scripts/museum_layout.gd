@@ -22,6 +22,10 @@ const DEPTH := 60.0
 ## -1 picks a new seed every build.
 @export var debug_seed := -1
 
+## The seed the host typed in the menu, for every build this session; -1 draws a new seed each build.
+## (debug_seed, set in the editor, wins over it.)
+var chosen_seed := -1
+
 ## The seed and pool rooms of the current build, for debugging.
 var last_seed := 0
 var last_order := PackedInt32Array()
@@ -57,7 +61,12 @@ func build() -> void:
 	for room in get_rooms():
 		room.queue_free()  # the spawner removes it on the client too
 	_build += 1
-	last_seed = debug_seed if debug_seed >= 0 else _seeds.randi()
+	if debug_seed >= 0:
+		last_seed = debug_seed
+	elif chosen_seed >= 0:
+		last_seed = chosen_seed
+	else:
+		last_seed = _seeds.randi()
 	last_order = debug_order if not debug_order.is_empty() else _pick(last_seed)
 	print("Museum run %d (seed %d): %s" % [_build, last_seed, ", ".join(_names(last_order))])
 	var paths: Array[String] = [RoomCatalog.ENTRANCE]
@@ -113,6 +122,17 @@ func _create_room(data: Dictionary) -> Node:
 func _on_heist_reset(respawn_players: bool) -> void:
 	if respawn_players:
 		build()  # a restart gets a new run: new rooms in a new order, doors shut, guards on patrol
+
+
+## The menu's seed field: a whole number is the seed itself, anything else is turned into one, and an
+## empty field means a new seed every run. Always 0 or more, so it can't be mistaken for "random".
+static func seed_from_text(text: String) -> int:
+	var typed := text.strip_edges()
+	if typed.is_empty():
+		return -1
+	if typed.is_valid_int():
+		return absi(typed.to_int())
+	return hash(typed) & 0x7fffffff
 
 
 ## The shuffle and fit rule lives in RoomOrder; this gathers what it needs.
