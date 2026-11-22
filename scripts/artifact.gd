@@ -16,6 +16,8 @@ const BAY_OFFSET := Transform3D(Basis.IDENTITY, Vector3(0.05, 0.95, -0.55))
 const DROP_REACH := 1.0
 const WALL_MARGIN := 0.4
 const FLOOR_HEIGHT := 0.12
+## How far to look for the ground under someone who let go in mid-air. The street is 4.5 m below the rooms.
+const FALL_REACH := 12.0
 
 @export var spot_path: NodePath = ^"../Museum/ArtifactSpot"
 @export var players_path: NodePath = ^"../Players"
@@ -115,7 +117,12 @@ func _landing_spot(carrier: Node3D) -> Transform3D:
 	down.exclude = [carrier.get_rid()]
 	var ground := space.intersect_ray(down)
 	if ground.is_empty():
-		spot = carrier.global_position  # nothing under that spot: it lands at their feet instead
+		# Nothing under that spot: it lands straight below them instead
+		var feet := carrier.global_position
+		var straight_down := PhysicsRayQueryParameters3D.create(feet, feet + Vector3.DOWN * FALL_REACH)
+		straight_down.exclude = [carrier.get_rid()]
+		var below := space.intersect_ray(straight_down)
+		spot = below["position"] if not below.is_empty() else feet
 	else:
 		spot.y = ground["position"].y
 	spot.y += FLOOR_HEIGHT

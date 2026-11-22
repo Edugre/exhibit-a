@@ -46,6 +46,6 @@ void fragment() {
 	AO = maps.r;
 	AO_LIGHT_AFFECT = 0.45;
 	if (low_detail) {
-		EMISSION = ALBEDO * 0.55;
+		EMISSION = ALBEDO * 0.2;
 	}
 }

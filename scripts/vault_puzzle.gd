@@ -17,7 +17,7 @@ func _ready() -> void:
 
 
 func _on_plate_changed(_pressed: bool) -> void:
-	if not multiplayer.is_server():
+	if not multiplayer.is_server() or GameState.phase != GameState.Phase.PLAYING:
 		return
 	elif is_solved:
 		return 

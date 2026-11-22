@@ -9,6 +9,12 @@ func _ready() -> void:
 	await get_tree().physics_frame
 	print("START ", Time.get_ticks_msec())
 	var world: Node = get_tree().current_scene.get_node("World")
+	# Bake with the vault door folded back, so she can follow a player in once it's open. While it's
+	# shut nothing inside can call her: there's nobody in there and nothing to hear.
+	var door: Node3D = world.find_child("VaultDoor", true, false)
+	door.rotation_degrees.y = -door.open_degrees
+	await get_tree().physics_frame
+	await get_tree().physics_frame
 	var mesh := NavigationMesh.new()
 	mesh.agent_radius = 0.3
 	mesh.agent_height = 1.6

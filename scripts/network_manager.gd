@@ -8,6 +8,7 @@ signal host_disconnected
 
 const DEFAULT_PORT := 7777
 const MAX_CLIENTS := 1  # host + 1 client = 2 players
+const JOIN_TIMEOUT := 8.0  # ENet alone takes about 30 seconds to give up on a wrong address or a full game
 
 
 func _ready() -> void:
@@ -31,6 +32,7 @@ func join_game(address: String, port: int = DEFAULT_PORT) -> Error:
 	if err != OK:
 		return err
 	multiplayer.multiplayer_peer = peer
+	get_tree().create_timer(JOIN_TIMEOUT).timeout.connect(_on_join_timeout.bind(peer))
 	return OK
 
 
@@ -38,6 +40,12 @@ func leave_game() -> void:
 	if multiplayer.multiplayer_peer:
 		multiplayer.multiplayer_peer.close()
 	multiplayer.multiplayer_peer = OfflineMultiplayerPeer.new()
+
+
+func _on_join_timeout(peer: ENetMultiplayerPeer) -> void:
+	var still_trying := peer.get_connection_status() == MultiplayerPeer.CONNECTION_CONNECTING
+	if multiplayer.multiplayer_peer == peer and still_trying:
+		_on_connection_failed()
 
 
 func _on_connected_to_server() -> void:

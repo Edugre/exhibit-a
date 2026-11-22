@@ -29,6 +29,7 @@ const CHASE_VIEW_HALF_ANGLE := 35.0
 const DETECT_TIME := 0.6          # seconds of continuous sight before a chase starts
 const LOSE_SIGHT_TIME := 2.0      # seconds out of sight before the guard gives up
 const CATCH_DISTANCE := 1.2
+const CATCH_HEIGHT := 2.0         # she can pull someone down off a crate, not off a terrace
 const PATROL_PAUSE := 1.0
 const LOOK_AROUND_TIME := 3.0
 const LOOK_AROUND_SPEED := 1.5    # radians per second while searching
@@ -166,7 +167,7 @@ func _chase(delta: float, seen: Node3D) -> void:
 			_investigate_at(_last_seen)  # go check where they were last seen
 			return
 
-	if is_instance_valid(_target) and global_position.distance_to(_target.global_position) <= CATCH_DISTANCE:
+	if is_instance_valid(_target) and _within_reach(_target):
 		_stop(delta)
 		state = State.CAUGHT
 		GameState.end_heist(false, "Caught by the guard!")
@@ -174,6 +175,11 @@ func _chase(delta: float, seen: Node3D) -> void:
 
 	agent.target_position = _last_seen
 	_move_along_path(CHASE_SPEED, delta)
+
+
+func _within_reach(player: Node3D) -> bool:
+	var to_player := player.global_position - global_position
+	return Vector2(to_player.x, to_player.z).length() <= CATCH_DISTANCE and absf(to_player.y) <= CATCH_HEIGHT
 
 
 # --- Transitions -------------------------------------------------------------

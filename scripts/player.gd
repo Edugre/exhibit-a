@@ -69,7 +69,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		
 	elif event.is_action_pressed("ui_cancel"):
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE  # Esc frees the mouse
-	elif event is InputEventMouseButton and event.pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
+	elif event is InputEventMouseButton and event.pressed and Input.mouse_mode != Input.MOUSE_MODE_CAPTURED and _can_recapture_mouse():
 		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED  # click to recapture
 
 
@@ -87,6 +87,16 @@ func _process(delta: float) -> void:
 
 	# Every peer can see for itself who's on a plinth, so being a statue needs no network traffic.
 	model.statue = not holding and _is_on_plinth()
+
+
+## While the end card is up, the mouse belongs to its Restart button.
+func _can_recapture_mouse() -> bool:
+	return _heist_is_open()
+
+
+## Bodies stand still once a heist is decided, so nobody wanders through the getaway shot.
+func _heist_is_open() -> bool:
+	return GameState.phase == GameState.Phase.LOBBY or GameState.phase == GameState.Phase.PLAYING
 
 
 func _is_on_plinth() -> bool:
@@ -136,11 +146,12 @@ func _physics_process(delta: float) -> void:
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 
-	if Input.is_action_just_pressed("jump") and is_on_floor():
+	var free_to_move := _heist_is_open()
+	if free_to_move and Input.is_action_just_pressed("jump") and is_on_floor():
 		velocity.y = JUMP_VELOCITY
 
 	var speed := SNEAK_SPEED if Input.is_action_pressed("sneak") else WALK_SPEED
-	var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+	var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_back") if free_to_move else Vector2.ZERO
 	var direction := (transform.basis * Vector3(input_dir.x, 0.0, input_dir.y)).normalized()
 
 	if direction:

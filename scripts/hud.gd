@@ -52,8 +52,8 @@ func _on_phase_changed(phase: GameState.Phase) -> void:
 		end_panel.visible = true
 		end_panel.stamp_card(phase == GameState.Phase.WON, reason, taken, had_book, out_of_time)
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE  # so the Restart button can be clicked
-	elif phase == GameState.Phase.PLAYING and _last_phase != GameState.Phase.LOBBY:
-		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED  # coming back from a restart
+	elif phase == GameState.Phase.PLAYING:
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED  # the card may have left the mouse free
 	_last_phase = phase
 
 

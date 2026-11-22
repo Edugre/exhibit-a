@@ -66,7 +66,7 @@ func _on_connected_to_host() -> void:
 
 
 func _on_connection_failed() -> void:
-	status_label.text = "Couldn't connect. Check the IP and that the host is running."
+	status_label.text = "Couldn't connect. Check the IP, that the host is running, and that the game isn't full."
 	_set_buttons_enabled(true)
 
 
@@ -86,6 +86,9 @@ func _spawn_player(peer_id: int) -> void:
 		"variant": _next_free_variant(),
 	})
 	if players_root.get_child_count() == 2:
+		# Whoever was waiting may have wandered, even into the vault that's about to close.
+		var waiting := players_root.get_child(0)
+		waiting.teleport.rpc_id(waiting.name.to_int(), spawn_points[0].global_position)
 		GameState.start_heist()  # both players are in: the heist begins
 
 
