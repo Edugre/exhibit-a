@@ -35,7 +35,7 @@ The rooms between the lobby and the gallery come from this pool:
 | Laser Corridor | A laser grid that sets off the alarm. Hold the switch on one side while your partner crosses, then swap, or spend a jammer charge to cross together. There's also a guard. |
 | Security Office | Two guards whose patrols cross, with a Heel and a coin to split them up. |
 
-You have **3 minutes, plus 30 seconds for every room between the lobby and the gallery** (4½ minutes). Librarians patrol with flashlights: if one spots you, she gives chase, and if she catches either of you, the heist fails. Throw the Heel of Achilles or a coin to make a noise and lure her away; you'll find them on the plaza and in the rooms that have guards.
+You have **3 minutes, plus 30 seconds for every room between the lobby and the gallery** (4½ minutes). Librarians patrol with flashlights: if one spots you, she gives chase, and if she catches either of you, the heist fails. Throw the Heel of Achilles or a coin to make a noise and lure her away: the Heel was left at the lobby's coat check, coins lie by the fountains outside, and there are more in the rooms that have guards.
 
 - **Win:** the book is delivered to the drop zone.
 - **Lose:** the guard catches a player, or the timer runs out.
@@ -64,7 +64,7 @@ You have **3 minutes, plus 30 seconds for every room between the lobby and the g
 - **Signal Jammer gadget (HW #4):** one jammer per heist, waiting on the lobby's ticket desk with its LED blinking. Either player picks it up (E); it clips to their belt, and with nothing else in hand the throw button puts it down for the other. It has two charges for the whole heist, which go wherever it goes (Q). A charge switches off every jammable thing within 6 m for 6 seconds, which right now means laser grids. The HUD shows the charges left. Everyone can see it working: the jammer rides on each player's belt and comes up into your view when you use it, a ring of light sweeps out to its range with a burst of radio static on both screens, and a jammed grid throws sparks while its beams sputter. A use that jams nothing just clicks.
 - **Artifact:** pick up, carry, drop, and deliver the book. Only one player can hold it at a time, and you can't carry the book and the heel at once.
 - **Guard AI:** patrols a waypoint loop, detects players with a flashlight vision cone blocked by walls, chases (through doorways into other rooms), investigates noises and last-seen positions, then returns to patrol. Catching a player ends the heist. A run has up to four guards across its rooms.
-- **Throwable and noise:** the Heel of Achilles can be thrown. Its impact makes a noise that sends any guard within 8 m to investigate. Heels and coins wait on the plaza and in every guarded room.
+- **Throwable and noise:** the Heel of Achilles can be thrown. Its impact makes a noise that sends any guard within 8 m to investigate. The Heel waits at the lobby's coat check, coins by the fountains outside, and more heels and coins in every guarded room.
 - **Heist rules:** a countdown of 3 minutes plus 30 seconds per pool room, win/lose outcomes, and a synchronized restart that builds a new run and resets the players, book, throwables and jammer charges.
 - **HUD:** time remaining, artifact status (locked / vault open / carried by you or your partner / dropped / in the van), guard alert indicator, waiting-for-partner message, and the end screen.
 - **Getaway cutscene** on a win: the van gallops off down the avenue before the end screen appears.
