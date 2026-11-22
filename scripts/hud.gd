@@ -41,7 +41,7 @@ func _on_phase_changed(phase: GameState.Phase) -> void:
 	if ended:
 		result_label.text = "HEIST COMPLETE!" if phase == GameState.Phase.WON else "BUSTED"
 		reason_label.text = GameState.end_reason
-		var taken := GameState.HEIST_DURATION - GameState.time_left
+		var taken := GameState.heist_duration - GameState.time_left
 		var had_book := GameState.artifact_state == GameState.ArtifactState.CARRIED or GameState.artifact_state == GameState.ArtifactState.DROPPED
 		var out_of_time := GameState.end_reason == GameState.TIME_UP_REASON
 		var reason := GameState.end_reason

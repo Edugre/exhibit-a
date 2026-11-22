@@ -119,7 +119,17 @@ Task IDs are used for branch names (`hw4/a1-split-museum`) and PR titles.
 **A4: Return trip + timer tuning** · hard: CP3
 - Check that gates stay open on the way back, then tune `HEIST_DURATION` for a 5-room run.
 
-*A4 status (done before CP3, so the timer is left unchanged for now):*
+*A4 status: done.* The timer is set and all four rooms are checked. A full two-instance play-test is still to do.
+- **Timer: chosen and in.** `GameState`: `BASE_DURATION` 180 s + `TIME_PER_ROOM` 30 s per pool room in the run
+  (240 s for 2 rooms, 270 s for 3). The host sets it after `heist_reset`, once the museum has built the run, and syncs
+  `heist_duration` so the end screen's time taken is right on both peers. Checked headless on host and client,
+  including a restart from a 3-room run into a 2-room run.
+- **With all four rooms (after B4):** 4,000 seeds give 3 pool rooms half the time and 2 the other half. **Laser Corridor
+  is 14 m deep** (2 m over budget), so any run that picks it drops to 2 rooms, and it never appears in a 3-room run.
+  Trimming it to 12 m makes every run 3 rooms. Ten hosted runs: routes 160–163 m (2 rooms) and 182 m (3 rooms), the back
+  wall exactly at z −54, every guard pathing. Host and client agree on a 3-room run with both Security Office guards.
+
+*Earlier notes (before CP3):*
 - **Return trip: checked, headless.** A puzzle room's `RoomGate` (`starts_open = false`) stays shut at the start and
   while the artifact is still in the vault. It opens by itself once the book is carried or dropped, and shuts again
   on restart. A rule that opened it (like `TwinPlateGate`) is also reset by the restart, and

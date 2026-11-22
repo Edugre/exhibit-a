@@ -25,7 +25,7 @@ Steal **The Last Book of Alexandria** and get it into the Trojan Van before the 
 82. Pick up the book and carry it out of the museum.
 3. Step onto the painted drop zone next to the van while carrying it.
 
-You have **3 minutes**. The librarian patrols the gallery with a flashlight: if she spots you, she gives chase, and if she catches either of you, the heist fails. Throw the Heel of Achilles to make a noise and lure her away.
+You have **3 minutes, plus 30 seconds for every room between the lobby and the vault** (4 or 4½ minutes in a full run). The librarian patrols the gallery with a flashlight: if she spots you, she gives chase, and if she catches either of you, the heist fails. Throw the Heel of Achilles to make a noise and lure her away.
 
 - **Win:** the book is delivered to the drop zone.
 - **Lose:** the guard catches a player, or the timer runs out.
@@ -124,7 +124,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
    - RandomNumberGenerator with a seed (the random source for the room shuffle, so a run can be replayed from its seed)
 
 ### Systems we wrote
-- Heist timer, outcome and synchronized restart (scripts/game_state.gd)
+- Heist timer, outcome and synchronized restart. The timer is 180 s plus 30 s for each pool room in the run, set by the host when the heist starts (scripts/game_state.gd)
 - Host/join flow, player spawning and restart respawns (scripts/network_manager.gd, scripts/main.gd)
 - Pressure plate puzzle condition and vault door (scripts/vault_puzzle.gd, scripts/pressure_plate.gd, scripts/vault_door.gd)
 - Procedural room ordering: each run shuffles the finished pool rooms with our own seeded Fisher–Yates, then keeps rooms in that order while they still fit the 60 m behind the front doors, up to three. A restart draws a new seed; the host prints each run's seed and order (scripts/room_order.gd)

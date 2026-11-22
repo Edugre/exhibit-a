@@ -11,12 +11,17 @@ signal heist_reset(respawn_players: bool)
 enum Phase { LOBBY, PLAYING, WON, LOST }
 enum ArtifactState { LOCKED, AVAILABLE, CARRIED, DROPPED, DELIVERED }
 
-const HEIST_DURATION := 180.0  # seconds; set to ~20 temporarily to test the timeout
+## The timer rule (task A4): every heist gets BASE_DURATION, plus TIME_PER_ROOM for each pool room
+## in this run, since a longer museum is a longer walk and more guards to get past.
+const BASE_DURATION := 180.0  # seconds; set to ~20 temporarily to test the timeout
+const TIME_PER_ROOM := 30.0
 const TIME_UP_REASON := "Time's up. The museum opened."
 const TIME_SYNC_INTERVAL := 0.5
 
 var phase: Phase = Phase.LOBBY
-var time_left := HEIST_DURATION
+## This heist's full time, set by the host when it starts. Synced, so the end screen can work out the time taken.
+var heist_duration := BASE_DURATION
+var time_left := BASE_DURATION
 var end_reason := ""
 var artifact_state: ArtifactState = ArtifactState.LOCKED
 var artifact_holder := 0  # peer id carrying the artifact, 0 if nobody
@@ -48,8 +53,9 @@ func _process(delta: float) -> void:
 func start_heist(respawn_players := false) -> void:
 	if not multiplayer.is_server():
 		return
-	_apply_state.rpc(Phase.PLAYING, HEIST_DURATION, "", ArtifactState.LOCKED, 0, false)
-	heist_reset.emit(respawn_players)
+	_apply_state.rpc(Phase.PLAYING, heist_duration, "", ArtifactState.LOCKED, 0, false)
+	heist_reset.emit(respawn_players)  # on a restart the museum builds the new run here
+	_set_duration.rpc(_duration_for_run())
 
 
 func end_heist(won: bool, reason: String) -> void:
@@ -63,7 +69,7 @@ func stop_heist() -> void:
 	## Partner left: back to waiting.
 	if not multiplayer.is_server():
 		return
-	_apply_state.rpc(Phase.LOBBY, HEIST_DURATION, "", ArtifactState.LOCKED, 0, false)
+	_apply_state.rpc(Phase.LOBBY, heist_duration, "", ArtifactState.LOCKED, 0, false)
 
 
 func set_artifact(state: ArtifactState, holder: int = 0) -> void:
@@ -117,6 +123,19 @@ func _apply_state(new_phase: int, new_time: float, reason: String, new_artifact:
 		phase_changed.emit(phase)
 
 
+## Host only. How long this run gets: the base time plus time for each pool room the museum built.
+func _duration_for_run() -> float:
+	var museum := get_tree().get_first_node_in_group("museum") as MuseumLayout
+	var rooms := museum.last_order.size() if museum else 0
+	return BASE_DURATION + TIME_PER_ROOM * rooms
+
+
+@rpc("authority", "call_local", "reliable")
+func _set_duration(seconds: float) -> void:
+	heist_duration = seconds
+	time_left = seconds
+
+
 @rpc("authority", "call_remote", "unreliable_ordered")
 func _sync_time(host_time: float) -> void:
 	time_left = host_time
@@ -125,7 +144,8 @@ func _sync_time(host_time: float) -> void:
 func _reset_local() -> void:
 	var phase_did_change := phase != Phase.LOBBY
 	phase = Phase.LOBBY
-	time_left = HEIST_DURATION
+	heist_duration = BASE_DURATION
+	time_left = BASE_DURATION
 	end_reason = ""
 	artifact_state = ArtifactState.LOCKED
 	artifact_holder = 0
