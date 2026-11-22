@@ -14,6 +14,7 @@
 [ext_resource type="PackedScene" path="res://scenes/props/case_low.tscn" id="12_case_low"]
 [ext_resource type="PackedScene" path="res://scenes/props/crate_cover.tscn" id="13_crate_cover"]
 [ext_resource type="PackedScene" path="res://scenes/props/crate_small.tscn" id="14_crate_small"]
+[ext_resource type="PackedScene" path="res://scenes/coin.tscn" id="b5_coin"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_room"]
 geometry_parsed_geometry_type = 1
@@ -186,3 +187,5 @@ blend_distance = 0.1
 interior = true
 ambient_mode = 2
 ambient_color = Color(0.28, 0.24, 0.24, 1)
+
+[node name="Coin" parent="ThrowableSpots/Spot1" instance=ExtResource("b5_coin")]

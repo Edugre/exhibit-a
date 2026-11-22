@@ -29,6 +29,8 @@ func _ready() -> void:
 	add_to_group("interactable")
 	add_to_group("throwables")
 	NetworkManager.connected_to_host.connect(_on_connected_to_host)
+	if multiplayer.has_multiplayer_peer() and not multiplayer.is_server():
+		freeze = true  # spawned inside a room after we connected: the host already runs its physics
 	_start_transform = global_transform
 	GameState.heist_reset.connect(_on_heist_reset)  # only fires on the host
 	body_entered.connect(_on_body_entered)

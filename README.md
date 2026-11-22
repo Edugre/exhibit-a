@@ -25,7 +25,7 @@ Steal **The Last Book of Alexandria** and get it into the Trojan Van before the 
 82. Pick up the book and carry it out of the museum.
 3. Step onto the painted drop zone next to the van while carrying it.
 
-You have **3 minutes, plus 30 seconds for every room between the lobby and the vault** (4 or 4½ minutes in a full run). The librarian patrols the gallery with a flashlight: if she spots you, she gives chase, and if she catches either of you, the heist fails. Throw the Heel of Achilles to make a noise and lure her away.
+You have **3 minutes, plus 30 seconds for every room between the lobby and the vault** (4 or 4½ minutes in a full run). The librarian patrols the gallery with a flashlight: if she spots you, she gives chase, and if she catches either of you, the heist fails. Throw the Heel of Achilles or a coin to make a noise and lure her away; you'll find them on the plaza and in the rooms that have guards.
 
 - **Win:** the book is delivered to the drop zone.
 - **Lose:** the guard catches a player, or the timer runs out.

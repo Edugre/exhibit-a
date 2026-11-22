@@ -9,6 +9,7 @@
 [ext_resource type="Script" uid="uid://dwf7uthkm8ajy" path="res://scripts/vault_puzzle.gd" id="7_puzzle"]
 [ext_resource type="PackedScene" path="res://assets/artifact/book_stand.glb" id="8_stand"]
 [ext_resource type="PackedScene" uid="uid://c7djabat5ogge" path="res://scenes/guard.tscn" id="9_guard"]
+[ext_resource type="PackedScene" path="res://scenes/coin.tscn" id="b5_coin"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_room"]
 geometry_parsed_geometry_type = 1
@@ -182,3 +183,10 @@ door = NodePath("../VaultDoor")
 
 [node name="Guard" parent="." instance=ExtResource("9_guard")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, -10)
+
+[node name="ThrowableSpots" type="Node3D" parent="."]
+
+[node name="Spot1" type="Marker3D" parent="ThrowableSpots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1.05, -3)
+
+[node name="Coin" parent="ThrowableSpots/Spot1" instance=ExtResource("b5_coin")]
