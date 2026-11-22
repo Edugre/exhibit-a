@@ -1,0 +1,26 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/cases/case_low.glb" id="1_mesh"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_base"]
+size = Vector3(1.400, 0.850, 0.700)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_glass"]
+size = Vector3(1.400, 0.200, 0.700)
+
+[node name="CaseLow" type="Node3D"]
+editor_description = "Low glass case, 1.05 m: coins of Troy and an overdue scroll on velvet. Not cover. The glass is in group see_through."
+
+[node name="Mesh" parent="." instance=ExtResource("1_mesh")]
+
+[node name="Body" type="StaticBody3D" parent="."]
+
+[node name="Shape" type="CollisionShape3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000, 0.425, 0.000)
+shape = SubResource("BoxShape3D_base")
+
+[node name="Glass" type="StaticBody3D" parent="." groups=["see_through"]]
+
+[node name="Shape" type="CollisionShape3D" parent="Glass"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000, 0.950, 0.000)
+shape = SubResource("BoxShape3D_glass")

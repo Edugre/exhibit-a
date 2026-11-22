@@ -17,6 +17,10 @@ Plain Python, run by hand, writing into `assets/interior/`. Same pipeline as the
   (plywood with stencils and shipping labels, pine battens, the cloth and its tag) and the two materials:
   `blender -b --factory-startup --python crates_build.py -- assets/interior/crates scenes/props`, then
   `python make_crates_art.py assets/interior/crates`. Both rebuild their outputs exactly.
+- `cases_layout.py`, `cases_build.py`, `make_cases_art.py` (P1.2): the tall and low glass display cases.
+  `blender -b --factory-startup --python cases_build.py -- assets/interior/cases scenes/props`, then
+  `python make_cases_art.py assets/interior/cases`. The glass collision is its own StaticBody in the group
+  `see_through`, so it stops players but the guard's sight check can be told to look through it.
 
 ## Using the kit in a room
 
