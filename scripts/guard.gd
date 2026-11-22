@@ -300,6 +300,9 @@ func _has_line_of_sight(from: Vector3, to: Vector3, player: Node3D) -> bool:
 
 # --- Movement ----------------------------------------------------------------
 
+## Guards (the librarian and her staff) sit on collision layer 5 and only collide with the world (layer 1),
+## so two of them meeting in a doorway or beside a crate walk through each other instead of pushing into a
+## stalemate. Players still bump into them: the player's body also collides with layer 5.
 func _move_along_path(speed: float, delta: float) -> void:
 	var direction := agent.get_next_path_position() - global_position
 	direction.y = 0.0
