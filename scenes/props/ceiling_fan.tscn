@@ -1,0 +1,14 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/fixtures/fan_body.glb" id="1_body"]
+[ext_resource type="PackedScene" path="res://assets/interior/fixtures/fan_blades.glb" id="2_blades"]
+[ext_resource type="Script" path="res://scripts/ambient/ceiling_fan.gd" id="3_spin"]
+
+[node name="CeilingFan" type="Node3D"]
+editor_description = "A slow old ceiling fan (asset P5.4). Origin: on the ceiling. Its blades turn 0.56 m below, each peer on its own (cosmetic, nothing synced). No collision: out of reach."
+
+[node name="Body" parent="." instance=ExtResource("1_body")]
+
+[node name="Blades" parent="." instance=ExtResource("2_blades")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.560, 0)
+script = ExtResource("3_spin")

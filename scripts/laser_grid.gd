@@ -21,6 +21,9 @@ signal tripped(by_peer: int)
 
 const BEAM_COLOR := Color(1.0, 0.05, 0.05)
 const BEAM_THICKNESS := 0.02
+## The beams and lenses draw on render layer 20 only, so a room's ReflectionProbe can leave them out
+## (cull_mask without layer 20). Captured, their glow turned every metal in the room red.
+const BEAM_LAYER := 1 << 19
 const DEPTH := 0.3  # how thick the trigger zone is, so a fast step can't skip it
 const POST_SIZE := 0.12
 ## Sounds (asset item P4.5): a hum while the beams are on, and a zap when someone walks into them.
@@ -249,6 +252,7 @@ func _build() -> void:
 			var beam := MeshInstance3D.new()
 			beam.mesh = mesh
 			beam.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			beam.layers = BEAM_LAYER
 			beam.rotation.z = PI / 2.0
 			beam.position.y = y
 			beams_root.add_child(beam)
@@ -256,6 +260,7 @@ func _build() -> void:
 			var lens := MeshInstance3D.new()
 			lens.mesh = lens_mesh
 			lens.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			lens.layers = BEAM_LAYER
 			lens.rotation.z = PI / 2.0
 			lens.position = Vector3(side * (width / 2.0 + 0.005), y, 0.0)
 			add_child(lens)

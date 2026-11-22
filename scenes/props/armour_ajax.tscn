@@ -1,0 +1,17 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/arms/armour_ajax.gltf" id="1_model"]
+
+[sub_resource type="BoxShape3D" id="Shape_1"]
+size = Vector3(0.95, 1.95, 0.6)
+
+[node name="ArmourAjax" type="Node3D"]
+editor_description = "Asset P3.3: Ajax's bronze armour on its stand, red crest, his scorpion shield leaning on the plinth. Origin on the floor, facing +z. Solid, but narrow: it hides one player at most, and only from the front."
+
+[node name="Mesh" parent="." instance=ExtResource("1_model")]
+
+[node name="Body" type="StaticBody3D" parent="."]
+
+[node name="Shape" type="CollisionShape3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.12, 0.975, 0.02)
+shape = SubResource("Shape_1")

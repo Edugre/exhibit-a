@@ -1,5 +1,5 @@
 """The signs' one texture (asset plan P1.6): the wet-floor A-frame's print, the "Do not touch"
-placard, and plain yellow plastic, black rubber and brass for the rest.
+placard, the "Gallery closed" board, and plain yellow plastic, black rubber and brass for the rest.
 usage: python signs_art.py <out dir>     (writes int_signs.png there)"""
 import pathlib
 import sys
@@ -10,7 +10,7 @@ import int_art as A
 OUT = pathlib.Path(sys.argv[1])
 OUT.mkdir(parents=True, exist_ok=True)
 HERE = pathlib.Path(__file__).parent
-W, H = 1024, 512
+W, H = 1024, 1024
 rng = np.random.default_rng(1601)
 
 RECTS = {
@@ -19,6 +19,7 @@ RECTS = {
     "yellow": (800, 0, 1024, 128),
     "brass": (800, 128, 1024, 256),
     "rubber": (800, 256, 1024, 384),
+    "closed": (0, 528, 640, 1008),     # the "Gallery closed" board, 0.62 x 0.465 m
 }
 YELLOW = np.array([0.97, 0.78, 0.06], np.float32)
 INK = (22, 20, 18)
@@ -35,6 +36,7 @@ def fill(name, rgb, vary):
 fill("wetfloor", YELLOW, 0.015)
 fill("yellow", YELLOW, 0.015)
 fill("placard", np.array([0.92, 0.88, 0.78], np.float32), 0.02)
+fill("closed", np.array([0.93, 0.90, 0.82], np.float32), 0.02)
 fill("rubber", np.array([0.05, 0.05, 0.05], np.float32), 0.08)
 x0, y0, x1, y1 = RECTS["brass"]
 img[y0:y1, x0:x1] = np.array([0.80, 0.62, 0.30], np.float32) * (1 + 0.07 * A.streaks(rng, x1 - x0, y1 - y0, 40))[..., None]
@@ -73,6 +75,20 @@ d.text((cx, y0 + 82), "PLEASE", font=A.fit_font(d, "PLEASE", A.SERIF, 40, pw - 8
 d.text((cx, y0 + 152), "DO NOT TOUCH", font=A.fit_font(d, "DO NOT TOUCH", A.SERIF_BOLD, 66, pw - 70), fill=INK, anchor="mm")
 d.line([(cx - 110, y0 + 208), (cx + 110, y0 + 208)], fill=(90, 70, 40), width=2)
 d.text((cx, y0 + 262), "She will know.", font=A.fit_font(d, "She will know.", A.SERIF_ITAL, 50, pw - 80), fill=INK, anchor="mm")
+
+# --- The "Gallery closed" board ------------------------------------------------
+x0, y0, x1, y1 = RECTS["closed"]
+cx, pw = (x0 + x1) / 2, x1 - x0
+RED = (128, 24, 22)
+d.rectangle((x0 + 12, y0 + 12, x1 - 12, y1 - 12), outline=RED, width=10)
+d.rectangle((x0 + 30, y0 + 30, x1 - 30, y1 - 30), outline=RED, width=2)
+d.text((cx, y0 + 104), "GALLERY", font=A.fit_font(d, "GALLERY", A.SERIF_BOLD, 96, pw - 120), fill=RED, anchor="mm")
+d.text((cx, y0 + 196), "CLOSED", font=A.fit_font(d, "CLOSED", A.SERIF_BOLD, 96, pw - 120), fill=RED, anchor="mm")
+d.text((cx, y0 + 266), "for re-hanging", font=A.fit_font(d, "for re-hanging", A.SERIF_ITAL, 44, pw - 160), fill=INK, anchor="mm")
+d.line([(cx - 150, y0 + 306), (cx + 150, y0 + 306)], fill=RED, width=3)
+small = A.fit_font(d, "Pandora's collection is being catalogued.", A.SERIF, 34, pw - 90)
+for i, line in enumerate(("Pandora's collection is being catalogued.", "Please do not open anything.")):
+    d.text((cx, y0 + 350 + i * 44), line, font=small, fill=INK, anchor="mm")
 
 pic.save(OUT / "int_signs.png")
 A.write_layout(HERE / "signs_atlas.json", [W, H], RECTS)

@@ -1,0 +1,26 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/arms/shield_case.gltf" id="1_model"]
+
+[sub_resource type="BoxShape3D" id="Shape_base"]
+size = Vector3(0.9, 0.8, 0.9)
+
+[sub_resource type="BoxShape3D" id="Shape_glass"]
+size = Vector3(0.9, 1.36, 0.9)
+
+[node name="ShieldCase" type="Node3D"]
+editor_description = "Asset P3.3: the Shield of Achilles under glass (\"Heel sold separately\"). Origin on the floor, facing +z. Built like the tall case: not cover, because the guard sees through the glass (group see_through) and the cabinet is only 0.8 m."
+
+[node name="Mesh" parent="." instance=ExtResource("1_model")]
+
+[node name="Body" type="StaticBody3D" parent="."]
+
+[node name="Shape" type="CollisionShape3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, 0)
+shape = SubResource("Shape_base")
+
+[node name="Glass" type="StaticBody3D" parent="." groups=["see_through"]]
+
+[node name="Shape" type="CollisionShape3D" parent="Glass"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.48, 0)
+shape = SubResource("Shape_glass")

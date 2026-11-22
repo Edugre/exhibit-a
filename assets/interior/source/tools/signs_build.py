@@ -1,5 +1,6 @@
 """Background Blender job (asset plan P1.6): a yellow wet-floor A-frame and a brass "Do not touch"
-stand with a tilted placard. Run signs_art.py first.
+stand with a tilted placard, and a
+"Gallery closed" board between two brass posts. Run signs_art.py first.
 usage: blender -b --factory-startup --python signs_build.py -- <out dir>"""
 import importlib
 import math
@@ -67,5 +68,28 @@ def do_not_touch():
     return b.object("DoNotTouch", [BRASS, CARD])
 
 
-for make, name in ((wet_floor, "wet_floor"), (do_not_touch, "do_not_touch")):
+def gallery_closed():
+    """A printed board hung between two brass posts, for a doorway nobody should use. Front faces -Y.
+    Origin on the floor, in the middle."""
+    b = M.Builder()
+    brass = atlas.uv("brass")
+    w, h, top = D.CLOSED_W, D.CLOSED_H, D.CLOSED_POST_H
+    gap = w / 2 + 0.06
+    for x in (-gap, gap):
+        b.cylinder(D.POST_BASE_R * 0.8, D.POST_BASE_R * 0.8, 0.02, 0, brass, M.at(x=x, z=0.01), segments=24)
+        b.cylinder(D.POST_BASE_R * 0.74, 0.04, 0.045, 0, brass, M.at(x=x, z=0.042), segments=24)
+        b.cylinder(D.POST_SHAFT_R, D.POST_SHAFT_R, top - 0.065, 0, brass, M.at(x=x, z=(top + 0.065) / 2))
+        b.sphere(0.04, 0, brass, M.at(x=x, z=top + 0.02), segments=12, rings=8)
+    mid = top - 0.12 - h / 2
+    b.box(w + 0.12, 0.018, 0.02, 0, brass, M.at(z=mid + h / 2 + 0.03))      # the bar it hangs from
+    for x in (-w / 2 + 0.06, w / 2 - 0.06):
+        b.box(0.012, 0.012, 0.04, 0, brass, M.at(x=x, z=mid + h / 2 + 0.005))  # its two hooks
+    frame = M.at(z=mid)
+    b.box(w + 0.02, 0.016, h + 0.02, 0, brass, frame)
+    faces = b.box(w, 0.006, h, 1, atlas.uv("closed"), frame @ Matrix.Translation((0, -0.009, 0)))
+    b.print_face(faces, Vector((0, -1, 0)), Vector((1, 0, 0)), Vector((0, 0, 1)), atlas.uv("closed"))
+    return b.object("GalleryClosed", [BRASS, CARD])
+
+
+for make, name in ((wet_floor, "wet_floor"), (do_not_touch, "do_not_touch"), (gallery_closed, "gallery_closed")):
     M.export(make(), OUT / f"{name}.gltf")

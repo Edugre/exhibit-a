@@ -57,8 +57,13 @@ Plain Python, run by hand, writing into `assets/interior/`. Same pipeline as the
 - `lobby_art.py`, `lobby_build.py` (P3.5): the lobby set (ticket desk, coat check, donation box, map board, two
   banners), the same way, into `assets/interior/lobby`. `int_mesh.material()` takes `alpha` (the donation box's glass)
   and `emission` (the desk lamp's shade).
-- `signs_art.py`, `signs_build.py` (P1.6): the wet-floor A-frame and the "Do not touch" stand, the same way,
-  into `assets/interior/signs`.
+- `signs_art.py`, `signs_build.py` (P1.6): the wet-floor A-frame, the "Do not touch" stand and the "Gallery closed"
+  board, the same way, into `assets/interior/signs`.
+- `arms_art.py`, `arms_build.py` (P3.3): the Hall of Arms: Ajax's, Patroclus's and Odysseus's armour, the spear rack and
+  the Shield of Achilles in its case, the same way, into `assets/interior/arms`.
+- `fixtures_build.py` also builds the ceiling fan (P5.4) as two meshes, the still body and the blades, and writes
+  `scenes/props/ceiling_fan.tscn`, where `scripts/ambient/ceiling_fan.gd` turns the blades.
+- `make_wear_art.py` (P6.1): the floor wear and threshold scuff decals, into `assets/interior/wear`.
 
 ## Using the kit in a room
 

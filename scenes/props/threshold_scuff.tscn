@@ -1,0 +1,13 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/interior/wear/threshold_scuff.png" id="1_tex"]
+
+[node name="ThresholdScuff" type="Decal"]
+editor_description = "Asset P6.1: grime and black heel marks across a doorway. Place it on the floor in the doorway's middle, long side across it. Projected straight down (Decal)."
+size = Vector3(3.0, 0.3, 0.8)
+texture_albedo = ExtResource("1_tex")
+upper_fade = 0.05
+lower_fade = 0.05
+distance_fade_enabled = true
+distance_fade_begin = 22.0
+distance_fade_length = 6.0

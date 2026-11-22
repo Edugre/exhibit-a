@@ -13,6 +13,9 @@ PENDANT_BOWL = 0.07                  # how far the glass bowl hangs below the ri
 PANEL = (1.2, 0.6)                   # a recessed office light panel, flush with the ceiling
 EXIT = (0.48, 0.204, 0.05)           # the EXIT sign: width, height, depth off the wall
 VENT = (0.6, 0.32)                   # a wall vent grille
+FAN_DROP = 0.56                      # ceiling fan (P5.4): from the ceiling down to its blades
+FAN_BLADE = (0.6, 0.13)              # each of its four blades: length, width
+FAN_HUB = 0.12                       # the motor's radius; the blades start here
 
 REGIONS = {
     "brass": (0, 0, 128, 32),
@@ -26,3 +29,4 @@ REGIONS = {
 }
 assert abs(EXIT[0] / EXIT[1] - REGIONS["exit"][2] / REGIONS["exit"][3]) < 0.05   # the sign's face keeps its shape
 assert D.LIGHT_Y + PENDANT_LIFT + PENDANT_BOWL + PENDANT_SHADE[1] < D.WALL_H
+assert D.WALL_H - FAN_DROP > D.PLAYER_H + D.JUMP_REACH + 0.3   # nobody jumps into the blades

@@ -1,0 +1,17 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/arms/spear_rack.gltf" id="1_model"]
+
+[sub_resource type="BoxShape3D" id="Shape_1"]
+size = Vector3(1.36, 2.0, 0.4)
+
+[node name="SpearRack" type="Node3D"]
+editor_description = "Asset P3.3: a wall rack for five Myrmidon spears, with one missing. Origin on the floor, facing +z; its back goes against a wall."
+
+[node name="Mesh" parent="." instance=ExtResource("1_model")]
+
+[node name="Body" type="StaticBody3D" parent="."]
+
+[node name="Shape" type="CollisionShape3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.0, 0)
+shape = SubResource("Shape_1")

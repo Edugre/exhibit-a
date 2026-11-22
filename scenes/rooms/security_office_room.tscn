@@ -33,6 +33,8 @@
 [ext_resource type="PackedScene" path="res://scenes/props/light_panel.tscn" id="p15_light_panel"]
 [ext_resource type="PackedScene" path="res://scenes/props/wall_vent.tscn" id="p15_wall_vent"]
 [ext_resource type="Script" path="res://scripts/ambient/failing_light.gd" id="p5_failing"]
+[ext_resource type="PackedScene" path="res://scenes/props/threshold_scuff.tscn" id="p61_scuff"]
+[ext_resource type="PackedScene" path="res://scenes/props/ceiling_fan.tscn" id="p54_fan"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_room"]
 geometry_parsed_geometry_type = 1
@@ -340,3 +342,13 @@ editor_description = "Asset P5.3: the tube over the desk is on its way out. Now 
 script = ExtResource("p5_failing")
 light = NodePath("../LampMiddle")
 panel = NodePath("../Fixtures/PanelMiddle")
+
+[node name="Wear" type="Node3D" parent="."]
+editor_description = "Asset P6.1: worn floor and scuffed thresholds (Decal nodes). Art only, outside the navigation region."
+
+[node name="Entry" parent="Wear" instance=ExtResource("p61_scuff")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.45)
+
+[node name="CeilingFan" parent="Fixtures" instance=ExtResource("p54_fan")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 4, -7.4)
+editor_description = "Asset P5.4: a slow fan over the night guard's desk, clear of the light panels."

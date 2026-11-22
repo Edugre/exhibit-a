@@ -76,6 +76,9 @@ WETFLOOR_SPLAY = 0.30   # distance between the two feet, front to back
 PLACARD_POST_H = 0.98
 PLACARD_W = 0.36
 PLACARD_H = 0.26
+CLOSED_W = 0.62         # the "Gallery closed" board, hung between two brass posts
+CLOSED_H = 0.465
+CLOSED_POST_H = 1.3
 
 # P3.5 lobby set
 DESK_W = 2.4            # the ticket desk, long side along x

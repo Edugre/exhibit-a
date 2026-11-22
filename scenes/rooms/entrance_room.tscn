@@ -19,6 +19,13 @@
 [ext_resource type="AudioStream" path="res://assets/interior/sounds/amb_clock.wav" id="p4_amb_clock"]
 [ext_resource type="PackedScene" path="res://scenes/jammer_pickup.tscn" id="g1_jammer"]
 [ext_resource type="PackedScene" uid="uid://boemyyhoc6dtn" path="res://scenes/throwable.tscn" id="b5_heel"]
+[ext_resource type="PackedScene" path="res://scenes/props/pendant_lamp.tscn" id="p15_pendant_lamp"]
+[ext_resource type="PackedScene" path="res://scenes/props/exit_sign.tscn" id="p15_exit_sign"]
+[ext_resource type="PackedScene" path="res://scenes/props/wall_vent.tscn" id="p15_wall_vent"]
+[ext_resource type="PackedScene" path="res://scenes/ambient/dust_motes.tscn" id="p51_dust"]
+[ext_resource type="PackedScene" path="res://scenes/props/floor_wear.tscn" id="p61_wear"]
+[ext_resource type="PackedScene" path="res://scenes/props/threshold_scuff.tscn" id="p61_scuff"]
+[ext_resource type="PackedScene" path="res://scenes/props/gallery_closed_sign.tscn" id="p16_closed"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_room"]
 geometry_parsed_geometry_type = 1
@@ -192,11 +199,20 @@ omni_attenuation = 1.1
 shadow_enabled = true
 
 [node name="BannerLight" type="SpotLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.866, -0.5, 0, 0.5, 0.866, 0, 3.6, -3.2)
+editor_description = "Asset P6.2: washes the two banners on the far wall, from beside the pendant."
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 3.6, -3.65)
 light_color = Color(1, 0.84, 0.64, 1)
-light_energy = 1.4
+light_energy = 1.6
 spot_range = 6.0
-spot_angle = 65.0
+spot_angle = 58.0
+
+[node name="Moonlight" type="OmniLight3D" parent="."]
+editor_description = "Asset P6.2: cold night air from the front doors, against the warm lamps inside. No shadow."
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.6, -0.9)
+light_color = Color(0.56, 0.66, 1, 1)
+light_energy = 0.45
+omni_range = 4.5
+omni_attenuation = 1.4
 
 [node name="RoomAir" type="ReflectionProbe" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -3)
@@ -233,3 +249,39 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.15, 1, -2.6)
 
 [node name="Heel" parent="ThrowableSpots/Spot1" instance=ExtResource("b5_heel")]
 transform = Transform3D(-0.83092, 0.172478, -0.528983, -0.177245, 0.819152, 0.545504, 0.527404, 0.54703, -0.650079, 0, 0.128, 0)
+
+[node name="GalleryClosed" parent="NavigationRegion3D/Props" instance=ExtResource("p16_closed")]
+transform = Transform3D(0.965926, 0, 0.258819, 0, 1, 0, -0.258819, 0, 0.965926, -2.2, 0, -4.95)
+
+[node name="Fixtures" type="Node3D" parent="."]
+editor_description = "Asset P1.5: a lamp over the room light, the EXIT sign by the front doors, and a vent over the coat check. Art only, outside the navigation region."
+
+[node name="Pendant" parent="Fixtures" instance=ExtResource("p15_pendant_lamp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.62, -3)
+
+[node name="ExitSign" parent="Fixtures" instance=ExtResource("p15_exit_sign")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 2.4, 2.95, -0.5)
+
+[node name="Vent" parent="Fixtures" instance=ExtResource("p15_wall_vent")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 5.5, 2.75, -1.6)
+
+[node name="Wear" type="Node3D" parent="."]
+editor_description = "Asset P6.1: worn floor and scuffed thresholds (Decal nodes). Art only, outside the navigation region."
+
+[node name="FrontDoors" parent="Wear" instance=ExtResource("p61_scuff")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.45)
+
+[node name="TicketDesk" parent="Wear" instance=ExtResource("p61_wear")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -3.25, 0, -3)
+
+[node name="CoatCheck" parent="Wear" instance=ExtResource("p61_wear")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 3.35, 0, -3.2)
+
+[node name="ToTheGalleries" parent="Wear" instance=ExtResource("p61_scuff")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5.55)
+
+[node name="Ambient" type="Node3D" parent="."]
+editor_description = "Asset P5.1: dust drifting in the light. Cosmetic and local; nothing is synced."
+
+[node name="DustInBannerLight" parent="Ambient" instance=ExtResource("p51_dust")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3, -4.5)

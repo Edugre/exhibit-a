@@ -1,0 +1,17 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/signs/gallery_closed.gltf" id="1_model"]
+
+[sub_resource type="BoxShape3D" id="Shape_1"]
+size = Vector3(0.9, 1.34, 0.3)
+
+[node name="GalleryClosedSign" type="Node3D"]
+editor_description = "Asset P1.6: a \"Gallery closed\" board between two brass posts. Origin on the floor, in the middle; the print faces +z. One box of collision round both posts and the board."
+
+[node name="Mesh" parent="." instance=ExtResource("1_model")]
+
+[node name="Body" type="StaticBody3D" parent="."]
+
+[node name="Shape" type="CollisionShape3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.67, 0)
+shape = SubResource("Shape_1")
