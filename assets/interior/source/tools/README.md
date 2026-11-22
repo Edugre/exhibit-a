@@ -21,6 +21,11 @@ Plain Python, run by hand, writing into `assets/interior/`. Same pipeline as the
   `blender -b --factory-startup --python cases_build.py -- assets/interior/cases scenes/props`, then
   `python make_cases_art.py assets/interior/cases`. The glass collision is its own StaticBody in the group
   `see_through`, so it stops players but the guard's sight check can be told to look through it.
+- `shelves_layout.py`, `shelves_build.py`, `make_shelves_art.py` (P2.3): the archive bookcases, double-sided
+  and against-the-wall, 1.2 m wide so a row makes a straight wall. Each shelf is filled with runs of books,
+  each run a box showing its own stretch of one of three spine strips (picked by the books' height).
+  `blender -b --factory-startup --python shelves_build.py -- assets/interior/shelves scenes/props`, then
+  `python make_shelves_art.py assets/interior/shelves`.
 
 - `int_mesh.py`, `int_art.py`: small shared helpers for script-built props. `int_mesh.py` (Blender) makes parts,
   fits them into an atlas and lays printed faces; `int_art.py` (Pillow) has noise, streaks and fitted fonts.
