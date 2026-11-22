@@ -19,7 +19,6 @@ const FLOOR_HEIGHT := 0.12
 ## How far to look for the ground under someone who let go in mid-air. The street is 4.5 m below the rooms.
 const FALL_REACH := 12.0
 
-@export var spot_path: NodePath = ^"../Museum/ArtifactSpot"
 @export var players_path: NodePath = ^"../Players"
 @export var van_path: NodePath = ^"../Getaway/TrojanVan"
 
@@ -33,8 +32,20 @@ var _dropped: Transform3D
 
 
 func _ready() -> void:
-	_home = (get_node(spot_path) as Node3D).global_transform
+	_find_home()
 	global_transform = _home
+	GameState.phase_changed.connect(_on_phase_changed)  # fires on every peer, which all show the book
+
+
+## The vault marks where the artifact rests. Asked again when a heist starts, since the rooms can be rebuilt.
+func _find_home() -> void:
+	var museum := get_tree().get_first_node_in_group("museum") as MuseumLayout
+	_home = museum.get_artifact_spot().global_transform
+
+
+func _on_phase_changed(phase: GameState.Phase) -> void:
+	if phase == GameState.Phase.PLAYING:
+		_find_home()
 
 
 func _process(_delta: float) -> void:

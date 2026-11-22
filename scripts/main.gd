@@ -13,7 +13,7 @@ const PLAYER_SCENE := preload("res://scenes/player.tscn")
 @onready var graphics_option: OptionButton = %GraphicsOption
 @onready var weather_option: OptionButton = %WeatherOption
 @onready var players_root: Node3D = $World/Players
-@onready var spawn_points: Array[Node] = $World/Museum/SpawnPoints.get_children()
+@onready var spawn_points: Array[Marker3D] = ($World/Museum as MuseumLayout).get_spawn_points()
 @onready var player_spawner: MultiplayerSpawner = $PlayerSpawner
 
 

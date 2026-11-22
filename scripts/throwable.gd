@@ -60,7 +60,11 @@ func _process(_delta: float) -> void:
 
 
 func _find_holder() -> Node3D:
-	return get_node_or_null("../../Players/%d" % holder_id) as Node3D
+	# Players are named after their peer id. Asked by group, so throwables can sit anywhere in the level.
+	for player in get_tree().get_nodes_in_group("players"):
+		if player.name == str(holder_id):
+			return player as Node3D
+	return null
 
 
 ## Host only: called by the player's interact request.

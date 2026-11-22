@@ -39,9 +39,15 @@ back out to the van. Every room is crossed twice, so the stealth matters more.
 | `ThrowableSpots` (Marker3Ds) | optional | Where throwables are placed. |
 | `ExitGate` (`scenes/room_gate.tscn`, `RoomGate`) | optional | A door across the Exit. `starts_open` for rooms with no puzzle. A puzzle rule calls `open()`. It opens by itself once the artifact is taken (`stays_open_on_return`). |
 | `GadgetSocket` | optional | Marks where the HW #4 gadget can act (laser grid, camera...). |
-| `SpawnPoints` / `ArtifactSpot` / `ExtractionSpot` | entrance/vault only | Same as today. |
+| `ArtifactSpot` | vault only | Where the artifact rests. (Spawns and the extraction spot are outside, under `Museum/Plaza`.) |
 
-The builder places room N+1 so its `Entry` sits on room N's `Exit` (`Room.snap_entry_to()`). No rotation is needed.
+The builder (`scripts/museum_layout.gd` on `World/Museum`) places room N+1 so its `Entry` sits on room N's `Exit`,
+starting at the front doorway (z = 6). No rotation is needed.
+
+**Depth budget:** the exterior reserves 60 m behind the doors (z 6 to -54). The lobby takes 6 m and the gallery
+and vault 18 m, so **each pool room may be at most 12 m deep** (Entry to Exit), like the template. Width is free
+up to 50 m. The builder warns if a run is too deep. To try your room in a run, set `debug_order` on
+`World/Museum` in `main.tscn` (indexes into `RoomCatalog.POOL`).
 Start a new room by duplicating `scenes/rooms/room_template.tscn`. Gadget targets join the
 `"jammable"` group (`Room.JAMMABLE_GROUP`) and implement a host-only `jam(seconds: float)`.
 

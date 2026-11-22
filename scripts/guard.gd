@@ -37,7 +37,8 @@ const LOOK_AROUND_SPEED := 1.5    # radians per second while searching
 const CALM_LIGHT := Color(1.0, 0.93, 0.74)
 const ALERT_LIGHT := Color(1.0, 0.2, 0.2)
 
-@export var waypoints_path: NodePath = ^"../Museum/GuardWaypoints"
+## Guards are children of their room (scripts/room.gd), next to its patrol markers.
+@export var waypoints_path: NodePath = ^"../GuardWaypoints"
 
 ## Replicated to the client so its flashlight turns red during a chase.
 @export var alerted := false:

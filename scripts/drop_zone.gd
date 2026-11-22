@@ -11,8 +11,6 @@ const HALF_SIZE := Vector2(2.1, 1.35)
 const GLOW_ENERGY := 2.4
 const GLOW_SPEED := 4.0
 
-## The museum marks where this goes, so the level stays the one place that says so.
-@export var spot_path: NodePath = ^"../Museum/ExtractionSpot"
 @export var players_path: NodePath = ^"../Players"
 
 var _glow_materials: Array[BaseMaterial3D] = []
@@ -22,7 +20,9 @@ var _glow_time: float = 0.0
 
 
 func _ready() -> void:
-	global_position = (get_node(spot_path) as Node3D).global_position
+	# The museum marks where this goes, so the level stays the one place that says so.
+	var museum := get_tree().get_first_node_in_group("museum") as MuseumLayout
+	global_position = museum.get_extraction_spot().global_position
 	for mesh_name: String in ["ZonePaint", "Hoofprints"]:
 		var mesh := find_child(mesh_name, true, false) as MeshInstance3D
 		var glow := mesh.get_active_material(0).duplicate() as BaseMaterial3D

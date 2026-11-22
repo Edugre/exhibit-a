@@ -14,13 +14,13 @@ extends Node3D
 ##                           you into the previous room.
 ##     Ceiling               Outside the region, so its top isn't baked as floor.
 ##   Optional: GuardWaypoints (patrol loop, guards are children of the room), ThrowableSpots,
-##   ExitGate (a RoomGate), GadgetSocket. Entrance and vault only: SpawnPoints, ArtifactSpot,
-##   ExtractionSpot.
+##   ExitGate (a RoomGate), GadgetSocket. Vault only: ArtifactSpot. (Spawns and the extraction spot
+##   are outside on the plaza: see MuseumLayout.)
 ##
 ## The builder lines rooms up so each Entry sits on the previous room's Exit. Rooms are never rotated.
 
-## The navmesh is ready, a frame after the room enters the tree. Guards should wait for it
-## (and one more physics frame for the navigation map to sync) before asking for paths.
+## The navmesh is baked and the navigation server has it, a few frames after the room enters the
+## tree. Guards should wait for it (and one more physics frame for the map to sync) before asking for paths.
 signal baked
 
 ## The contract sizes. assets/interior/source/tools/int_dims.py (DOOR_W, WALL_H, WALL_T) mirrors them for the art.
@@ -48,12 +48,55 @@ func _ready() -> void:
 		# CSG builds its shapes at the end of the frame it enters the tree, so wait for them.
 		await get_tree().process_frame
 		# Rooms bake at a 0.1 m cell height so a 0.46 m bench isn't a step guards can climb.
-		# The map has to match, or it warns and merges coarser. (Task A1 may move this to project settings.)
+		# The map has to match, or it warns and merges coarser. The plaza's navmesh uses 0.1 too.
 		NavigationServer3D.map_set_cell_height(get_world_3d().navigation_map, NAV_CELL_HEIGHT)
 		# Every instance of a room scene shares its NavigationMesh resource; bake into a copy of our own.
-		nav_region.navigation_mesh = nav_region.navigation_mesh.duplicate()
-		nav_region.bake_navigation_mesh(false)  # small rooms bake in a few milliseconds
+		var mesh := nav_region.navigation_mesh.duplicate() as NavigationMesh
+		NavigationServer3D.bake_from_source_geometry_data(mesh, _source_geometry(mesh))  # a few milliseconds
+		nav_region.navigation_mesh = mesh
+		await _confirm_on_server(mesh)
 		baked.emit()
+
+
+## For a room added after startup, the server can drop the baked mesh if it arrives while the
+## region's first update (the empty mesh) is still in flight (seen in 4.7.2). So check that the server
+## really has it, and hand it over again until it does.
+func _confirm_on_server(mesh: NavigationMesh) -> void:
+	var vertices := mesh.get_vertices()
+	if vertices.is_empty():
+		return
+	var rid := nav_region.get_rid()
+	var probe := nav_region.global_transform * vertices[0]
+	for attempt in 20:
+		for i in 2:
+			await get_tree().physics_frame
+		if NavigationServer3D.region_get_closest_point(rid, probe).distance_to(probe) < 0.5:
+			return
+		NavigationServer3D.region_set_navigation_mesh(rid, mesh)
+	push_warning("Room %s: the navigation server never took its navmesh." % name)
+
+
+## What the navmesh is baked from: every collider under the region. CSG is read from its collision
+## shape, not its visible mesh, which Godot would have to fetch back from the GPU (and warn about).
+func _source_geometry(mesh: NavigationMesh) -> NavigationMeshSourceGeometryData3D:
+	var source := NavigationMeshSourceGeometryData3D.new()
+	var csg_roots: Array[CSGShape3D] = []
+	for node in nav_region.find_children("*", "CSGShape3D", true, false):
+		var csg := node as CSGShape3D
+		if csg.is_root_shape() and csg.use_collision:
+			csg_roots.append(csg)
+	# Hide the CSG from the parser for a moment, then add its collision faces ourselves
+	var layers: Array[int] = []
+	for csg in csg_roots:
+		layers.append(csg.collision_layer)
+		csg.collision_layer = 0
+	NavigationServer3D.parse_source_geometry_data(mesh, source, nav_region)
+	for i in csg_roots.size():
+		csg_roots[i].collision_layer = layers[i]
+		var shape := csg_roots[i].bake_collision_shape()
+		if shape:
+			source.add_faces(shape.get_faces(), csg_roots[i].global_transform)  # world space, like the parser
+	return source
 
 
 ## Moves the room so its Entry sits on `point` (the previous room's Exit, in world space).

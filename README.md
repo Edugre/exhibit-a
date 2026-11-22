@@ -126,6 +126,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 - Heist timer, outcome and synchronized restart (scripts/game_state.gd)
 - Host/join flow, player spawning and restart respawns (scripts/network_manager.gd, scripts/main.gd)
 - Pressure plate puzzle condition and vault door (scripts/vault_puzzle.gd, scripts/pressure_plate.gd, scripts/vault_door.gd)
+- Museum layout: builds the rooms in a line from the front doors (lobby, then the gallery and vault), and tells the artifact, drop zone and spawning where things are (scripts/museum_layout.gd)
 - Room contract for HW #4: how rooms line up door to door, what each room provides, and the exit gate that stays open once the artifact is taken (scripts/room.gd, scripts/room_gate.gd, scripts/room_catalog.gd, scenes/rooms/room_template.tscn)
 - Two-plate timing gate for Twin Archives: the gate opens when both plates are pressed within 2 seconds of each other (scripts/gates/twin_plate_gate.gd)
 - Guard AI: patrol, vision cone, suspicion, chase, investigation, catch (scripts/guard.gd)
@@ -144,7 +145,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 - Cosmetic exterior life: flickering lanterns, front doors that open for anyone near them, traffic that obeys the signal and honks at people in the road, and the opening shot (scripts/exterior_flicker.gd, scripts/exterior_doors.gd, scripts/exterior_traffic.gd, scripts/menu_camera.gd). Each peer runs its own, and none of it touches game state
 
 ## Known limitations
-- Only one gallery room, one vault, and one guard. Additional rooms and procedural room ordering are planned for HW #4.
+- Only a lobby, one gallery room, one vault, and one guard. Additional rooms and procedural room ordering are planned for HW #4.
 - Sneaking only slows the player down. It doesn't yet affect how quickly the guard notices you or make footsteps quieter.
 - Exactly two players. There is no lobby or matchmaking: the client must type the host's IP address, and playing across different networks needs port 7777 forwarded on the host's router.
 - If the host quits, the client is sent back to the main menu; the session can't continue without the host.
