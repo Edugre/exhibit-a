@@ -10,6 +10,10 @@ signal solved
 
 ## How close together the two presses must be, in seconds.
 const WINDOW := 2.0
+## A room is built (and rebuilt on every restart) while the players are still standing wherever they
+## were, so plates can appear under them. The rule waits this long before it listens, so that
+## doesn't count as two presses. Someone already on a plate steps off and on again to press it.
+const SETTLE := 0.75
 
 @export var plate_a: PressurePlate
 @export var plate_b: PressurePlate
@@ -20,20 +24,26 @@ const WINDOW := 2.0
 var is_solved := false
 
 var _last_press := {}  # host only: PressurePlate -> time of its latest press, in seconds
+var _listening_from := 0.0
 
 
 func _ready() -> void:
 	plate_a.pressed_changed.connect(_on_pressed_changed.bind(plate_a))
 	plate_b.pressed_changed.connect(_on_pressed_changed.bind(plate_b))
 	GameState.heist_reset.connect(_on_heist_reset)  # only fires on the host
+	_listening_from = _now() + SETTLE
 
 
 func _on_pressed_changed(pressed: bool, plate: PressurePlate) -> void:
+	if not is_inside_tree():
+		return  # a room on its way out: its plates let go as it leaves
 	if not multiplayer.is_server() or GameState.phase != GameState.Phase.PLAYING:
 		return
 	if is_solved or not pressed:
 		return  # only the moment a plate goes down counts, not stepping off it
-	var now := Time.get_ticks_msec() / 1000.0
+	var now := _now()
+	if now < _listening_from:
+		return
 	_last_press[plate] = now
 	var other := plate_b if plate == plate_a else plate_a
 	if _last_press.has(other) and now - float(_last_press[other]) <= WINDOW:
@@ -49,6 +59,7 @@ func _solve() -> void:
 func _on_heist_reset(_respawn_players: bool) -> void:
 	is_solved = false
 	_last_press.clear()
+	_listening_from = _now() + SETTLE
 	_set_gate(false)
 
 
@@ -61,3 +72,7 @@ func _set_gate(open: bool) -> void:
 		gate.close()
 	elif "is_open" in gate:
 		gate.is_open = open
+
+
+func _now() -> float:
+	return Time.get_ticks_msec() / 1000.0
