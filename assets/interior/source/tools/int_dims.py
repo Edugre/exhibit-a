@@ -58,3 +58,21 @@ TRIM_REPEAT = 1.2       # the exterior's carved strip (assets/exterior/source/to
 CORNICE_ROWS = 0.70     # the cornice shows the strip's top three rows: egg-and-dart, beads and leaves
 WEAR_TILE = 3.1         # dirt, scratches and dull patches, on a different repeat from every surface under them
 SCUFF_H = 1.0           # walls collect scuffs and grime below this height, where feet, bags and trolleys hit
+
+# P1.4 rope barriers and bench (the post and bench heights are the shared ones above)
+POST_BASE_R = 0.16
+POST_SHAFT_R = 0.024
+ROPE_HOOK_Y = ROPE_POST_H - 0.1   # where the rope's end caps clip on
+ROPE_SPAN = 2.0         # post to post, as built; scripts/props/rope_barrier.gd stretches it
+ROPE_SAG = 0.16
+ROPE_R = 0.019
+BENCH_L = 1.8
+BENCH_D = 0.5
+
+# P1.6 signs
+WETFLOOR_H = 0.64
+WETFLOOR_W = 0.3
+WETFLOOR_SPLAY = 0.30   # distance between the two feet, front to back
+PLACARD_POST_H = 0.98
+PLACARD_W = 0.36
+PLACARD_H = 0.26

@@ -27,6 +27,15 @@ Plain Python, run by hand, writing into `assets/interior/`. Same pipeline as the
   `blender -b --factory-startup --python shelves_build.py -- assets/interior/shelves scenes/props`, then
   `python make_shelves_art.py assets/interior/shelves`.
 
+- `int_mesh.py`, `int_art.py`: small shared helpers for script-built props. `int_mesh.py` (Blender) makes parts,
+  fits them into an atlas and lays printed faces; `int_art.py` (Pillow) has noise, streaks and fitted fonts.
+- `barrier_bench_art.py`, `barrier_bench_build.py` (P1.4): the brass rope-barrier post, the velvet rope and the
+  gallery bench. From the repo root: `python assets/interior/source/tools/barrier_bench_art.py assets/interior/barrier_bench`,
+  then `blender -b --factory-startup --python assets/interior/source/tools/barrier_bench_build.py -- assets/interior/barrier_bench`.
+  Each prop is a `.gltf` with the set's one atlas kept beside it, so the three share a texture.
+- `signs_art.py`, `signs_build.py` (P1.6): the wet-floor A-frame and the "Do not touch" stand, the same way,
+  into `assets/interior/signs`.
+
 ## Using the kit in a room
 
 Every kit material is laid on in world space, so it works on plain CSG boxes with no UVs, at any size.
