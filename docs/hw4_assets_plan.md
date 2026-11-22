@@ -146,12 +146,12 @@ One room tone per room (a loop), plus a few one-shots. Everything is generated, 
 
 | ID | Sound | Where |
 |---|---|---|
-| P4.1 | HVAC hum (low, steady loop) | Every room, at a different pitch per room so each sounds different |
-| P4.2 | Ticking clock | Lobby, Archives |
-| P4.3 | Fluorescent buzz | Security Office |
-| P4.4 | Faint radio chatter (band-limited noise "voices", no words) | Security Office |
-| P4.5 | Laser hum + "zap" on crossing | Laser Corridor (the behaviour hook is in C2) |
-| P4.6 | Creaky floorboard and page rustle one-shots | Archives (the creak could later become a noise source; see stretch goals) |
+| P4.1 ✅ | HVAC hum (low, steady loop) | Every room, at a different pitch per room so each sounds different |
+| P4.2 ✅ | Ticking clock | Lobby, Archives |
+| P4.3 ✅ | Fluorescent buzz | Security Office |
+| P4.4 ✅ | Faint radio chatter (band-limited noise "voices", no words) | Security Office |
+| P4.5 ✅ | Laser hum + "zap" on crossing | Laser Corridor (the behaviour hook is in C2) |
+| P4.6 ✅ | Creaky floorboard and page rustle one-shots | Archives (the creak could later become a noise source; see stretch goals) |
 
 Each sound gets an `AudioStreamPlayer3D` inside the relevant prop scene or a `RoomTone` scene, so room
 builders just drop it in.

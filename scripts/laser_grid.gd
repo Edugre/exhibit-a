@@ -23,6 +23,9 @@ const BEAM_COLOR := Color(1.0, 0.05, 0.05)
 const BEAM_THICKNESS := 0.02
 const DEPTH := 0.3  # how thick the trigger zone is, so a fast step can't skip it
 const POST_SIZE := 0.12
+## Sounds (asset item P4.5): a hum while the beams are on, and a zap when someone walks into them.
+const HUM := preload("res://assets/interior/sounds/amb_laser_hum.wav")
+const ZAP := preload("res://assets/interior/sounds/sfx_laser_zap.wav")
 
 ## Synced. True while the beams are on. Only the host sets it.
 @export var is_active := true:
@@ -40,6 +43,8 @@ var _jam_left := 0.0
 var _next_alarm: Dictionary[int, float] = {}  # peer id -> time (s) the alarm may go off again for them
 var _beam_material := StandardMaterial3D.new()
 var _sputter_left := 0.0  # every peer: how long the jammed look lasts
+var _hum: AudioStreamPlayer3D
+var _zap: AudioStreamPlayer3D
 
 
 func _ready() -> void:
@@ -168,17 +173,38 @@ func _spark(at: Vector3) -> void:
 @rpc("authority", "call_local", "reliable")
 func _flash() -> void:
 	_beam_material.emission_energy_multiplier = 6.0
+	_zap.play()
 	var tween := create_tween()
 	tween.tween_property(_beam_material, "emission_energy_multiplier", 2.0, 0.4)
 
 
 func _show_active() -> void:
 	beams_root.visible = is_active
+	if _hum:
+		if is_active and not _hum.playing:
+			_hum.play(randf() * HUM.get_length())
+		elif not is_active:
+			_hum.stop()
 
 
 ## Placeholder look: two posts and evenly spaced beams. The art (asset item P2.1) can replace
 ## the meshes later; the trigger and the rules stay here.
 func _build() -> void:
+	_hum = AudioStreamPlayer3D.new()
+	_hum.stream = HUM
+	_hum.volume_db = -16.0
+	_hum.unit_size = 2.0
+	_hum.max_distance = 9.0
+	_hum.position.y = height / 2.0
+	add_child(_hum)
+	_zap = AudioStreamPlayer3D.new()
+	_zap.stream = ZAP
+	_zap.volume_db = -6.0
+	_zap.unit_size = 4.0
+	_zap.max_distance = 25.0
+	_zap.position.y = height / 2.0
+	add_child(_zap)
+
 	var box := BoxShape3D.new()
 	box.size = Vector3(width, height, DEPTH)
 	trigger_shape.shape = box
