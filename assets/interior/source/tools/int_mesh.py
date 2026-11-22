@@ -3,6 +3,7 @@
 Each part is fitted into one rectangle of its set's atlas; printed faces get a rectangle of their own."""
 import json
 import math
+import pathlib
 import bmesh
 import bpy
 from mathutils import Matrix, Vector
@@ -180,4 +181,19 @@ def export(obj, path):
     bpy.context.view_layer.objects.active = obj
     bpy.ops.export_scene.gltf(filepath=str(path), export_format="GLTF_SEPARATE", use_selection=True,
                               export_yup=True, export_apply=True)
+    stamp_bin(path)
     print("wrote", path)
+
+
+def stamp_bin(path):
+    """Write a hash of the .bin into the .gltf. Godot only reimports a model when the .gltf itself changes, so
+    without this a rebuilt mesh with new UVs (a set's atlas growing, say) keeps its old import on every machine."""
+    import hashlib
+    path = pathlib.Path(path)
+    gltf = json.loads(path.read_text(encoding="utf8"))
+    digest = hashlib.sha1()
+    for buffer in gltf.get("buffers", []):
+        digest.update((path.parent / buffer["uri"]).read_bytes())
+    gltf.setdefault("asset", {}).setdefault("extras", {})["bin_sha1"] = digest.hexdigest()
+    with open(path, "w", encoding="utf8", newline="") as out:
+        out.write(json.dumps(gltf, indent=1) + "\n")
