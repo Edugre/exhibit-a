@@ -119,6 +119,29 @@ Task IDs are used for branch names (`hw4/a1-split-museum`) and PR titles.
 **A4: Return trip + timer tuning** · hard: CP3
 - Check that gates stay open on the way back, then tune `HEIST_DURATION` for a 5-room run.
 
+*A4 status (done before CP3, so the timer is left unchanged for now):*
+- **Return trip: checked, headless.** A puzzle room's `RoomGate` (`starts_open = false`) stays shut at the start and
+  while the artifact is still in the vault. It opens by itself once the book is carried or dropped, and shuts again
+  on restart. A rule that opened it (like `TwinPlateGate`) is also reset by the restart, and
+  `stays_open_on_return = false` keeps it shut. **Open question for C3:** should the laser grid also switch off
+  on the way back, or is crossing it twice part of the challenge?
+- **Route lengths** along the guard's navmesh: plaza spawn → plates → vault → drop zone, the shortest path with no detours.
+
+  | Run | Route | Walking (5 m/s) | Sneaking (2.5 m/s) |
+  |---|---|---|---|
+  | HW #3 + lobby, no pool rooms | 107 m | 21 s | 43 s |
+  | Lobby, Sculpture Hall, vault (main today) | 146 m | 29 s | 58 s |
+  | Longest allowed: 36 m of pool rooms | 184 m | 37 s | 74 s |
+
+  HW #3 gave 180 s for 107 m, so most of the timer goes on stealth, the puzzle and waiting out the guard, not walking.
+  The longest run adds 77 m (about 31 s sneaking) **plus up to three more guarded or puzzle rooms**.
+- **Timer proposal (the team decides; the timer is a gameplay rule we write):** runs now vary from 0 to 3 pool rooms
+  (2 when an 18 m room is picked), so one fixed number makes short runs easy and long ones harsh. Proposal:
+  **scale the timer with the run**: `180 s + 30 s per pool room` (180 / 210 / 240 / 270 s). The host already knows
+  the run when it builds (`MuseumLayout.last_order`), so `GameState.start_heist()` can take the duration from it.
+  If the team prefers one fixed number, **about 270 s** covers the longest run. Either way, confirm by play-testing a
+  full 3-room run once CP3 lands: aim to finish with roughly 30–60 s to spare when playing carefully.
+
 **A5: README + final integration** · hard: A4, B5, C4
 - README "Systems we wrote", "Godot-provided systems" and "Known limitations". A full play-test pass.
 
