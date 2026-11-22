@@ -1,0 +1,73 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://bp86107xxvcbk" path="res://scripts/pressure_plate.gd" id="1_plate"]
+[ext_resource type="PackedScene" path="res://assets/interior/laser/switch_base.gltf" id="2_base"]
+[ext_resource type="PackedScene" path="res://assets/interior/laser/switch_top.gltf" id="3_top"]
+[ext_resource type="Texture2D" path="res://assets/interior/laser/switch_label.png" id="4_label"]
+
+[sub_resource type="BoxShape3D" id="Shape_sensor"]
+size = Vector3(1, 0.7, 1)
+
+[sub_resource type="BoxShape3D" id="Shape_pad"]
+size = Vector3(1.1, 0.08, 1.1)
+
+[sub_resource type="BoxShape3D" id="Shape_post"]
+size = Vector3(0.3, 1.12, 0.14)
+
+[sub_resource type="StandardMaterial3D" id="Material_gem"]
+emission_enabled = true
+emission_energy_multiplier = 2.5
+
+[sub_resource type="SphereMesh" id="Mesh_gem"]
+material = SubResource("Material_gem")
+radius = 0.025
+height = 0.05
+
+[sub_resource type="StandardMaterial3D" id="Material_plaque"]
+roughness = 0.6
+emission_enabled = true
+emission_energy_multiplier = 0.6
+
+[sub_resource type="QuadMesh" id="Mesh_plaque"]
+material = SubResource("Material_plaque")
+size = Vector2(0.2, 0.085)
+
+[sub_resource type="SceneReplicationConfig" id="Sync_pressed"]
+properties/0/path = NodePath(".:is_pressed")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+
+[node name="LaserSwitch" type="Area3D"]
+editor_description = "The laser grid's switch (asset P2.2): a floor pad with a control post. It runs pressure_plate.gd, the same rule and sync as the statue plinths, but it isn't in the \"plates\" group, so standing on it doesn't pass you off as a statue. Front (+Z) is the side you read it from; the post stands at the back."
+script = ExtResource("1_plate")
+label = ExtResource("4_label")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.43, 0)
+shape = SubResource("Shape_sensor")
+
+[node name="Model" parent="." instance=ExtResource("2_base")]
+
+[node name="PlinthCap" parent="." instance=ExtResource("3_top")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.05, 0)
+
+[node name="Body" type="StaticBody3D" parent="."]
+
+[node name="Pad" type="CollisionShape3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.04, 0)
+shape = SubResource("Shape_pad")
+
+[node name="Post" type="CollisionShape3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.42, 0.56, -0.52)
+shape = SubResource("Shape_post")
+
+[node name="Plaque" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.37, 0.96, -0.455)
+mesh = SubResource("Mesh_plaque")
+
+[node name="Gem" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.52, 1.05, -0.45)
+mesh = SubResource("Mesh_gem")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("Sync_pressed")

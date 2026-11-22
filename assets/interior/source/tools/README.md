@@ -33,6 +33,10 @@ Plain Python, run by hand, writing into `assets/interior/`. Same pipeline as the
   gallery bench. From the repo root: `python assets/interior/source/tools/barrier_bench_art.py assets/interior/barrier_bench`,
   then `blender -b --factory-startup --python assets/interior/source/tools/barrier_bench_build.py -- assets/interior/barrier_bench`.
   Each prop is a `.gltf` with the set's one atlas kept beside it, so the three share a texture.
+- `laser_art.py`, `laser_build.py` (P2.1, P2.2): the laser grid's emitter post (built 2.4 m tall; `laser_grid.gd` stretches
+  it and adds a lens per beam) and the switch pad: a striped frame and control post, and a separate top that
+  `pressure_plate.gd` sinks (it must be named `PlinthCap` in the scene). Also `switch_label.png` for the plaque.
+  The beams are `assets/interior/laser/laser_beam.gdshader`.
 - `make_room_sounds.py` (P4): every room sound, from noise and maths (numpy only), into `assets/interior/sounds`.
   Each sound has its own seed. The loops are listed in `loops.txt` there; their `.import` files need
   `edit/loop_mode=2`. Rooms play them through `RoomTone` nodes (`scripts/room_tone.gd`), and the laser grid
