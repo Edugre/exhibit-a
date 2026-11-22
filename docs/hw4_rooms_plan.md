@@ -1,0 +1,97 @@
+# HW #4 plan: additional rooms + procedural ordering
+
+Status: draft for the team to review. The new gadget is a separate task; this plan only
+leaves a hook for it.
+
+## Decisions
+
+- **Linear chain.** Entrance (extraction + van) first, then 3 shuffled rooms, then the vault last.
+- **Pool of 4 rooms, 3 used per run**, in random order. Both the order and which room is left out change.
+- **New order on every restart.** The host picks it; both peers rebuild.
+- **Room content:** guard patrols, co-op puzzle gates, throwable pickups, and a hook for the new gadget.
+
+## Run layout
+
+```
+[Entrance / extraction] -> [Pool room] -> [Pool room] -> [Pool room] -> [Gallery + Vault]
+       fixed                  shuffled: 3 of 4                          fixed (HW #3 puzzle)
+```
+
+The current gallery, plates and vault become the fixed **Vault room**. The HW #3 puzzle and
+the artifact stay exactly as they are. The extraction area becomes the fixed **Entrance room**.
+Players spawn in the entrance, cross the museum to steal the artifact, and carry it all the way
+back to the van. Every room is crossed twice, so the stealth matters more.
+
+## Room contract (every room scene follows this)
+
+`scenes/rooms/<name>_room.tscn`, root `Node3D` with `scripts/room.gd` (`class_name Room`):
+
+| Child | Required | Purpose |
+|---|---|---|
+| `Entry`, `Exit` (Marker3D) | yes | Doorway centres. The rooms run along -Z, Entry at local z = 0. |
+| `NavigationRegion3D` | yes | This room's own baked navmesh, so doorway edges line up between rooms. |
+| `Geometry` (CSGCombiner3D) | yes | Floor and walls, plus a doorway of fixed width (3 m) at Entry/Exit. |
+| `GuardWaypoints` | optional | Patrol loop for this room's guard(s). Guards are children of the room. |
+| `ThrowableSpots` (Marker3Ds) | optional | Where throwables are placed. |
+| `ExitGate` | optional | A door that stays closed until this room's puzzle is solved. |
+| `GadgetSocket` | optional | Marks where the HW #4 gadget can act (laser grid, camera...). |
+| `SpawnPoints` / `ArtifactSpot` / `ExtractionSpot` | entrance/vault only | Same as today. |
+
+The builder places room N+1 so its `Entry` sits on room N's `Exit`. No rotation is needed.
+
+## Networking approach
+
+- Add a **`RoomSpawner` (MultiplayerSpawner)** under `World/Museum`, with a `spawn_function`,
+  using the same pattern as `PlayerSpawner`. The host spawns rooms with `{index, room_id, position}`.
+  The spawner rebuilds them on the client, replays them to a peer who joins late, and makes sure
+  synchronizers inside rooms (guards, doors, plates) exist before they sync.
+- **Host is the referee for the order.** `scripts/museum_layout.gd` (host only) picks the rooms with
+  our own seeded Fisher–Yates shuffle on a `RandomNumberGenerator`, written by the team.
+  `Array.shuffle()` isn't seedable per call, so we don't use it. Only the result is sent; clients never roll.
+- **Restart:** the host frees the old rooms and spawns a new order. It waits for the navigation map
+  to sync before guards move, then respawns the players at the entrance. Room node names
+  include a build counter (`Room_3_1`) so old and new paths never collide.
+- **Hard-coded paths to remove:** `artifact.gd` (`../Museum/ArtifactSpot`), `drop_zone.gd`
+  (`../Museum/ExtractionSpot`), `guard.gd` (`../Museum/GuardWaypoints`), and `main.gd`
+  (`World/Museum/SpawnPoints`). These are looked up from the built layout instead, and the
+  artifact re-reads its home spot on `heist_reset`.
+
+## Room pool (proposal, open to change)
+
+1. **Sculpture Hall** has one guard on a long patrol, crates for cover, and a throwable. The exit is always open.
+2. **Twin Archives** is a co-op gate. Two plates sit in alcoves split by a wall, and both must be
+   pressed within 2 s of each other to open the exit (a variant of the HW #3 rule, not a copy).
+3. **Laser Corridor** is the gadget hook. A laser grid blocks the exit and touching it alerts guards.
+   Until the gadget exists, one player holds a switch to drop the grid while the other crosses.
+4. **Security Office** has two guards whose patrols cross, and two throwables. The exit is always open.
+
+The gate rooms have their exit gate *open on the way back*, so the return trip with the
+artifact is about stealth, not repeating puzzles.
+
+## Work breakdown (in order; each step should leave the game playable)
+
+> The task split for three developers, with dependencies, is in [hw4_team_plan.md](hw4_team_plan.md).
+> The list below is the single-developer view of the same work.
+
+1. **Room contract + split.** Add `room.gd`, then turn `museum.tscn` into `entrance_room` and
+   `vault_room`, built in a fixed order by the builder. The game plays exactly like HW #3. *Play-test checkpoint.*
+2. **RoomSpawner + path refactor.** Rooms are spawned by the host, with a late join and a restart rebuild.
+   The order is still fixed. *Play-test checkpoint.*
+3. **Ordering rule.** Seeded pick-3-of-4 shuffle, a new order on each restart, and the order shown in the HUD
+   or a debug print.
+4. **The four pool rooms.** These can be split across teammates once step 1 defines the contract.
+5. **Gate scripts.** Twin Archives timing rule and the Laser Corridor switch and grid.
+6. **README.** Add "Systems we wrote" (room ordering, gates) and "Godot-provided systems"
+   (RandomNumberGenerator, per-room NavigationRegion3D linking), and update the known limitations.
+
+## Risks to check early
+
+- Navmesh regions merging across doorways, so a guard can chase through a door. Test this in step 2.
+- Synchronizer timing when rooms are freed and re-spawned on restart.
+- The run length versus the 180 s timer: the museum gets about 3× longer, so the timer likely needs tuning.
+
+## Play-test checklist (needs two instances; can't be checked headlessly)
+
+- Both peers see the same room order. A client joining after the host started also sees it.
+- A restart shows a new order on both peers, and the players are at the entrance.
+- A guard chases across a doorway. Gates open for both peers. The artifact can be carried through every room.
