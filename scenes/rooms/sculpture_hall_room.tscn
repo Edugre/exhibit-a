@@ -33,6 +33,8 @@
 [ext_resource type="PackedScene" path="res://scenes/props/exit_sign.tscn" id="p15_exit_sign"]
 [ext_resource type="PackedScene" path="res://scenes/props/pendant_lamp.tscn" id="p15_pendant_lamp"]
 [ext_resource type="PackedScene" path="res://scenes/props/wall_vent.tscn" id="p15_wall_vent"]
+[ext_resource type="PackedScene" path="res://scenes/props/threshold_scuff.tscn" id="p61_scuff"]
+[ext_resource type="PackedScene" path="res://scenes/ambient/dust_motes.tscn" id="p51_dust"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_room"]
 geometry_parsed_geometry_type = 1
@@ -328,3 +330,15 @@ loop = ExtResource("p4_amb_hvac")
 pitch = 0.92
 loop_volume_db = -24.0
 reach = 11.0
+
+[node name="Wear" type="Node3D" parent="."]
+editor_description = "Asset P6.1: worn floor and scuffed thresholds (Decal nodes). Art only, outside the navigation region."
+
+[node name="Entry" parent="Wear" instance=ExtResource("p61_scuff")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.45)
+
+[node name="Ambient" type="Node3D" parent="."]
+editor_description = "Asset P5.1: dust drifting in the light. Cosmetic and local; nothing is synced."
+
+[node name="DustUnderTheSouthLamp" parent="Ambient" instance=ExtResource("p51_dust")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -2.8)

@@ -116,8 +116,8 @@ In order. Cover comes first because guards and stealth depend on it.
 | P1.2 ✅ | **Glass display cases** | Tall and low variants, with simple contents (pottery, coins, scrolls). The glass blocks movement but not sight, so collision is on and the guard's line of sight passes through. Check this with `guard.gd`'s ray (its collision mask). |
 | P1.3 ✅ | **Framed paintings + picture lights** | Five or six paintings in three frame sizes, with myth jokes (e.g. *"Narcissus, Self-Portrait #47"*). The picture light is a small emissive bar, not a real light, except for one optional real spot per room. |
 | P1.4 ✅ | **Rope barriers + benches** | Brass posts and red rope (posts have collision, the rope doesn't), and a padded gallery bench. |
-| P1.5 ✅ | **Ceiling fixtures** | Pendant lamp, recessed light panel, an emissive EXIT sign (green, reads well at night), and a wall vent. |
-| P1.6 ✅ | **Info stand + floor sign** | "Do not touch" stand and "Wet floor" A-frame are done. A "Gallery closed" sign is still open. |
+| P1.5 ✅ | **Ceiling fixtures** | Pendant lamp, recessed light panel, an emissive EXIT sign (green, reads well at night), and a wall vent. Done, and hung in all six rooms. |
+| P1.6 ✅ | **Info stand + floor sign** | "Do not touch" stand and "Wet floor" A-frame are done. Done: the "Gallery closed" sign too, by the lobby's way into the galleries (Pandora's collection is being catalogued). |
 
 ### Tier P2: Gameplay props *(the room tasks need these to be fully playable)*
 
@@ -136,7 +136,7 @@ Each set gives a room its own silhouette and colour, so a shuffled run is still 
 |---|---|---|---|
 | P3.1 ✅ | `sculpture` | Sculpture Hall | Three statues on plinths: a discus thrower, a Venus with broken arms, a bust. Icarus's wings hung from the ceiling. One empty plinth labelled "away for cleaning". It reuses `statue_marble.tres`. Done: Venus and the Discus Thrower flank the exit, Homer's bust stands on a green marble pier, the wings hang just below the middle lamp, and the east posing plinth's Galatea is away for cleaning. |
 | P3.2 ✅ | `archives` | Twin Archives | Card-catalogue cabinets, a rolling ladder, scroll racks, green reading lamps (emissive), a reading table with open books. |
-| P3.3 | `arms` | Laser Corridor ("Hall of Arms") | Two or three suits of armour, a spear rack, and Achilles' shield in a case ("heel sold separately"). |
+| P3.3 ✅ | `arms` | Laser Corridor ("Hall of Arms") | Two or three suits of armour, a spear rack, and Achilles' shield in a case ("heel sold separately"). Done: Ajax and Patroclus with their shields and Odysseus with a spear stand along the walls, the spear rack (one missing) is on the near side of the grid wall, and the Shield of Achilles is the far half's centrepiece, under a spot, with the guard's patrol going round it. |
 | P3.4 ✅ | `office` | Security Office | A CCTV monitor wall (screen material only here; the static effect is in P5.2), a desk with a coffee mug and logbook, a key board, lockers, and the librarian's cardigan over a chair. |
 | P3.5 ✅ | `lobby` | Entrance lobby | A ticket desk, coat check, donation box, a "Today: The Last Book of Alexandria" banner, and a museum map board. The lobby connects to the exterior's front doors. Done, plus a gift shop banner, the kit surfaces, trim and doorways on the lobby. |
 
@@ -160,19 +160,19 @@ builders just drop it in.
 
 | ID | Effect | Notes |
 |---|---|---|
-| P5.1 | Dust motes in light beams | `GPUParticles3D` (already used for the artifact), very low count, inside picture-light or window beams. |
+| P5.1 ✅ | Dust motes in light beams | `GPUParticles3D` (already used for the artifact), very low count, inside picture-light or window beams. Done: `scenes/ambient/dust_motes.tscn`, in the lobby's banner light, the laser grid, over the Last Book and under a Sculpture Hall lamp. |
 | P5.2 ✅ | CCTV static + scrolling camera feeds | A shader on the P3.4 screens. Optional: one screen shows a live `SubViewport` of the room (add it to the README systems list if used). |
 | P5.3 ✅ | Flickering tube light | Security Office or Laser Corridor. It must not hide the guard's flashlight cue. |
-| P5.4 | Slow ceiling fan | Archives or Office. |
+| P5.4 ✅ | Slow ceiling fan | Archives or Office. Done: over the night guard's desk in the Security Office (`ceiling_fan.tscn`, `scripts/ambient/ceiling_fan.gd`). |
 | P5.5 ✅ | Moths around the reading lamps | Archives; tiny particles. |
 
 ### Tier P6: Polish *(after rooms exist)*
 
 | ID | Item | Notes |
 |---|---|---|
-| P6.1 | Floor wear + decals | Worn paths in front of exhibits, a scuffed doorway threshold (`Decal` nodes; add to README systems). |
-| P6.2 | Lighting pass per room | Tune the omni lights and `ReflectionProbe` per room so each one has its own mood, while players stay visible to each other. |
-| P6.3 | Readability check | Play a full shuffled run. Confirm cover reads as cover, interactables glow, and decoration doesn't look interactive. |
+| P6.1 ✅ | Floor wear + decals | Worn paths in front of exhibits, a scuffed doorway threshold (`Decal` nodes; add to README systems). Done: `floor_wear.tscn` and `threshold_scuff.tscn`, a scuff on every room's way in, and wear before the lobby counters, the shield, Ajax and the Last Book. |
+| P6.2 ✅ | Lighting pass per room | Tune the omni lights and `ReflectionProbe` per room so each one has its own mood, while players stay visible to each other. Done for the lobby (banner light aimed at the banners, cold moonlight at the front doors), the Hall of Arms (a spot on the shield; the laser beams are kept out of the room's reflections) and the vault (warm, shadowed gallery; cold vault with the book in a pool of light). The other three rooms keep the lighting their sets came with. |
+| P6.3 | Readability check | Play a full shuffled run. Confirm cover reads as cover, interactables glow, and decoration doesn't look interactive. Checked so far by a screenshot tour of every room and a navigation test (every exit and guard waypoint still reachable). Still needs the two-player run. |
 
 ---
 

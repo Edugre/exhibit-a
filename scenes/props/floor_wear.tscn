@@ -1,0 +1,13 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://assets/interior/wear/floor_wear.png" id="1_tex"]
+
+[node name="FloorWear" type="Decal"]
+editor_description = "Asset P6.1: a soft patch of worn, dulled floor, where visitors stop in front of an exhibit. Place it on the floor in front of one; scale it along x and z to fit. Projected straight down (Decal), so it follows any floor."
+size = Vector3(1.6, 0.3, 1.2)
+texture_albedo = ExtResource("1_tex")
+upper_fade = 0.05
+lower_fade = 0.05
+distance_fade_enabled = true
+distance_fade_begin = 22.0
+distance_fade_length = 6.0

@@ -19,6 +19,17 @@
 [ext_resource type="PackedScene" path="res://scenes/props/doorway_jambs.tscn" id="k1_jambs"]
 [ext_resource type="Script" path="res://scripts/room_tone.gd" id="p4_tone"]
 [ext_resource type="AudioStream" path="res://assets/interior/sounds/amb_hvac.wav" id="p4_amb_hvac"]
+[ext_resource type="PackedScene" path="res://scenes/props/armour_ajax.tscn" id="p33_armour_ajax"]
+[ext_resource type="PackedScene" path="res://scenes/props/armour_patroclus.tscn" id="p33_armour_patroclus"]
+[ext_resource type="PackedScene" path="res://scenes/props/armour_odysseus.tscn" id="p33_armour_odysseus"]
+[ext_resource type="PackedScene" path="res://scenes/props/spear_rack.tscn" id="p33_spear_rack"]
+[ext_resource type="PackedScene" path="res://scenes/props/shield_case.tscn" id="p33_shield_case"]
+[ext_resource type="PackedScene" path="res://scenes/props/pendant_lamp.tscn" id="p15_pendant_lamp"]
+[ext_resource type="PackedScene" path="res://scenes/props/exit_sign.tscn" id="p15_exit_sign"]
+[ext_resource type="PackedScene" path="res://scenes/props/wall_vent.tscn" id="p15_wall_vent"]
+[ext_resource type="PackedScene" path="res://scenes/ambient/dust_motes.tscn" id="p51_dust"]
+[ext_resource type="PackedScene" path="res://scenes/props/floor_wear.tscn" id="p61_wear"]
+[ext_resource type="PackedScene" path="res://scenes/props/threshold_scuff.tscn" id="p61_scuff"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_room"]
 geometry_parsed_geometry_type = 1
@@ -187,6 +198,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -6)
 size = Vector3(12, 4.6, 12)
 blend_distance = 0.1
 interior = true
+cull_mask = 524287
 ambient_mode = 2
 ambient_color = Color(0.28, 0.24, 0.24, 1)
 
@@ -212,3 +224,62 @@ loop = ExtResource("p4_amb_hvac")
 pitch = 0.96
 loop_volume_db = -24.0
 reach = 11.0
+
+[node name="ArmourAjax" parent="NavigationRegion3D/Props" instance=ExtResource("p33_armour_ajax")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 5, 0, -4.4)
+
+[node name="SpearRack" parent="NavigationRegion3D/Props" instance=ExtResource("p33_spear_rack")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.4, 0, -5.55)
+
+[node name="ArmourPatroclus" parent="NavigationRegion3D/Props" instance=ExtResource("p33_armour_patroclus")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -5, 0, -8.2)
+
+[node name="ArmourOdysseus" parent="NavigationRegion3D/Props" instance=ExtResource("p33_armour_odysseus")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.9, 0, -11.15)
+
+[node name="ShieldCase" parent="NavigationRegion3D/Props" instance=ExtResource("p33_shield_case")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -9)
+
+[node name="Fixtures" type="Node3D" parent="."]
+editor_description = "Asset P1.5: lamps over the room lights, the EXIT sign by the way back out, and a vent over the tall case. Art only, outside the navigation region."
+
+[node name="PendantNear" parent="Fixtures" instance=ExtResource("p15_pendant_lamp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.72, -3)
+
+[node name="PendantFar" parent="Fixtures" instance=ExtResource("p15_pendant_lamp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.72, -9)
+
+[node name="ExitSign" parent="Fixtures" instance=ExtResource("p15_exit_sign")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 2.4, 2.95, -0.5)
+
+[node name="Vent" parent="Fixtures" instance=ExtResource("p15_wall_vent")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -5.5, 2.75, -10)
+
+[node name="Wear" type="Node3D" parent="."]
+editor_description = "Asset P6.1: worn floor and scuffed thresholds (Decal nodes). Art only, outside the navigation region."
+
+[node name="Entry" parent="Wear" instance=ExtResource("p61_scuff")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.45)
+
+[node name="UnderTheGrid" parent="Wear" instance=ExtResource("p61_scuff")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -6)
+
+[node name="ShieldCase" parent="Wear" instance=ExtResource("p61_wear")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -8.05)
+
+[node name="Ajax" parent="Wear" instance=ExtResource("p61_wear")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 4.15, 0, -4.4)
+
+[node name="Ambient" type="Node3D" parent="."]
+editor_description = "Asset P5.1: dust drifting in the light. Cosmetic and local; nothing is synced."
+
+[node name="DustInTheGrid" parent="Ambient" instance=ExtResource("p51_dust")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, -6)
+
+[node name="ShieldSpot" type="SpotLight3D" parent="."]
+editor_description = "Asset P6.2: a narrow warm spot on the Shield of Achilles, so the room has a centrepiece. No shadow (the room already has two)."
+transform = Transform3D(1, 0, 0, 0, 0.5, 0.866, 0, -0.866, 0.5, 0, 3.6, -7.8)
+light_color = Color(1, 0.86, 0.64, 1)
+light_energy = 2.2
+spot_range = 4.5
+spot_angle = 16.0

@@ -11,6 +11,9 @@ Where each one's origin is:
   exit_sign     the centre of its back, on the wall, facing +z; the arrow points right as you face it (+x),
                 so hang it to the left of the door as you look at it.
   wall_vent     the centre of its back, on the wall, facing +z, with its brass plate underneath.
+  fan_body      (P5.4) the ceiling, where its canopy meets it; the rod and motor hang FAN_DROP below.
+  fan_blades    (P5.4) the middle of the hub, at the height of the blades. ceiling_fan.tscn holds both
+                and scripts/ambient/ceiling_fan.gd turns the blades.
 Shapes are written in the game's axes (y up) and turned into Blender's (z up) when a vertex is made."""
 import math
 import pathlib
@@ -189,6 +192,39 @@ def build_vent():
     return b.finish("wall_vent")
 
 
+def build_fan_body():
+    """An old office ceiling fan's still parts: a canopy on the ceiling, a down-rod and the motor."""
+    b = Builder()
+    drop, hub = L.FAN_DROP, L.FAN_HUB
+    b.frustum(-0.06, 0.08, 0.0, 0.06, "steel")                      # canopy
+    b.disc(-0.06, 0.08, "steel", -1)
+    b.box((-0.012, -drop + 0.1, -0.012), (0.012, -0.06, 0.012), {s: "brass" for s in ("+x", "-x", "+z", "-z")})
+    b.frustum(-drop + 0.04, hub, -drop + 0.11, hub * 0.6, "steel")  # the motor, a squat drum
+    b.frustum(-drop + 0.11, hub * 0.6, -drop + 0.13, 0.03, "brass")
+    b.frustum(-drop - 0.02, hub * 0.9, -drop + 0.04, hub, "brass")   # the brass band the blades hang from
+    b.frustum(-drop - 0.07, 0.04, -drop - 0.02, hub * 0.9, "steel")  # the cap underneath
+    b.disc(-drop - 0.07, 0.04, "steel", -1)
+    return b.finish("fan_body")
+
+
+def build_fan_blades():
+    """Four pitched blades on their brass irons. They turn about y; the origin is the hub's middle."""
+    b = Builder()
+    length, width = L.FAN_BLADE
+    pitch = math.radians(12)
+    for k in range(4):
+        a = k / 4 * math.tau
+        r = (math.cos(a), 0.0, math.sin(a))
+        t = (-math.sin(a), 0.0, math.cos(a))
+        across = add(mul(t, math.cos(pitch)), mul(Y, math.sin(pitch)))
+        thick = add(mul(Y, math.cos(pitch)), mul(t, -math.sin(pitch)))
+        sides = {s: "steel" for s in ("+x", "-x", "+y", "-y", "+z", "-z")}
+        start = L.FAN_HUB + 0.06
+        b.obox(mul(r, start + length / 2), (r, thick, across), (length / 2, 0.005, width / 2), sides)
+        b.obox(mul(r, L.FAN_HUB + 0.05), (r, Y, t), (0.07, 0.008, 0.025), {s: "brass" for s in sides})
+    return b.finish("fan_blades")
+
+
 GLB_IMPORT = (TOOLS / "cases_build.py").read_text(encoding="utf8").split('GLB_IMPORT_HEAD = """')[1].split('"""')[0]
 MAT_ENTRY = (TOOLS / "cases_build.py").read_text(encoding="utf8").split('MAT_ENTRY = """')[1].split('"""')[0]
 
@@ -225,4 +261,22 @@ export(build_exit())
 prop_scene("exit_sign", "A lit green EXIT sign (asset P1.5). Origin: the centre of its back, on the wall, facing +z. The arrow points to its right as you face it, so hang it to the left of the way out. No collision.")
 export(build_vent())
 prop_scene("wall_vent", "A wall vent with louvres, and a brass plate under it: NOT AN ESCAPE ROUTE. We checked. (asset P1.5). Origin: the centre of its back, on the wall, facing +z. No collision.")
+export(build_fan_body())
+export(build_fan_blades())
+FAN_SCENE = """[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="{res}fan_body.glb" id="1_body"]
+[ext_resource type="PackedScene" path="{res}fan_blades.glb" id="2_blades"]
+[ext_resource type="Script" path="res://scripts/ambient/ceiling_fan.gd" id="3_spin"]
+
+[node name="CeilingFan" type="Node3D"]
+editor_description = "A slow old ceiling fan (asset P5.4). Origin: on the ceiling. Its blades turn {drop:.2f} m below, each peer on its own (cosmetic, nothing synced). No collision: out of reach."
+
+[node name="Body" parent="." instance=ExtResource("1_body")]
+
+[node name="Blades" parent="." instance=ExtResource("2_blades")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, {y:.3f}, 0)
+script = ExtResource("3_spin")
+"""
+(PROPS / "ceiling_fan.tscn").write_text(FAN_SCENE.format(res=RES, drop=L.FAN_DROP, y=-L.FAN_DROP), encoding="utf8", newline="\n")
 print("fixtures built")

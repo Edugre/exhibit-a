@@ -14,6 +14,12 @@
 [ext_resource type="PackedScene" path="res://scenes/props/room_plaque_vault.tscn" id="k1_plaque"]
 [ext_resource type="Script" path="res://scripts/room_tone.gd" id="p4_tone"]
 [ext_resource type="AudioStream" path="res://assets/interior/sounds/amb_hvac.wav" id="p4_amb_hvac"]
+[ext_resource type="PackedScene" path="res://scenes/props/pendant_lamp.tscn" id="p15_pendant_lamp"]
+[ext_resource type="PackedScene" path="res://scenes/props/exit_sign.tscn" id="p15_exit_sign"]
+[ext_resource type="PackedScene" path="res://scenes/props/wall_vent.tscn" id="p15_wall_vent"]
+[ext_resource type="PackedScene" path="res://scenes/ambient/dust_motes.tscn" id="p51_dust"]
+[ext_resource type="PackedScene" path="res://scenes/props/floor_wear.tscn" id="p61_wear"]
+[ext_resource type="PackedScene" path="res://scenes/props/threshold_scuff.tscn" id="p61_scuff"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_room"]
 geometry_parsed_geometry_type = 1
@@ -119,6 +125,7 @@ start_position = Vector3(0, 0, 1)
 end_position = Vector3(0, 0, -1)
 
 [node name="NightLights" type="Node3D" parent="."]
+editor_description = "Asset P6.2: the gallery is warm, with the two lamps casting shadows round the crate and plates; the vault is cold and dim, and the Last Book sits in a warm pool from straight above."
 
 [node name="RoomAir" type="ReflectionProbe" parent="NightLights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -9.2)
@@ -135,6 +142,7 @@ light_color = Color(1, 0.82, 0.62, 1)
 light_energy = 1.6
 omni_range = 10.0
 omni_attenuation = 1.1
+shadow_enabled = true
 
 [node name="GalleryEast" type="OmniLight3D" parent="NightLights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 3.5, -6)
@@ -142,11 +150,12 @@ light_color = Color(1, 0.82, 0.62, 1)
 light_energy = 1.6
 omni_range = 10.0
 omni_attenuation = 1.1
+shadow_enabled = true
 
 [node name="Vault" type="OmniLight3D" parent="NightLights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.4, -15)
-light_color = Color(1, 0.78, 0.56, 1)
-light_energy = 0.9
+light_color = Color(0.78, 0.84, 1, 1)
+light_energy = 0.6
 omni_range = 7.0
 omni_attenuation = 1.1
 
@@ -212,3 +221,47 @@ loop = ExtResource("p4_amb_hvac")
 pitch = 0.88
 loop_volume_db = -24.0
 reach = 13.0
+
+[node name="Fixtures" type="Node3D" parent="."]
+editor_description = "Asset P1.5: lamps over the gallery and vault lights, the EXIT sign by the way back out, and a vent. Art only, outside the navigation region."
+
+[node name="PendantWest" parent="Fixtures" instance=ExtResource("p15_pendant_lamp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 3.72, -6)
+
+[node name="PendantEast" parent="Fixtures" instance=ExtResource("p15_pendant_lamp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 3.72, -6)
+
+[node name="PendantVault" parent="Fixtures" instance=ExtResource("p15_pendant_lamp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.62, -15)
+
+[node name="ExitSign" parent="Fixtures" instance=ExtResource("p15_exit_sign")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 2.4, 2.95, -0.5)
+
+[node name="Vent" parent="Fixtures" instance=ExtResource("p15_wall_vent")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 7.75, 2.75, -3.5)
+
+[node name="Wear" type="Node3D" parent="."]
+editor_description = "Asset P6.1: worn floor and scuffed thresholds (Decal nodes). Art only, outside the navigation region."
+
+[node name="Entry" parent="Wear" instance=ExtResource("p61_scuff")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.45)
+
+[node name="VaultDoor" parent="Wear" instance=ExtResource("p61_scuff")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -12.1)
+
+[node name="BeforeTheBook" parent="Wear" instance=ExtResource("p61_wear")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -14.7)
+
+[node name="Ambient" type="Node3D" parent="."]
+editor_description = "Asset P5.1: dust drifting in the light. Cosmetic and local; nothing is synced."
+
+[node name="DustOverTheBook" parent="Ambient" instance=ExtResource("p51_dust")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2, -15.6)
+
+[node name="BookSpot" type="SpotLight3D" parent="NightLights"]
+editor_description = "Asset P6.2: the Last Book in a pool of light from straight above. No shadow."
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 3.7, -15.9)
+light_color = Color(1, 0.9, 0.7, 1)
+light_energy = 2.4
+spot_range = 4.5
+spot_angle = 20.0
