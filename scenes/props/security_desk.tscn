@@ -1,0 +1,24 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/office/security_desk.glb" id="1_mesh"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_body"]
+size = Vector3(1.600, 0.760, 0.800)
+
+[node name="SecurityDesk" type="Node3D"]
+editor_description = "The night guard's desk: two old monitors (the vault feed, and the log: DAY 2,071, BOOK STILL OVERDUE), a keyboard, a mug and the night log. 0.76 m: not cover."
+
+[node name="Mesh" parent="." instance=ExtResource("1_mesh")]
+
+[node name="Body" type="StaticBody3D" parent="."]
+
+[node name="Shape" type="CollisionShape3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000, 0.380, 0.000)
+shape = SubResource("BoxShape3D_body")
+
+[node name="ScreenGlow" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000, 1.200, 0.500)
+light_color = Color(0.6, 1, 0.75, 1)
+light_energy = 0.35
+omni_range = 3.0
+omni_attenuation = 1.6

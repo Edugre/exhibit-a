@@ -1,0 +1,11 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/interior/office/int_office_albedo.png" id="1_albedo"]
+[ext_resource type="Texture2D" path="res://assets/interior/office/int_office_normal.png" id="2_normal"]
+
+[resource]
+albedo_texture = ExtResource("1_albedo")
+roughness = 0.15
+emission_enabled = true
+emission_texture = ExtResource("1_albedo")
+emission_energy_multiplier = 1.6

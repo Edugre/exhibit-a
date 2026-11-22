@@ -173,6 +173,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 - Glass display cases (`assets/interior/cases/`): made for this project. Modelled in Blender by script (`assets/interior/source/tools/cases_build.py`), with the texture drawn by script (`make_cases_art.py`). The curators' cards and the brass plate are set in Palatino Linotype, rendered into the texture.
 - Archive bookcases (`assets/interior/shelves/`): made for this project. Modelled in Blender by script (`assets/interior/source/tools/shelves_build.py`), with the spines and the rest of the texture drawn by script (`make_shelves_art.py`). Spine titles and shelf marks are set in Palatino Linotype, rendered into the texture.
 - Rope barriers, gallery bench, wet-floor sign and "Do not touch" stand (`assets/interior/barrier_bench/`, `assets/interior/signs/`): made for this project. Modelled in Blender by script (`barrier_bench_build.py`, `signs_build.py`), with the textures drawn by script (`barrier_bench_art.py`, `signs_art.py`); lettering set in Palatino Linotype and Arial, rendered into the texture.
+- Security office set: desk, monitor wall, lockers, chair with cardigan, key board (`assets/interior/office/`): made for this project. Modelled in Blender by script (`assets/interior/source/tools/office_build.py`), with the texture and the camera feeds on the screens drawn by script (`make_office_art.py`). Labels and screen text are set in Arial Bold, Consolas Bold and Ink Free, rendered into the texture.
 
 ## Contributions
 Eduardo Goncalvez (PID: 6526311)
