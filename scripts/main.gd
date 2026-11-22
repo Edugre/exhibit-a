@@ -40,6 +40,7 @@ func _on_host_pressed() -> void:
 	if err != OK:
 		status_label.text = "Couldn't host (error %d). Is something else using port %d?" % [err, NetworkManager.DEFAULT_PORT]
 		return
+	($World/Museum as MuseumLayout).build()  # the rooms exist before anyone can walk in, or join
 	multiplayer.peer_connected.connect(_spawn_player)
 	multiplayer.peer_disconnected.connect(_remove_player)
 	GameState.heist_reset.connect(_on_heist_reset)

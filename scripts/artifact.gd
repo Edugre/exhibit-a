@@ -22,7 +22,6 @@ const FALL_REACH := 12.0
 @export var players_path: NodePath = ^"../Players"
 @export var van_path: NodePath = ^"../Getaway/TrojanVan"
 
-var _home: Transform3D
 var _dropped: Transform3D
 
 @onready var shape: CollisionShape3D = $CollisionShape3D
@@ -31,21 +30,9 @@ var _dropped: Transform3D
 @onready var van: Node3D = get_node(van_path)
 
 
-func _ready() -> void:
-	_find_home()
-	global_transform = _home
-	GameState.phase_changed.connect(_on_phase_changed)  # fires on every peer, which all show the book
-
-
-## The vault marks where the artifact rests. Asked again when a heist starts, since the rooms can be rebuilt.
-func _find_home() -> void:
-	var museum := get_tree().get_first_node_in_group("museum") as MuseumLayout
-	_home = museum.get_artifact_spot().global_transform
-
-
-func _on_phase_changed(phase: GameState.Phase) -> void:
-	if phase == GameState.Phase.PLAYING:
-		_find_home()
+## The vault marks where the artifact rests. Asked every frame, since the host rebuilds the rooms
+## on a restart and a client gets them a moment later.
+@onready var museum: MuseumLayout = get_tree().get_first_node_in_group("museum")
 
 
 func _process(_delta: float) -> void:
@@ -54,8 +41,13 @@ func _process(_delta: float) -> void:
 	var carried := state == GameState.ArtifactState.CARRIED and holder != null
 	var in_my_hands: bool = carried and holder.is_multiplayer_authority()
 
+	var home := museum.get_artifact_spot()
+	var resting := not carried and state != GameState.ArtifactState.DELIVERED and state != GameState.ArtifactState.DROPPED
+	# No vault yet (the menu, or a client still building the rooms): nothing to show where it rests
+	visible = home != null or not resting
+
 	# Only something lying around can be looked at, walked into or picked up.
-	shape.disabled = carried or state == GameState.ArtifactState.DELIVERED
+	shape.disabled = carried or state == GameState.ArtifactState.DELIVERED or not visible
 	model.held_in_view = in_my_hands
 	model.lying_flat = state == GameState.ArtifactState.DROPPED
 	model.scale = Vector3.ONE * (VIEW_SCALE if in_my_hands else 1.0)
@@ -68,8 +60,8 @@ func _process(_delta: float) -> void:
 		global_transform = van.global_transform * BAY_OFFSET
 	elif state == GameState.ArtifactState.DROPPED:
 		global_transform = _dropped
-	else:
-		global_transform = _home
+	elif home:
+		global_transform = home.global_transform
 
 
 # --- Host: the rules ---------------------------------------------------------

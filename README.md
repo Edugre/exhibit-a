@@ -89,7 +89,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 
 ### Godot-provided systems
    - High-level multiplayer (ENetMultiplayerPeer, RPCs)
-   - MultiplayerSpawner / MultiplayerSynchronizer (player spawning and position/rotation sync)
+   - MultiplayerSpawner / MultiplayerSynchronizer (player spawning and position/rotation sync; the HW #4 rooms are spawned the same way, so a late joiner and a restart get the host's rooms)
    - CharacterBody3D physics and CSG geometry
    - NavigationRegion3D and NavigationAgent3D (navigation mesh baking and the guard's pathfinding)
    - RayCast3D (detecting what the player is looking at)
@@ -126,7 +126,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 - Heist timer, outcome and synchronized restart (scripts/game_state.gd)
 - Host/join flow, player spawning and restart respawns (scripts/network_manager.gd, scripts/main.gd)
 - Pressure plate puzzle condition and vault door (scripts/vault_puzzle.gd, scripts/pressure_plate.gd, scripts/vault_door.gd)
-- Museum layout: builds the rooms in a line from the front doors (lobby, then the gallery and vault), and tells the artifact, drop zone and spawning where things are (scripts/museum_layout.gd)
+- Museum layout: the host builds the rooms in a line from the front doors (lobby, then the gallery and vault) when it starts hosting and again on every restart, and tells the artifact, drop zone and spawning where things are (scripts/museum_layout.gd)
 - Room contract for HW #4: how rooms line up door to door, what each room provides, and the exit gate that stays open once the artifact is taken (scripts/room.gd, scripts/room_gate.gd, scripts/room_catalog.gd, scenes/rooms/room_template.tscn)
 - Two-plate timing gate for Twin Archives: the gate opens when both plates are pressed within 2 seconds of each other (scripts/gates/twin_plate_gate.gd)
 - Guard AI: patrol, vision cone, suspicion, chase, investigation, catch (scripts/guard.gd)

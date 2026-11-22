@@ -73,6 +73,8 @@ var _watched: Node3D = null
 var _last_seen := Vector3.ZERO
 var _lost_sight_timer := 0.0
 var _start_transform: Transform3D
+## False until her room's navmesh is on the server, so she doesn't ask for paths over nothing.
+var _nav_ready := true
 
 
 func _ready() -> void:
@@ -82,6 +84,17 @@ func _ready() -> void:
 		_waypoints.append((marker as Node3D).global_position)
 	flashlight.light_color = CALM_LIGHT
 	GameState.heist_reset.connect(_on_heist_reset)  # only fires on the host
+	var room := get_parent() as Room
+	if room and room.bake_on_ready:
+		_nav_ready = false
+		room.baked.connect(_on_room_baked, CONNECT_ONE_SHOT)
+
+
+func _on_room_baked() -> void:
+	await get_tree().physics_frame  # one more step for the map to take her room in
+	_nav_ready = true
+	if not _waypoints.is_empty():
+		agent.target_position = _waypoints[_waypoint_index]
 
 
 func _process(delta: float) -> void:
@@ -94,7 +107,7 @@ func _process(delta: float) -> void:
 func _physics_process(delta: float) -> void:
 	if not multiplayer.is_server():
 		return
-	if GameState.phase != GameState.Phase.PLAYING:
+	if GameState.phase != GameState.Phase.PLAYING or not _nav_ready:
 		if state != State.CAUGHT:
 			model_state = GuardModel.State.IDLE  # the tackle holds; anything else stands still
 		return
