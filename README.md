@@ -94,7 +94,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
    - NavigationRegion3D and NavigationAgent3D (navigation mesh baking and the guard's pathfinding)
    - RayCast3D (detecting what the player is looking at)
    - Physics ray queries (guard line of sight, stopping her flashlight beam at walls, placing a dropped book)
-   - Area3D (detecting players on the pressure plates)
+   - Area3D (detecting players on the pressure plates and in the laser grid's beams)
    - glTF scene import, Skeleton3D skinning and AnimationPlayer (player and guard models)
    - BoneAttachment3D, SpotLight3D and Tween (guard flashlight and lens glare)
    - GPUParticles3D and OmniLight3D (smoke, sparks and ember glow on the artifact)
@@ -139,6 +139,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 - Passing for a statue on the plinths outside (scripts/player.gd, scripts/guard.gd)
 - Fountain coins as a second, quieter throwable (scenes/coin.tscn, scripts/throwable.gd)
 - Signal Jammer gadget: each player has 2 charges per heist. The host checks the charges and the range (6 m), spends a charge only when something is jammed, and disables every jammable object in range for 6 seconds (scripts/gadget_jammer.gd, scripts/gadget_hud.gd)
+- Laser grid: walking through an active grid sets off an alarm, a loud noise (20 m) that sends guards to look, repeated every 1.5 s while someone stays in the beams. It is on while powered and not jammed; standing in it when it comes back on trips it at once (scripts/laser_grid.gd)
 - Weather per heist, rolled by the host and sent to the client (scripts/exterior_weather.gd)
 - The She Will Know alarm, played by each peer from the artifact state it already has (scripts/exterior_alarm.gd)
 - Graphics levels and the automatic step down (scripts/exterior_quality.gd)
@@ -149,7 +150,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 - Sneaking only slows the player down. It doesn't yet affect how quickly the guard notices you or make footsteps quieter.
 - Exactly two players. There is no lobby or matchmaking: the client must type the host's IP address, and playing across different networks needs port 7777 forwarded on the host's router.
 - If the host quits, the client is sent back to the main menu; the session can't continue without the host.
-- There are two throwables, the heel and the fountain coins. The Signal Jammer exists, but nothing in the museum can be jammed yet: the laser grid it is meant for comes in a later task.
+- There are two throwables, the heel and the fountain coins. The Signal Jammer and the laser grid it disables exist, but no room uses the grid yet: the Laser Corridor comes in a later task.
 - The whole game takes place at night.
 
 ## Asset credits
