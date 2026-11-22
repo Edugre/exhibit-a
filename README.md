@@ -21,7 +21,7 @@ Once they have an artifact, players must carry it out and load it into the getaw
 ## Objective
 Steal **The Last Book of Alexandria** and get it into the Trojan Van before the museum opens.
 
-1. Walk in through the front doors and the lobby, then through **two or three rooms picked and shuffled for this run** (see below).
+1. Walk in through the front doors and the lobby, then through **three of the four rooms below, picked and shuffled for this run**.
 2. In the gallery at the back, stand on the two empty statue plates **at the same time** (one player each) to swing open the portrait door to the vault.
 3. Pick up the book and carry it all the way back out of the museum. Puzzle doors and laser grids stay open for the way back.
 4. Step onto the painted drop zone next to the van while carrying it.
@@ -35,7 +35,7 @@ The rooms between the lobby and the gallery come from this pool:
 | Laser Corridor | A laser grid that sets off the alarm. Hold the switch on one side while your partner crosses, then swap, or spend a jammer charge to cross together. There's also a guard. |
 | Security Office | Two guards whose patrols cross, with a Heel and a coin to split them up. |
 
-You have **3 minutes, plus 30 seconds for every room between the lobby and the gallery** (4 or 4½ minutes). Librarians patrol with flashlights: if one spots you, she gives chase, and if she catches either of you, the heist fails. Throw the Heel of Achilles or a coin to make a noise and lure her away; you'll find them on the plaza and in the rooms that have guards.
+You have **3 minutes, plus 30 seconds for every room between the lobby and the gallery** (4½ minutes). Librarians patrol with flashlights: if one spots you, she gives chase, and if she catches either of you, the heist fails. Throw the Heel of Achilles or a coin to make a noise and lure her away; you'll find them on the plaza and in the rooms that have guards.
 
 - **Win:** the book is delivered to the drop zone.
 - **Lose:** the guard catches a player, or the timer runs out.
@@ -56,7 +56,7 @@ You have **3 minutes, plus 30 seconds for every room between the lobby and the g
 ## Implemented features
 - **Online co-op for two players:** one player hosts, the other joins by IP. The host runs all game rules and both screens stay in sync.
 - **A museum of rooms behind a full museum exterior.** The heist starts on the plaza at night in front of a Fifth Avenue-style museum front, built at true scale from OpenStreetMap data, with the getaway van parked at the curb. The block is walkable all the way round, with traffic, pigeons, fountains and sound. Inside, a lobby leads through the run's rooms to the gallery and vault at the back.
-- **Procedural room ordering (HW #4):** every run, the host shuffles the four pool rooms with a seeded shuffle and keeps two or three that fit the building, in that order. The client gets the host's rooms, including after a restart or when joining late.
+- **Procedural room ordering (HW #4):** every run, the host shuffles the four pool rooms with a seeded shuffle and keeps three that fit the building, in that order. The client gets the host's rooms, including after a restart or when joining late.
 - **Four pool rooms (HW #4):** Sculpture Hall, Twin Archives, Laser Corridor and Security Office (see the table above). Each has its own props and lighting, and most have a brass plaque over the doorway naming the room.
 - **Cooperative puzzles:** two pressure plinths that must be held at the same time open the vault door, and each plinth lights a picture lamp on the door while it is pressed. Twin Archives asks for two presses within 2 seconds from rooms apart. The Laser Corridor asks the players to hand the switches off between them.
 - **Signal Jammer gadget (HW #4):** each player has two charges per heist (Q). A charge switches off every jammable thing within 6 m for 6 seconds, which right now means laser grids. The HUD shows the charges left.
@@ -169,7 +169,6 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 - Cosmetic exterior life: flickering lanterns, front doors that open for anyone near them, traffic that obeys the signal and honks at people in the road, and the opening shot (scripts/exterior_flicker.gd, scripts/exterior_doors.gd, scripts/exterior_traffic.gd, scripts/menu_camera.gd). Each peer runs its own, and none of it touches game state
 
 ## Known limitations
-- The Laser Corridor is 14 m deep, 2 m more than the other pool rooms, so any run that picks it only has room for one other pool room. Half of all runs have two pool rooms instead of three.
 - Sneaking only slows the player down. It doesn't yet affect how quickly the guard notices you or make footsteps quieter.
 - Exactly two players. There is no lobby or matchmaking: the client must type the host's IP address, and playing across different networks needs port 7777 forwarded on the host's router.
 - If the host quits, the client is sent back to the main menu; the session can't continue without the host.

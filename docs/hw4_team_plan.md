@@ -128,6 +128,9 @@ Task IDs are used for branch names (`hw4/a1-split-museum`) and PR titles.
   is 14 m deep** (2 m over budget), so any run that picks it drops to 2 rooms, and it never appears in a 3-room run.
   Trimming it to 12 m makes every run 3 rooms. Ten hosted runs: routes 160–163 m (2 rooms) and 182 m (3 rooms), the back
   wall exactly at z −54, every guard pathing. Host and client agree on a 3-room run with both Security Office guards.
+- **Update: Laser Corridor trimmed to 12 m** (both halves 6 m, everything else in place). Every run now has 3 pool rooms
+  (4,000 seeds: all 3 rooms, each room left out about a quarter of the time) and a 270 s timer. A forced run with the corridor ends
+  exactly at z −54, its paths and the switch hand-off still work, and no prop overlaps another prop or a wall.
 
 *Earlier notes (before CP3):*
 - **Return trip: checked, headless.** A puzzle room's `RoomGate` (`starts_open = false`) stays shut at the start and
