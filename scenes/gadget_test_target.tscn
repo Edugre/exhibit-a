@@ -1,0 +1,26 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/gadget_test_target.gd" id="1_target"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_target"]
+size = Vector3(0.6, 0.6, 0.6)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_target"]
+size = Vector3(0.6, 0.6, 0.6)
+
+[node name="GadgetTestTarget" type="StaticBody3D"]
+script = ExtResource("1_target")
+
+[node name="Mesh" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+mesh = SubResource("BoxMesh_target")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3, 0)
+shape = SubResource("BoxShape3D_target")
+
+[node name="Lamp" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+light_color = Color(1, 0.1, 0.1, 1)
+light_energy = 2.0
+omni_range = 3.0
