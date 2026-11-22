@@ -127,7 +127,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
    - WorldEnvironment, tonemapping, SSAO, glow and fog (the exterior's night look)
    - DirectionalLight3D and shadowed SpotLight3D (moonlight and floodlights on the exterior)
    - SpotLight3D projector texture (the window's star lattice thrown across the terrace)
-   - GPUParticles3D (moths round the exterior's lamps, steam from the street, sparks off a jammed laser grid)
+   - GPUParticles3D (moths round the exterior's lamps and the archives' reading lamps, steam from the street, sparks off a jammed laser grid)
    - Transparent unshaded materials and Tween (the jammer's pulse sweeping out to its range)
    - MultiMeshInstance3D (the pigeons, plaza trees and traffic, drawn in batches)
    - AudioStreamPlayer and AudioStreamPlayer3D (the city's soundscape, fountains, crickets, pigeons and car horns, and each room's background sound)
@@ -145,7 +145,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
    - NavigationServer3D baking from collision shapes (the guard's map of the steps and plaza out to the curb, and each room's map when it is built)
    - NavigationRegion3D baked at runtime per room, and NavigationLink3D through each doorway (HW #4 rooms: guards can follow you from room to room)
    - RandomNumberGenerator with a seed (the random source for the room shuffle, so a run can be replayed from its seed)
-   - Spatial shaders (the interior's world-space parquet, marble, plaster and carved cornice, so they work on plain CSG boxes; the laser beams, drawn as added light with a flicker)
+   - Spatial shaders (the interior's world-space parquet, marble, plaster and carved cornice, so they work on plain CSG boxes; the laser beams, drawn as added light with a flicker; the Security Office's CCTV screens, cutting between cameras through static)
 
 ### Systems we wrote
 - Heist timer, outcome and synchronized restart. The timer is 180 s plus 30 s for each pool room in the run, set by the host when the heist starts (scripts/game_state.gd)
@@ -171,6 +171,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 - The She Will Know alarm, played by each peer from the artifact state it already has (scripts/exterior_alarm.gd)
 - Graphics levels and the automatic step down (scripts/exterior_quality.gd)
 - Cosmetic exterior life: flickering lanterns, front doors that open for anyone near them, traffic that obeys the signal and honks at people in the road, and the opening shot (scripts/exterior_flicker.gd, scripts/exterior_doors.gd, scripts/exterior_traffic.gd, scripts/menu_camera.gd). Each peer runs its own, and none of it touches game state
+- Cosmetic interior life: the Security Office's tube light over the desk is on its way out, and stutters now and then without ever going fully dark (scripts/ambient/failing_light.gd). Each peer runs its own, and none of it touches game state
 
 ## Known limitations
 - Sneaking only slows the player down. It doesn't yet affect how quickly the guard notices you or make footsteps quieter.
