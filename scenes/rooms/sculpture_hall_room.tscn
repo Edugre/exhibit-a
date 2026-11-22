@@ -20,6 +20,9 @@
 [ext_resource type="PackedScene" path="res://scenes/props/doorway_jambs.tscn" id="k1_jambs"]
 [ext_resource type="PackedScene" path="res://scenes/props/room_plaque_sculpture_hall.tscn" id="k1_plaque"]
 [ext_resource type="PackedScene" uid="uid://boemyyhoc6dtn" path="res://scenes/throwable.tscn" id="b5_heel"]
+[ext_resource type="PackedScene" path="res://scenes/props/painting_small_splash.tscn" id="p13_small_splash"]
+[ext_resource type="PackedScene" path="res://scenes/props/painting_achilles.tscn" id="p13_achilles"]
+[ext_resource type="PackedScene" path="res://scenes/props/painting_sisyphus.tscn" id="p13_sisyphus"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_room"]
 geometry_parsed_geometry_type = 1
@@ -259,3 +262,15 @@ editor_description = "Asset K1: the stone arch and this room's plaque on the Ent
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -12)
 
 [node name="Heel" parent="ThrowableSpots/Spot1" instance=ExtResource("b5_heel")]
+
+[node name="Paintings" type="Node3D" parent="."]
+editor_description = "Asset P1.3: framed paintings with their labels and picture lights. Art only, outside the navigation region."
+
+[node name="SmallSplash" parent="Paintings" instance=ExtResource("p13_small_splash")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -5.5, 1.75, -2.6)
+
+[node name="Achilles" parent="Paintings" instance=ExtResource("p13_achilles")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 5.5, 1.85, -5.8)
+
+[node name="Sisyphus" parent="Paintings" instance=ExtResource("p13_sisyphus")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -3.5, 1.65, -11.5)

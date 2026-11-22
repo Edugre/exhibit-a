@@ -1,0 +1,14 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/interior/paintings/int_paintings_albedo.png" id="1_albedo"]
+[ext_resource type="Texture2D" path="res://assets/interior/paintings/int_paintings_normal.png" id="2_normal"]
+[ext_resource type="Texture2D" path="res://assets/interior/paintings/int_paintings_glow.png" id="3_glow"]
+
+[resource]
+albedo_texture = ExtResource("1_albedo")
+roughness = 0.5
+normal_enabled = true
+normal_texture = ExtResource("2_normal")
+emission_enabled = true
+emission_texture = ExtResource("3_glow")
+emission_energy_multiplier = 0.6

@@ -22,6 +22,7 @@
 [ext_resource type="PackedScene" path="res://scenes/props/room_plaque_security_office.tscn" id="k1_plaque"]
 [ext_resource type="PackedScene" uid="uid://boemyyhoc6dtn" path="res://scenes/throwable.tscn" id="b5_heel"]
 [ext_resource type="PackedScene" path="res://scenes/coin.tscn" id="b5_coin"]
+[ext_resource type="PackedScene" path="res://scenes/props/painting_medusa.tscn" id="p13_medusa"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_room"]
 geometry_parsed_geometry_type = 1
@@ -272,3 +273,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -12)
 [node name="Heel" parent="ThrowableSpots/Spot1" instance=ExtResource("b5_heel")]
 
 [node name="Coin" parent="ThrowableSpots/Spot2" instance=ExtResource("b5_coin")]
+
+[node name="Paintings" type="Node3D" parent="."]
+editor_description = "Asset P1.3: framed paintings with their labels and picture lights. Art only, outside the navigation region."
+
+[node name="Medusa" parent="Paintings" instance=ExtResource("p13_medusa")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 5.5, 1.6, -4.6)
