@@ -161,10 +161,10 @@ builders just drop it in.
 | ID | Effect | Notes |
 |---|---|---|
 | P5.1 | Dust motes in light beams | `GPUParticles3D` (already used for the artifact), very low count, inside picture-light or window beams. |
-| P5.2 | CCTV static + scrolling camera feeds | A shader on the P3.4 screens. Optional: one screen shows a live `SubViewport` of the room (add it to the README systems list if used). |
-| P5.3 | Flickering tube light | Security Office or Laser Corridor. It must not hide the guard's flashlight cue. |
+| P5.2 ✅ | CCTV static + scrolling camera feeds | A shader on the P3.4 screens. Optional: one screen shows a live `SubViewport` of the room (add it to the README systems list if used). |
+| P5.3 ✅ | Flickering tube light | Security Office or Laser Corridor. It must not hide the guard's flashlight cue. |
 | P5.4 | Slow ceiling fan | Archives or Office. |
-| P5.5 | Moths around the reading lamps | Archives; tiny particles. |
+| P5.5 ✅ | Moths around the reading lamps | Archives; tiny particles. |
 
 ### Tier P6: Polish *(after rooms exist)*
 

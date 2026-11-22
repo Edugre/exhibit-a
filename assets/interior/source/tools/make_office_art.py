@@ -245,14 +245,28 @@ for png in sorted(OUT.glob("*.png")):
     if not target.exists():
         normal = 1 if png.stem.endswith("_normal") else 0
         target.write_text(IMPORT.format(path=RES + png.name, normal=normal, hq="true" if normal else "false"), encoding="utf8", newline="\n")
-MATERIALS = {
-    "int_office": 'roughness = 0.62\nnormal_enabled = true\nnormal_texture = ExtResource("2_normal")\n',
-    "int_screens": 'roughness = 0.15\nemission_enabled = true\nemission_texture = ExtResource("1_albedo")\nemission_energy_multiplier = 1.6\n',
-}
-for name, extra in MATERIALS.items():
-    (OUT / (name + ".tres")).write_text(
-        '[gd_resource type="StandardMaterial3D" format=3]\n\n'
-        '[ext_resource type="Texture2D" path="%sint_office_albedo.png" id="1_albedo"]\n'
-        '[ext_resource type="Texture2D" path="%sint_office_normal.png" id="2_normal"]\n\n'
-        '[resource]\nalbedo_texture = ExtResource("1_albedo")\n%s' % (RES, RES, extra), encoding="utf8", newline="\n")
+(OUT / "int_office.tres").write_text(
+    '[gd_resource type="StandardMaterial3D" format=3]\n\n'
+    '[ext_resource type="Texture2D" path="%sint_office_albedo.png" id="1_albedo"]\n'
+    '[ext_resource type="Texture2D" path="%sint_office_normal.png" id="2_normal"]\n\n'
+    '[resource]\nalbedo_texture = ExtResource("1_albedo")\nroughness = 0.62\nnormal_enabled = true\nnormal_texture = ExtResource("2_normal")\n'
+    % (RES, RES), encoding="utf8", newline="\n")
+
+# The screens keep moving (asset P5.2): cctv_screen.gdshader, told where the feeds sit in the texture.
+# The cameras make a grid of cells, three to a row, with the desk's two screens carrying on along the second row.
+cam1, cam2, cam4 = L.REGIONS["cam1"], L.REGIONS["cam2"], L.REGIONS["cam4"]
+step_x, step_y = cam2[0] - cam1[0], cam4[1] - cam1[1]
+for k, name in enumerate(L.FEEDS + L.DESK_SCREENS):
+    col, row = (k, 0) if k < 3 else (k - 3, 1)
+    assert L.REGIONS[name][:2] == (cam1[0] + col * step_x, cam1[1] + row * step_y), name
+dead = L.FEEDS.index("cam6")
+(OUT / "int_screens.tres").write_text(
+    '[gd_resource type="ShaderMaterial" format=3]\n\n'
+    '[ext_resource type="Shader" path="%scctv_screen.gdshader" id="1_shader"]\n'
+    '[ext_resource type="Texture2D" path="%sint_office_albedo.png" id="2_albedo"]\n\n'
+    '[resource]\nshader = ExtResource("1_shader")\nshader_parameter/feeds = ExtResource("2_albedo")\n'
+    'shader_parameter/cell_origin = Vector2(%g, %g)\nshader_parameter/cell_stride = Vector2(%g, %g)\nshader_parameter/cell_size = Vector2(%g, %g)\n'
+    'shader_parameter/dead_cell = Vector2(%d, %d)\nshader_parameter/live_cameras = %d.0\nshader_parameter/switch_every = 7.0\nshader_parameter/glow = 1.6\n'
+    % (RES, RES, cam1[0] / N, cam1[1] / N, step_x / N, step_y / N, cam1[2] / N, cam1[3] / N, dead % 3, dead // 3, dead),
+    encoding="utf8", newline="\n")
 print("office art written to", OUT)

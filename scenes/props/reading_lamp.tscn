@@ -2,8 +2,31 @@
 
 [ext_resource type="PackedScene" path="res://assets/interior/archives/reading_lamp.glb" id="1_mesh"]
 
+[sub_resource type="ParticleProcessMaterial" id="moth_motion"]
+emission_shape = 3
+emission_box_extents = Vector3(0.16, 0.1, 0.14)
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_min = 0.05
+initial_velocity_max = 0.2
+gravity = Vector3(0, 0, 0)
+turbulence_enabled = true
+turbulence_noise_strength = 1.6
+turbulence_noise_speed_random = 1.0
+turbulence_influence_min = 0.3
+turbulence_influence_max = 0.8
+
+[sub_resource type="StandardMaterial3D" id="moth_look"]
+shading_mode = 0
+billboard_mode = 3
+albedo_color = Color(1, 0.88, 0.7, 1)
+
+[sub_resource type="QuadMesh" id="moth_quad"]
+material = SubResource("moth_look")
+size = Vector2(0.022, 0.014)
+
 [node name="ReadingLamp" type="Node3D"]
-editor_description = "A green banker's lamp, lit. Origin under its base: set it on a table or cabinet top. Its small warm light has no shadows."
+editor_description = "A green banker's lamp, lit, with a few moths round it. Origin under its base: set it on a table or cabinet top. Its small warm light has no shadows."
 
 [node name="Mesh" parent="." instance=ExtResource("1_mesh")]
 
@@ -13,3 +36,13 @@ light_color = Color(1, 0.85, 0.62, 1)
 light_energy = 0.55
 omni_range = 1.8
 omni_attenuation = 1.5
+
+[node name="Moths" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.000, 0.460, 0.030)
+amount = 5
+lifetime = 4.0
+preprocess = 4.0
+randomness = 0.5
+visibility_aabb = AABB(-0.6, -0.6, -0.6, 1.2, 1.2, 1.2)
+process_material = SubResource("moth_motion")
+draw_pass_1 = SubResource("moth_quad")

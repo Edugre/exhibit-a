@@ -287,12 +287,43 @@ def export(obj):
     print("exported", obj.name, len(obj.data.polygons), "faces")
 
 
-def prop_scene(name, box, note, light=None):
-    """box is (size, centre) in the game's axes, or None. light is (position, energy) for a warm glow."""
+# A few moths round a lit lamp (asset P5.5), in the same spirit as the exterior's round its lanterns:
+# tiny pale specks catching the light, drifting on turbulence. Cosmetic, and a handful of particles.
+MOTH_RESOURCES = '''
+[sub_resource type="ParticleProcessMaterial" id="moth_motion"]
+emission_shape = 3
+emission_box_extents = Vector3(0.16, 0.1, 0.14)
+direction = Vector3(0, 1, 0)
+spread = 180.0
+initial_velocity_min = 0.05
+initial_velocity_max = 0.2
+gravity = Vector3(0, 0, 0)
+turbulence_enabled = true
+turbulence_noise_strength = 1.6
+turbulence_noise_speed_random = 1.0
+turbulence_influence_min = 0.3
+turbulence_influence_max = 0.8
+
+[sub_resource type="StandardMaterial3D" id="moth_look"]
+shading_mode = 0
+billboard_mode = 3
+albedo_color = Color(1, 0.88, 0.7, 1)
+
+[sub_resource type="QuadMesh" id="moth_quad"]
+material = SubResource("moth_look")
+size = Vector2(0.022, 0.014)
+'''
+
+
+def prop_scene(name, box, note, light=None, moths=None):
+    """box is (size, centre) in the game's axes, or None. light is (position, energy) for a warm glow.
+    moths is where a few moths flutter, or None."""
     parts = ['[gd_scene format=3]\n\n[ext_resource type="PackedScene" path="%s%s.glb" id="1_mesh"]\n' % (RES, name)]
     if box:
         (sx, sy, sz), _ = box
         parts.append('\n[sub_resource type="BoxShape3D" id="BoxShape3D_body"]\nsize = Vector3(%.3f, %.3f, %.3f)\n' % (sx, sy, sz))
+    if moths:
+        parts.append(MOTH_RESOURCES)
     title = "".join(p.title() for p in name.split("_"))
     parts.append('\n[node name="%s" type="Node3D"]\neditor_description = "%s"\n\n[node name="Mesh" parent="." instance=ExtResource("1_mesh")]\n' % (title, note))
     if box:
@@ -303,6 +334,11 @@ def prop_scene(name, box, note, light=None):
         (lx, ly, lz), energy = light
         parts.append('\n[node name="Glow" type="OmniLight3D" parent="."]\ntransform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, %.3f, %.3f, %.3f)\n'
                      'light_color = Color(1, 0.85, 0.62, 1)\nlight_energy = %.2f\nomni_range = 1.8\nomni_attenuation = 1.5\n' % (lx, ly, lz, energy))
+    if moths:
+        mx, my, mz = moths
+        parts.append('\n[node name="Moths" type="GPUParticles3D" parent="."]\ntransform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, %.3f, %.3f, %.3f)\n'
+                     'amount = 5\nlifetime = 4.0\npreprocess = 4.0\nrandomness = 0.5\nvisibility_aabb = AABB(-0.6, -0.6, -0.6, 1.2, 1.2, 1.2)\n'
+                     'process_material = SubResource("moth_motion")\ndraw_pass_1 = SubResource("moth_quad")\n' % (mx, my, mz))
     (PROPS / (name + ".tscn")).write_text("".join(parts), encoding="utf8", newline="\n")
 
 
@@ -324,6 +360,6 @@ reach = length * math.sin(math.radians(lean))
 prop_scene("rolling_ladder", ((w + 0.06, 1.6, 0.3), (0, 0.8, -0.15)),
            "A rolling library ladder leaning back %.0f degrees; its top hooks sit %.2f m behind its feet, so stand its feet that far out from a bookcase." % (lean, reach))
 export(build_lamp())
-prop_scene("reading_lamp", None, "A green banker's lamp, lit. Origin under its base: set it on a table or cabinet top. Its small warm light has no shadows.",
-           light=((0.0, L.LAMP[1] - 0.12, 0.05), 0.55))
+prop_scene("reading_lamp", None, "A green banker's lamp, lit, with a few moths round it. Origin under its base: set it on a table or cabinet top. Its small warm light has no shadows.",
+           light=((0.0, L.LAMP[1] - 0.12, 0.05), 0.55), moths=(0.0, L.LAMP[1] + 0.06, 0.03))
 print("archives built")

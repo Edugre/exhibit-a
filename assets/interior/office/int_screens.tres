@@ -1,11 +1,15 @@
-[gd_resource type="StandardMaterial3D" format=3]
+[gd_resource type="ShaderMaterial" format=3]
 
-[ext_resource type="Texture2D" path="res://assets/interior/office/int_office_albedo.png" id="1_albedo"]
-[ext_resource type="Texture2D" path="res://assets/interior/office/int_office_normal.png" id="2_normal"]
+[ext_resource type="Shader" path="res://assets/interior/office/cctv_screen.gdshader" id="1_shader"]
+[ext_resource type="Texture2D" path="res://assets/interior/office/int_office_albedo.png" id="2_albedo"]
 
 [resource]
-albedo_texture = ExtResource("1_albedo")
-roughness = 0.15
-emission_enabled = true
-emission_texture = ExtResource("1_albedo")
-emission_energy_multiplier = 1.6
+shader = ExtResource("1_shader")
+shader_parameter/feeds = ExtResource("2_albedo")
+shader_parameter/cell_origin = Vector2(0, 0.257812)
+shader_parameter/cell_stride = Vector2(0.164062, 0.125)
+shader_parameter/cell_size = Vector2(0.15625, 0.117188)
+shader_parameter/dead_cell = Vector2(2, 1)
+shader_parameter/live_cameras = 5.0
+shader_parameter/switch_every = 7.0
+shader_parameter/glow = 1.6
