@@ -10,6 +10,13 @@ Plain Python, run by hand, writing into `assets/interior/`. Same pipeline as the
   scratches and dull patches, on its own repeat so it never lines up with the surface under it), then
   writes their import settings and every kit material into `assets/interior/kit/`. Run `python make_kit.py assets/interior/kit`
   from the repo root. Rerunning keeps existing `.import` files, so the textures keep their uids.
+- `crates_layout.py`, `crates_build.py`, `make_crates_art.py` (P1.1): the conservation crates and the
+  draped statue. `crates_build.py` runs in a background Blender and builds the three crates, drops a
+  simulated cloth over a statue shape, bakes the shading in its folds, and writes each prop's `.glb`,
+  its import settings and its scene in `scenes/props/`. Then `make_crates_art.py` draws the one texture
+  (plywood with stencils and shipping labels, pine battens, the cloth and its tag) and the two materials:
+  `blender -b --factory-startup --python crates_build.py -- assets/interior/crates scenes/props`, then
+  `python make_crates_art.py assets/interior/crates`. Both rebuild their outputs exactly.
 
 ## Using the kit in a room
 
