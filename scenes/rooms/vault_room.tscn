@@ -20,6 +20,23 @@
 [ext_resource type="PackedScene" path="res://scenes/ambient/dust_motes.tscn" id="p51_dust"]
 [ext_resource type="PackedScene" path="res://scenes/props/floor_wear.tscn" id="p61_wear"]
 [ext_resource type="PackedScene" path="res://scenes/props/threshold_scuff.tscn" id="p61_scuff"]
+[ext_resource type="Material" path="res://assets/interior/kit/int_floor_parquet.tres" id="kit_parquet"]
+[ext_resource type="Material" path="res://assets/interior/kit/int_floor_marble.tres" id="kit_marble"]
+[ext_resource type="Material" path="res://assets/interior/kit/int_wall_paint.tres" id="kit_paint"]
+[ext_resource type="Material" path="res://assets/interior/kit/int_wall_paint_green.tres" id="kit_green"]
+[ext_resource type="Material" path="res://assets/interior/kit/int_ceiling.tres" id="kit_ceiling"]
+[ext_resource type="Material" path="res://assets/interior/kit/int_skirting.tres" id="kit_skirting"]
+[ext_resource type="Material" path="res://assets/interior/kit/int_moulding.tres" id="kit_moulding"]
+[ext_resource type="PackedScene" path="res://scenes/props/crate_cover.tscn" id="p11_crate_cover"]
+[ext_resource type="PackedScene" path="res://scenes/props/draped_statue.tscn" id="p11_draped"]
+[ext_resource type="PackedScene" path="res://scenes/props/case_low.tscn" id="p12_case_low"]
+[ext_resource type="PackedScene" path="res://scenes/props/gallery_bench.tscn" id="p14_bench"]
+[ext_resource type="PackedScene" path="res://scenes/props/rope_barrier.tscn" id="p14_rope"]
+[ext_resource type="PackedScene" path="res://scenes/props/do_not_touch_sign.tscn" id="p16_dnt"]
+[ext_resource type="PackedScene" path="res://scenes/props/empty_shelving.tscn" id="p36_shelving"]
+[ext_resource type="PackedScene" path="res://scenes/props/empty_shelving_signed.tscn" id="p36_shelving_signed"]
+[ext_resource type="PackedScene" path="res://scenes/props/frame_helen.tscn" id="p36_frame_helen"]
+[ext_resource type="PackedScene" path="res://scenes/props/frame_hector.tscn" id="p36_frame_hector"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_room"]
 geometry_parsed_geometry_type = 1
@@ -40,6 +57,7 @@ size = Vector2(0.66, 0.38)
 
 [node name="VaultRoom" type="Node3D"]
 script = ExtResource("1_room")
+editor_description = "Task A0/A1, the end of every run: the Gallery of Heroes and the vault behind its portrait door. Two players pose as Achilles and Helen on the plates to open the door; the Last Book of Alexandria waits inside. Dressed with the kit (P3.6): parquet and cream walls in the gallery, marble and library green in the vault."
 
 [node name="Entry" type="Marker3D" parent="."]
 
@@ -52,54 +70,63 @@ use_collision = true
 [node name="GalleryFloor" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, -6)
 size = Vector3(16, 1, 12)
+material = ExtResource("kit_parquet")
 
 [node name="VaultFloor" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, -15)
 size = Vector3(6, 1, 6)
+material = ExtResource("kit_marble")
 
 [node name="Gallery_Wall_North_Left" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.75, 2, -12)
 size = Vector3(6.5, 4, 0.5)
+material = ExtResource("kit_paint")
 
 [node name="Gallery_Wall_North_Right" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.75, 2, -12)
 size = Vector3(6.5, 4, 0.5)
+material = ExtResource("kit_paint")
 
 [node name="Gallery_Wall_Entry_Left" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.75, 2, -0.25)
 size = Vector3(6.5, 4, 0.5)
+material = ExtResource("kit_paint")
 
 [node name="Gallery_Wall_Entry_Right" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.75, 2, -0.25)
 size = Vector3(6.5, 4, 0.5)
+material = ExtResource("kit_paint")
 
 [node name="Gallery_Wall_East" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, -6)
 size = Vector3(0.5, 4, 12)
+material = ExtResource("kit_paint")
 
 [node name="Gallery_Wall_West" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2, -6)
 size = Vector3(0.5, 4, 12)
+material = ExtResource("kit_paint")
 
 [node name="Vault_Wall_East" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 2, -15)
 size = Vector3(0.5, 4, 6)
+material = ExtResource("kit_green")
 
 [node name="Vault_Wall_West" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 2, -15)
 size = Vector3(0.5, 4, 6)
+material = ExtResource("kit_green")
 
 [node name="Vault_Wall_North" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -17.75)
 size = Vector3(6, 4, 0.5)
-
-[node name="Crate" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0.5, -3)
+material = ExtResource("kit_green")
 
 [node name="ArtifactPedestal" type="CSGCylinder3D" parent="NavigationRegion3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -16)
 use_collision = true
 height = 1.0
+material = ExtResource("kit_marble")
 
 [node name="PlateA" parent="NavigationRegion3D" instance=ExtResource("6_plate")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, -8)
@@ -115,10 +142,12 @@ use_collision = true
 [node name="GalleryRoof" type="CSGBox3D" parent="Ceiling"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.25, -6.15)
 size = Vector3(16.5, 0.5, 12.3)
+material = ExtResource("kit_ceiling")
 
 [node name="VaultRoof" type="CSGBox3D" parent="Ceiling"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.25, -15.075)
 size = Vector3(6.5, 0.5, 5.85)
+material = ExtResource("kit_ceiling")
 
 [node name="EntryLink" type="NavigationLink3D" parent="."]
 start_position = Vector3(0, 0, 1)
@@ -200,7 +229,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, -10)
 [node name="ThrowableSpots" type="Node3D" parent="."]
 
 [node name="Spot1" type="Marker3D" parent="ThrowableSpots"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1.05, -3)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.8, 1.45, -3)
 
 [node name="Coin" parent="ThrowableSpots/Spot1" instance=ExtResource("b5_coin")]
 
@@ -265,3 +294,145 @@ light_color = Color(1, 0.9, 0.7, 1)
 light_energy = 2.4
 spot_range = 4.5
 spot_angle = 20.0
+
+[node name="Props" type="Node3D" parent="NavigationRegion3D"]
+editor_description = "Asset P3.6 and the shared kit. Solid props, inside the navigation region so the navmesh bakes round them."
+
+[node name="CoverCrate" parent="NavigationRegion3D/Props" instance=ExtResource("p11_crate_cover")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -4.8, 0, -3)
+editor_description = "Was the greybox crate; now real cover (1.4 m), with the coin on its lid."
+
+[node name="CaseEast" parent="NavigationRegion3D/Props" instance=ExtResource("p12_case_low")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 5, 0, -3)
+
+[node name="Bench" parent="NavigationRegion3D/Props" instance=ExtResource("p14_bench")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -4.6)
+
+[node name="RopeHector" parent="NavigationRegion3D/Props" instance=ExtResource("p14_rope")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -7.1, 0, -7)
+
+[node name="RopeHelen" parent="NavigationRegion3D/Props" instance=ExtResource("p14_rope")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 7.1, 0, -7)
+
+[node name="DrapedStatue" parent="NavigationRegion3D/Props" instance=ExtResource("p11_draped")]
+transform = Transform3D(0.939693, 0, -0.34202, 0, 1, 0, 0.34202, 0, 0.939693, 7.1, 0, -11.1)
+
+[node name="DoNotTouch" parent="NavigationRegion3D/Props" instance=ExtResource("p16_dnt")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.3, 0, -10.9)
+
+[node name="ShelvesWestNear" parent="NavigationRegion3D/Props" instance=ExtResource("p36_shelving")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -2.55, 0, -14)
+
+[node name="ShelvesWestFar" parent="NavigationRegion3D/Props" instance=ExtResource("p36_shelving")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -2.55, 0, -15.8)
+
+[node name="ShelvesEastNear" parent="NavigationRegion3D/Props" instance=ExtResource("p36_shelving")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 2.55, 0, -14)
+
+[node name="ShelvesEastFar" parent="NavigationRegion3D/Props" instance=ExtResource("p36_shelving")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 2.55, 0, -15.8)
+
+[node name="ShelvesBehindTheBook" parent="NavigationRegion3D/Props" instance=ExtResource("p36_shelving_signed")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -17.3)
+
+[node name="Trim" type="Node3D" parent="."]
+editor_description = "Asset K0: skirting and the carved cornice along every wall, broken at the doorways. Art only, outside the navigation region."
+
+[node name="SkirtingGalleryWest" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.735, 0.09, -6.125)
+size = Vector3(0.03, 0.18, 11.25)
+material = ExtResource("kit_skirting")
+
+[node name="CorniceGalleryWest" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.72, 3.82, -6.125)
+size = Vector3(0.06, 0.36, 11.25)
+material = ExtResource("kit_moulding")
+
+[node name="SkirtingGalleryEast" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.735, 0.09, -6.125)
+size = Vector3(0.03, 0.18, 11.25)
+material = ExtResource("kit_skirting")
+
+[node name="CorniceGalleryEast" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.72, 3.82, -6.125)
+size = Vector3(0.06, 0.36, 11.25)
+material = ExtResource("kit_moulding")
+
+[node name="SkirtingEntryLeft" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.625, 0.09, -0.515)
+size = Vector3(6.25, 0.18, 0.03)
+material = ExtResource("kit_skirting")
+
+[node name="CorniceEntryLeft" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.625, 3.82, -0.53)
+size = Vector3(6.25, 0.36, 0.06)
+material = ExtResource("kit_moulding")
+
+[node name="SkirtingEntryRight" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.625, 0.09, -0.515)
+size = Vector3(6.25, 0.18, 0.03)
+material = ExtResource("kit_skirting")
+
+[node name="CorniceEntryRight" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.625, 3.82, -0.53)
+size = Vector3(6.25, 0.36, 0.06)
+material = ExtResource("kit_moulding")
+
+[node name="SkirtingNorthLeft" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.625, 0.09, -11.735)
+size = Vector3(6.25, 0.18, 0.03)
+material = ExtResource("kit_skirting")
+
+[node name="CorniceNorthLeft" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.625, 3.82, -11.72)
+size = Vector3(6.25, 0.36, 0.06)
+material = ExtResource("kit_moulding")
+
+[node name="SkirtingNorthRight" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.625, 0.09, -11.735)
+size = Vector3(6.25, 0.18, 0.03)
+material = ExtResource("kit_skirting")
+
+[node name="CorniceNorthRight" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.625, 3.82, -11.72)
+size = Vector3(6.25, 0.36, 0.06)
+material = ExtResource("kit_moulding")
+
+[node name="SkirtingVaultWest" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.735, 0.09, -14.875)
+size = Vector3(0.03, 0.18, 5.25)
+material = ExtResource("kit_skirting")
+
+[node name="CorniceVaultWest" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.72, 3.82, -14.875)
+size = Vector3(0.06, 0.36, 5.25)
+material = ExtResource("kit_moulding")
+
+[node name="SkirtingVaultEast" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.735, 0.09, -14.875)
+size = Vector3(0.03, 0.18, 5.25)
+material = ExtResource("kit_skirting")
+
+[node name="CorniceVaultEast" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.72, 3.82, -14.875)
+size = Vector3(0.06, 0.36, 5.25)
+material = ExtResource("kit_moulding")
+
+[node name="SkirtingVaultNorth" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09, -17.485)
+size = Vector3(5.5, 0.18, 0.03)
+material = ExtResource("kit_skirting")
+
+[node name="CorniceVaultNorth" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.82, -17.47)
+size = Vector3(5.5, 0.36, 0.06)
+material = ExtResource("kit_moulding")
+
+[node name="Frames" type="Node3D" parent="."]
+editor_description = "Asset P3.6: two empty frames behind the plates: Hector (removed at Achilles' request) behind Achilles, Helen (on loan to Sparta) behind Helen. Art only, outside the navigation region."
+
+[node name="Hector" parent="Frames" instance=ExtResource("p36_frame_hector")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -7.75, 1.75, -8)
+
+[node name="Helen" parent="Frames" instance=ExtResource("p36_frame_helen")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 7.75, 1.75, -8)

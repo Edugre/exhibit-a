@@ -1,0 +1,17 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/vault/empty_shelving_signed.gltf" id="1_model"]
+
+[sub_resource type="BoxShape3D" id="Shape_1"]
+size = Vector3(1.6, 2.4, 0.4)
+
+[node name="EmptyShelvingSigned" type="Node3D"]
+editor_description = "Asset P3.6: the Library of Alexandria's complete collection: five empty steel shelves under its brass sign, and a card. Origin on the floor, facing +z; its back goes against a wall. 2.4 m tall, so it's cover, but only 0.4 m deep."
+
+[node name="Mesh" parent="." instance=ExtResource("1_model")]
+
+[node name="Body" type="StaticBody3D" parent="."]
+
+[node name="Shape" type="CollisionShape3D" parent="Body"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+shape = SubResource("Shape_1")

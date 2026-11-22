@@ -63,6 +63,8 @@ Plain Python, run by hand, writing into `assets/interior/`. Same pipeline as the
   the Shield of Achilles in its case, the same way, into `assets/interior/arms`.
 - `fixtures_build.py` also builds the ceiling fan (P5.4) as two meshes, the still body and the blades, and writes
   `scenes/props/ceiling_fan.tscn`, where `scripts/ambient/ceiling_fan.gd` turns the blades.
+- `vault_art.py`, `vault_build.py` (P3.6): the gallery's two empty frames with their cards and labels, and the vault's
+  empty library shelving (plain, and one with the library's sign), the same way, into `assets/interior/vault`.
 - `make_wear_art.py` (P6.1): the floor wear and threshold scuff decals, into `assets/interior/wear`.
 
 ## Using the kit in a room
