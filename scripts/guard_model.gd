@@ -138,7 +138,12 @@ func _add_flashlight(skeleton: Skeleton3D) -> void:
 	var socket := BoneAttachment3D.new()
 	skeleton.add_child(socket)
 	socket.bone_name = "flashlight_socket"
+	_add_light_to(socket)
 
+
+## The flashlight, the light it throws on her face and the visible beam, on `socket`, whose +Y is the
+## way the light points. The night staff's lantern is built the same way (scripts/staff_model.gd).
+func _add_light_to(socket: Node3D) -> void:
 	flashlight = SpotLight3D.new()
 	flashlight.rotation_degrees.x = 90.0  # a spotlight shines along -Z, the socket points along +Y
 	flashlight.light_color = Color(1.0, 0.93, 0.74)

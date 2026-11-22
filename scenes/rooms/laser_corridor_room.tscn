@@ -1,7 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://scripts/room.gd" id="1_room"]
-[ext_resource type="PackedScene" path="res://scenes/guard.tscn" id="2_guard"]
+[ext_resource type="PackedScene" path="res://scenes/staff.tscn" id="2_guard"]
 [ext_resource type="PackedScene" path="res://scenes/laser_grid.tscn" id="3_grid"]
 [ext_resource type="PackedScene" path="res://scenes/laser_switch.tscn" id="4_plate"]
 [ext_resource type="Script" path="res://scripts/laser_corridor.gd" id="5_rule"]

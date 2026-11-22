@@ -35,7 +35,7 @@ The rooms between the lobby and the gallery come from this pool:
 | Laser Corridor | A laser grid that sets off the alarm. Hold the switch on one side while your partner crosses, then swap, or spend a jammer charge to cross together. There's also a guard. |
 | Security Office | Two guards whose patrols cross, with a Heel and a coin to split them up. |
 
-You have **3 minutes, plus 30 seconds for every room between the lobby and the gallery** (4½ minutes). Librarians patrol with flashlights: if one spots you, she gives chase, and if she catches either of you, the heist fails. Throw the Heel of Achilles or a coin to make a noise and lure her away: the Heel was left at the lobby's coat check, coins lie by the fountains outside, and there are more in the rooms that have guards.
+You have **3 minutes, plus 30 seconds for every room between the lobby and the gallery** (4½ minutes). The librarian roams the whole museum with her flashlight: if she spots you, she gives chase, and if she catches either of you, the heist fails. Her night staff patrol the rooms with lanterns. They never catch you, but if one is sure they've seen you they ring a hand bell, and she comes. Throw the Heel of Achilles or a coin to make a noise and lure them away: the Heel was left at the lobby's coat check, coins lie by the fountains outside, and there are more in the rooms that have guards.
 
 - **Win:** the book is delivered to the drop zone.
 - **Lose:** the guard catches a player, or the timer runs out.
@@ -63,7 +63,8 @@ You have **3 minutes, plus 30 seconds for every room between the lobby and the g
 - **Room sounds (HW #4):** every room hums at its own pitch; clocks tick in the lobby and the archives, floorboards creak and pages rustle in Twin Archives, the security office buzzes under its tubes with radio chatter from the desk, and the laser grid hums while it's on and zaps when someone walks into it.
 - **Signal Jammer gadget (HW #4):** one jammer per heist, waiting on the lobby's ticket desk with its LED blinking. Either player picks it up (E); it clips to their belt, and with nothing else in hand the throw button puts it down for the other. It has two charges for the whole heist, which go wherever it goes (Q). A charge switches off every jammable thing within 6 m for 6 seconds, which right now means laser grids. The HUD shows the charges left. Everyone can see it working: the jammer rides on each player's belt and comes up into your view when you use it, a ring of light sweeps out to its range with a burst of radio static on both screens, and a jammed grid throws sparks while its beams sputter. A use that jams nothing just clicks.
 - **Artifact:** pick up, carry, drop, and deliver the book. Only one player can hold it at a time, and you can't carry the book and the heel at once.
-- **Guard AI:** patrols a waypoint loop, detects players with a flashlight vision cone blocked by walls, chases (through doorways into other rooms), investigates noises and last-seen positions, then returns to patrol. Catching a player ends the heist. A run has up to four guards across its rooms.
+- **Guard AI:** patrols a waypoint loop, detects players with a flashlight vision cone blocked by walls, chases (through doorways into other rooms), investigates noises and last-seen positions, then returns to patrol. Catching a player ends the heist.
+- **The librarian and her staff:** there is one librarian, the boss. She walks a route through every room of the run, built after each build, and starts each heist in the vault. The rooms' night staff see exactly as she does but never chase or catch: when one is sure they've seen someone, they ring a hand bell (again every 3 s while they can still see them), every player gets "She's coming…" on screen, and she hurries to where the player was seen. Design: docs/boss_and_staff.md.
 - **Throwable and noise:** the Heel of Achilles can be thrown. Its impact makes a noise that sends any guard within 8 m to investigate. The Heel waits at the lobby's coat check, coins by the fountains outside, and more heels and coins in every guarded room.
 - **Heist rules:** a countdown of 3 minutes plus 30 seconds per pool room, win/lose outcomes, and a synchronized restart that builds a new run and resets the players, book, throwables and jammer charges.
 - **HUD:** time remaining, artifact status (locked / vault open / carried by you or your partner / dropped / in the van), guard alert indicator, waiting-for-partner message, and the end screen.
@@ -121,7 +122,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
    - GPUParticles3D and OmniLight3D (smoke, sparks and ember glow on the artifact)
    - GPUParticles3D and a second Camera3D (the van's exhaust and the getaway shot)
    - RigidBody3D, continuous collision and contact monitoring (throwable physics and impacts)
-   - AudioStreamPlayer3D (the heel's landing sound)
+   - AudioStreamPlayer3D (the heel's landing sound, the staff's hand bell)
    - StaticBody3D with box, cylinder, convex and concave collision shapes (the museum exterior, including the smooth ramp under the stairs and the block's full outline)
    - Spatial and sky shaders, ShaderMaterial (the exterior's world-space limestone, carved stone, cast bronze, windblown banners, pigeon wings, asphalt, plaza paving, leaves, flags, steam, headlamp pools, night glass, the distant city's windows, fountain water and jets, and night sky)
    - WorldEnvironment, tonemapping, SSAO, glow and fog (the exterior's night look)
@@ -157,6 +158,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 - Room contract for HW #4: how rooms line up door to door, what each room provides, and the exit gate that stays open once the artifact is taken (scripts/room.gd, scripts/room_gate.gd, scripts/room_catalog.gd, scenes/rooms/room_template.tscn)
 - Two-plate timing gate for Twin Archives: the gate opens when both plates are pressed within 2 seconds of each other (scripts/gates/twin_plate_gate.gd). A lamp over the exit for each plate shows each player when the other pressed, worked out by every peer from what it already receives (scripts/gates/twin_plate_lamps.gd)
 - Guard AI: patrol, vision cone, suspicion, chase, investigation, catch (scripts/guard.gd)
+- The librarian and her staff: one roaming boss with a route built from the rooms, and staff who ring for her instead of catching (scripts/boss.gd, scripts/staff.gd)
 - Noise system and throw impact rule (scripts/noise_system.gd, scripts/throwable.gd)
 - Artifact pickup, carrying and dropping (scripts/artifact.gd)
 - Delivery and win condition (scripts/drop_zone.gd)
