@@ -15,6 +15,9 @@
 [ext_resource type="PackedScene" path="res://scenes/props/crate_cover.tscn" id="13_crate_cover"]
 [ext_resource type="PackedScene" path="res://scenes/props/crate_small.tscn" id="14_crate_small"]
 [ext_resource type="PackedScene" path="res://scenes/coin.tscn" id="b5_coin"]
+[ext_resource type="PackedScene" path="res://scenes/props/doorway_portal.tscn" id="k1_portal"]
+[ext_resource type="PackedScene" path="res://scenes/props/room_plaque_hall_of_arms.tscn" id="k1_plaque"]
+[ext_resource type="PackedScene" path="res://scenes/props/doorway_jambs.tscn" id="k1_jambs"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_room"]
 geometry_parsed_geometry_type = 1
@@ -189,3 +192,13 @@ ambient_mode = 2
 ambient_color = Color(0.28, 0.24, 0.24, 1)
 
 [node name="Coin" parent="ThrowableSpots/Spot1" instance=ExtResource("b5_coin")]
+
+[node name="Doorways" type="Node3D" parent="."]
+editor_description = "Asset K1: the stone arch and this room's plaque on the Entry, the carved jambs on the Exit. Art only, outside the navigation region."
+
+[node name="EntryPortal" parent="Doorways" instance=ExtResource("k1_portal")]
+
+[node name="EntryPlaque" parent="Doorways" instance=ExtResource("k1_plaque")]
+
+[node name="ExitJambs" parent="Doorways" instance=ExtResource("k1_jambs")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -12)

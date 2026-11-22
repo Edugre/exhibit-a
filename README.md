@@ -174,7 +174,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 - Exactly two players. There is no lobby or matchmaking: the client must type the host's IP address, and playing across different networks needs port 7777 forwarded on the host's router.
 - If the host quits, the client is sent back to the main menu; the session can't continue without the host.
 - There are two throwables, the heel and the fountain coins. Laser grids are the only thing the Signal Jammer can switch off so far. The Laser Corridor's switches are the plinth-style pressure plates, and its displays are the shared crates and cases until its own props are made.
-- The Laser Corridor and the vault have no doorway plaque yet, and the rooms have no sound of their own.
+- The rooms have no sound of their own.
 - The whole game takes place at night.
 
 ## Asset credits
