@@ -1,0 +1,188 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/room.gd" id="1_room"]
+[ext_resource type="PackedScene" path="res://scenes/guard.tscn" id="2_guard"]
+[ext_resource type="PackedScene" path="res://scenes/laser_grid.tscn" id="3_grid"]
+[ext_resource type="PackedScene" path="res://scenes/pressure_plate.tscn" id="4_plate"]
+[ext_resource type="Script" path="res://scripts/laser_corridor.gd" id="5_rule"]
+[ext_resource type="Texture2D" path="res://assets/plates/label_pending.png" id="6_label"]
+[ext_resource type="Material" path="res://assets/interior/kit/int_floor_parquet.tres" id="7_floor"]
+[ext_resource type="Material" path="res://assets/interior/kit/int_wall_paint_red.tres" id="8_paint"]
+[ext_resource type="Material" path="res://assets/interior/kit/int_ceiling.tres" id="9_ceiling"]
+[ext_resource type="Material" path="res://assets/interior/kit/int_skirting.tres" id="10_skirting"]
+[ext_resource type="PackedScene" path="res://scenes/props/case_tall.tscn" id="11_case_tall"]
+[ext_resource type="PackedScene" path="res://scenes/props/case_low.tscn" id="12_case_low"]
+[ext_resource type="PackedScene" path="res://scenes/props/crate_cover.tscn" id="13_crate_cover"]
+[ext_resource type="PackedScene" path="res://scenes/props/crate_small.tscn" id="14_crate_small"]
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_room"]
+geometry_parsed_geometry_type = 1
+cell_height = 0.1
+agent_radius = 0.25
+agent_max_climb = 0.2
+
+[node name="LaserCorridor" type="Node3D"]
+script = ExtResource("1_room")
+editor_description = "Task C3, the Hall of Arms. A wall across the middle with a laser grid in its doorway. A switch on each side drops the grid while someone stands on it: one player holds the near switch while the other crosses, then the far switch brings the first one over. The Signal Jammer drops it for both at once. A guard patrols the far half, and the alarm brings her through. Once the artifact is taken the grid stays off."
+
+[node name="Entry" type="Marker3D" parent="."]
+
+[node name="Exit" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -14)
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+navigation_mesh = SubResource("NavigationMesh_room")
+
+[node name="Geometry" type="CSGCombiner3D" parent="NavigationRegion3D"]
+use_collision = true
+
+[node name="Floor" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, -7)
+size = Vector3(12, 1, 14)
+material = ExtResource("7_floor")
+
+[node name="Wall_West" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.75, 2, -7)
+size = Vector3(0.5, 4, 14)
+material = ExtResource("8_paint")
+
+[node name="Wall_East" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.75, 2, -7)
+size = Vector3(0.5, 4, 14)
+material = ExtResource("8_paint")
+
+[node name="Wall_Entry_Left" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.75, 2, -0.25)
+size = Vector3(4.5, 4, 0.5)
+material = ExtResource("8_paint")
+
+[node name="Wall_Entry_Right" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.75, 2, -0.25)
+size = Vector3(4.5, 4, 0.5)
+material = ExtResource("8_paint")
+
+[node name="Wall_Mid_Left" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.75, 2, -7)
+size = Vector3(4.5, 4, 0.5)
+material = ExtResource("8_paint")
+
+[node name="Wall_Mid_Right" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.75, 2, -7)
+size = Vector3(4.5, 4, 0.5)
+material = ExtResource("8_paint")
+
+[node name="Wall_Exit_Left" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.75, 2, -13.75)
+size = Vector3(4.5, 4, 0.5)
+material = ExtResource("8_paint")
+
+[node name="Wall_Exit_Right" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.75, 2, -13.75)
+size = Vector3(4.5, 4, 0.5)
+material = ExtResource("8_paint")
+
+[node name="Props" type="Node3D" parent="NavigationRegion3D"]
+
+[node name="SwitchNear" parent="NavigationRegion3D/Props" instance=ExtResource("4_plate")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.3, 0, -4.6)
+label = ExtResource("6_label")
+
+[node name="SwitchFar" parent="NavigationRegion3D/Props" instance=ExtResource("4_plate")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.3, 0, -9.4)
+label = ExtResource("6_label")
+
+[node name="CaseNear" parent="NavigationRegion3D/Props" instance=ExtResource("12_case_low")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 0, -3.8)
+
+[node name="CoverNear" parent="NavigationRegion3D/Props" instance=ExtResource("13_crate_cover")]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, 4.8, 0, -2.2)
+
+[node name="SmallNear" parent="NavigationRegion3D/Props" instance=ExtResource("14_crate_small")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.85, 0, -1.6)
+
+[node name="CaseFarWest" parent="NavigationRegion3D/Props" instance=ExtResource("11_case_tall")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.8, 0, -12.6)
+
+[node name="CoverFar" parent="NavigationRegion3D/Props" instance=ExtResource("13_crate_cover")]
+transform = Transform3D(6.12323e-17, 0, -1, 0, 1, 0, 1, 0, 6.12323e-17, 4.8, 0, -11.4)
+
+[node name="Trim" type="Node3D" parent="."]
+
+[node name="SkirtingWest" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.485, 0.09, -7)
+size = Vector3(0.03, 0.18, 13)
+material = ExtResource("10_skirting")
+
+[node name="SkirtingEast" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.485, 0.09, -7)
+size = Vector3(0.03, 0.18, 13)
+material = ExtResource("10_skirting")
+
+[node name="Ceiling" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.25, -7)
+use_collision = true
+size = Vector3(12, 0.5, 14)
+material = ExtResource("9_ceiling")
+
+[node name="EntryLink" type="NavigationLink3D" parent="."]
+start_position = Vector3(0, 0, 1)
+end_position = Vector3(0, 0, -1)
+
+[node name="LaserGrid" parent="." instance=ExtResource("3_grid")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -7)
+
+[node name="LaserRule" type="Node" parent="." node_paths=PackedStringArray("grid", "switch_near", "switch_far")]
+script = ExtResource("5_rule")
+grid = NodePath("../LaserGrid")
+switch_near = NodePath("../NavigationRegion3D/Props/SwitchNear")
+switch_far = NodePath("../NavigationRegion3D/Props/SwitchFar")
+
+[node name="GadgetSocket" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -7)
+
+[node name="Guard" parent="." instance=ExtResource("2_guard")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4, 0, -9)
+waypoints_path = NodePath("../GuardWaypoints")
+
+[node name="GuardWaypoints" type="Node3D" parent="."]
+
+[node name="Wp1" type="Marker3D" parent="GuardWaypoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4, 0, -9)
+
+[node name="Wp2" type="Marker3D" parent="GuardWaypoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.4, 0, -12)
+
+[node name="Wp3" type="Marker3D" parent="GuardWaypoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8, 0, -12)
+
+[node name="Wp4" type="Marker3D" parent="GuardWaypoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8, 0, -9)
+
+[node name="ThrowableSpots" type="Node3D" parent="."]
+
+[node name="Spot1" type="Marker3D" parent="ThrowableSpots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.6, 0.2, -1.6)
+
+[node name="LampNear" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, -3.5)
+light_color = Color(1, 0.84, 0.66, 1)
+light_energy = 1.1
+omni_range = 8
+omni_attenuation = 1.1
+shadow_enabled = true
+
+[node name="LampFar" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5, -10.5)
+light_color = Color(1, 0.84, 0.66, 1)
+light_energy = 1.1
+omni_range = 8
+omni_attenuation = 1.1
+shadow_enabled = true
+
+[node name="RoomAir" type="ReflectionProbe" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -7)
+size = Vector3(12, 4.6, 14)
+blend_distance = 0.1
+interior = true
+ambient_mode = 2
+ambient_color = Color(0.28, 0.24, 0.24, 1)

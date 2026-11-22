@@ -142,6 +142,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 - Fountain coins as a second, quieter throwable (scenes/coin.tscn, scripts/throwable.gd)
 - Signal Jammer gadget: each player has 2 charges per heist. The host checks the charges and the range (6 m), spends a charge only when something is jammed, and disables every jammable object in range for 6 seconds (scripts/gadget_jammer.gd, scripts/gadget_hud.gd)
 - Laser grid: walking through an active grid sets off an alarm, a loud noise (20 m) that sends guards to look, repeated every 1.5 s while someone stays in the beams. It is on while powered and not jammed; standing in it when it comes back on trips it at once (scripts/laser_grid.gd)
+- Laser Corridor room rule: a switch on each side of the grid drops it while anyone stands on it, so the players hand off (one holds the near switch while the other crosses, then the far switch brings the first one over), or spend a jammer charge to cross together. Once the artifact is taken, the grid stays off for the way back (scripts/laser_corridor.gd, scenes/rooms/laser_corridor_room.tscn)
 - Weather per heist, rolled by the host and sent to the client (scripts/exterior_weather.gd)
 - The She Will Know alarm, played by each peer from the artifact state it already has (scripts/exterior_alarm.gd)
 - Graphics levels and the automatic step down (scripts/exterior_quality.gd)
@@ -152,7 +153,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 - Sneaking only slows the player down. It doesn't yet affect how quickly the guard notices you or make footsteps quieter.
 - Exactly two players. There is no lobby or matchmaking: the client must type the host's IP address, and playing across different networks needs port 7777 forwarded on the host's router.
 - If the host quits, the client is sent back to the main menu; the session can't continue without the host.
-- There are two throwables, the heel and the fountain coins. The Signal Jammer and the laser grid it disables exist, but no room uses the grid yet: the Laser Corridor comes in a later task.
+- There are two throwables, the heel and the fountain coins. The Laser Corridor is the only room with something to jam so far. Its switches are the plinth-style pressure plates, and its displays are the shared crates and cases until its own props are made.
 - The whole game takes place at night.
 
 ## Asset credits
