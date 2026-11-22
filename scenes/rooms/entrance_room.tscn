@@ -18,6 +18,7 @@
 [ext_resource type="AudioStream" path="res://assets/interior/sounds/amb_hvac.wav" id="p4_amb_hvac"]
 [ext_resource type="AudioStream" path="res://assets/interior/sounds/amb_clock.wav" id="p4_amb_clock"]
 [ext_resource type="PackedScene" path="res://scenes/jammer_pickup.tscn" id="g1_jammer"]
+[ext_resource type="PackedScene" uid="uid://boemyyhoc6dtn" path="res://scenes/throwable.tscn" id="b5_heel"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_room"]
 geometry_parsed_geometry_type = 1
@@ -79,10 +80,10 @@ material = ExtResource("3_paint")
 [node name="Props" type="Node3D" parent="NavigationRegion3D"]
 
 [node name="TicketDesk" parent="NavigationRegion3D/Props" instance=ExtResource("9_desk")]
-transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -4.3, 0, -3)
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -4.3, 0, -3)
 
 [node name="CoatCheck" parent="NavigationRegion3D/Props" instance=ExtResource("10_coats")]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 4.3, 0, -3.2)
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 4.3, 0, -3.2)
 
 [node name="MapBoard" parent="NavigationRegion3D/Props" instance=ExtResource("11_map")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6, 0, -1.3)
@@ -91,7 +92,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6, 0, -1.3)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4, 0, -4.7)
 
 [node name="Jammer" parent="." instance=ExtResource("g1_jammer")]
-transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -4.1, 1.12, -4)
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -4.1, 1.12, -4)
 
 [node name="Trim" type="Node3D" parent="."]
 
@@ -223,3 +224,12 @@ script = ExtResource("p4_tone")
 loop = ExtResource("p4_amb_clock")
 loop_volume_db = -20.0
 reach = 7.0
+
+[node name="ThrowableSpots" type="Node3D" parent="."]
+editor_description = "The Heel of Achilles, left at the coat check. It used to lie on the plaza; the lobby is on the way to every run's rooms."
+
+[node name="Spot1" type="Marker3D" parent="ThrowableSpots"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.15, 1, -2.6)
+
+[node name="Heel" parent="ThrowableSpots/Spot1" instance=ExtResource("b5_heel")]
+transform = Transform3D(-0.83092, 0.172478, -0.528983, -0.177245, 0.819152, 0.545504, 0.527404, 0.54703, -0.650079, 0, 0.128, 0)

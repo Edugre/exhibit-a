@@ -181,7 +181,7 @@ so it's spawned with the room. That puts it on both peers, and a restart rebuild
 
 | Room | Guards | Throwables |
 |---|---|---|
-| Lobby | 0 | none (the plaza's Heel and 4 coins are just outside) |
+| Lobby | 0 | the Heel of Achilles on the coat check counter (moved in from the plaza later; the 4 fountain coins stay outside) |
 | Sculpture Hall | 1 | Heel by the entry |
 | Twin Archives | 0 | none (nobody to distract) |
 | Laser Corridor *(C's room)* | 1 | coin by the entry. The grid's alarm is already the loud noise, so the coin is the quiet one (6 m vs 8 m) |
