@@ -1,0 +1,9 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/signal_jammer_model.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://assets/gadget/signal_jammer.gltf" id="2_model"]
+
+[node name="SignalJammerModel" type="Node3D"]
+script = ExtResource("1_script")
+
+[node name="Model" parent="." instance=ExtResource("2_model")]
