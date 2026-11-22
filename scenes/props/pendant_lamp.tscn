@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/fixtures/pendant_lamp.glb" id="1_mesh"]
+
+[node name="PendantLamp" type="Node3D"]
+editor_description = "A brass pendant with a glowing opal bowl (asset P1.5). Origin: the bowl's bottom; hang it 0.22 m above a room light, so the light shines down freely and the lamp only leaves a small shadow on the ceiling. Its rod runs up into the ceiling. No collision."
+
+[node name="Mesh" parent="." instance=ExtResource("1_mesh")]

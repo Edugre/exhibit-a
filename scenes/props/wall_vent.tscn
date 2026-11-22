@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/fixtures/wall_vent.glb" id="1_mesh"]
+
+[node name="WallVent" type="Node3D"]
+editor_description = "A wall vent with louvres, and a brass plate under it: NOT AN ESCAPE ROUTE. We checked. (asset P1.5). Origin: the centre of its back, on the wall, facing +z. No collision."
+
+[node name="Mesh" parent="." instance=ExtResource("1_mesh")]
