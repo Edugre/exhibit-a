@@ -1,0 +1,314 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/room.gd" id="1_room"]
+[ext_resource type="PackedScene" path="res://scenes/room_gate.tscn" id="2_gate"]
+[ext_resource type="Script" path="res://scripts/gates/twin_plate_gate.gd" id="3_rule"]
+[ext_resource type="Script" path="res://scripts/gates/twin_plate_lamps.gd" id="4_lamps"]
+[ext_resource type="Material" path="res://assets/interior/kit/int_floor_parquet.tres" id="5_parquet"]
+[ext_resource type="Material" path="res://assets/interior/kit/int_wall_paint_green.tres" id="6_green"]
+[ext_resource type="Material" path="res://assets/interior/kit/int_ceiling.tres" id="7_ceiling"]
+[ext_resource type="Material" path="res://assets/interior/kit/int_skirting.tres" id="8_skirting"]
+[ext_resource type="Material" path="res://assets/interior/kit/int_moulding.tres" id="9_moulding"]
+[ext_resource type="PackedScene" path="res://scenes/props/bookcase_double.tscn" id="10_double"]
+[ext_resource type="PackedScene" path="res://scenes/props/bookcase_wall.tscn" id="11_wall_case"]
+[ext_resource type="PackedScene" path="res://scenes/pressure_plate.tscn" id="12_plate"]
+[ext_resource type="Texture2D" path="res://assets/plates/label_pending.png" id="13_label"]
+[ext_resource type="PackedScene" path="res://scenes/props/case_low.tscn" id="14_case_low"]
+[ext_resource type="PackedScene" path="res://scenes/props/gallery_bench.tscn" id="15_bench"]
+[ext_resource type="PackedScene" path="res://scenes/props/do_not_touch_sign.tscn" id="16_sign"]
+[ext_resource type="Material" path="res://assets/interior/cases/int_brass.tres" id="17_brass"]
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_room"]
+geometry_parsed_geometry_type = 1
+cell_height = 0.1
+agent_radius = 0.25
+agent_max_climb = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bulb"]
+albedo_color = Color(1, 0.95, 0.85, 1)
+emission_enabled = true
+emission = Color(1, 0.72, 0.36, 1)
+emission_energy_multiplier = 0.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_bulb"]
+material = SubResource("StandardMaterial3D_bulb")
+radius = 0.07
+height = 0.14
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_hood"]
+material = ExtResource("17_brass")
+top_radius = 0.06
+bottom_radius = 0.13
+height = 0.12
+
+[node name="TwinArchives" type="Node3D"]
+script = ExtResource("1_room")
+editor_description = "Task B3. A reading room, then a wall of bookcases splitting two alcoves with a plate each. The exit gate opens only when both plates are pressed within 2 s of each other (scripts/gates/twin_plate_gate.gd), and the two players can't see each other, so they count it out. A lamp over the exit for each plate shows when it was pressed. On the way back the gate stays open."
+
+[node name="Entry" type="Marker3D" parent="."]
+
+[node name="Exit" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0, -12)
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+navigation_mesh = SubResource("NavigationMesh_room")
+
+[node name="Geometry" type="CSGCombiner3D" parent="NavigationRegion3D"]
+use_collision = true
+
+[node name="Floor" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, -0.5, -6)
+size = Vector3(12, 1, 12)
+material = ExtResource("5_parquet")
+
+[node name="Wall_West" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -5.75, 2, -6)
+size = Vector3(0.5, 4, 12)
+material = ExtResource("6_green")
+
+[node name="Wall_East" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 5.75, 2, -6)
+size = Vector3(0.5, 4, 12)
+material = ExtResource("6_green")
+
+[node name="Wall_Entry_Left" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -3.75, 2, -0.25)
+size = Vector3(4.5, 4, 0.5)
+material = ExtResource("6_green")
+
+[node name="Wall_Entry_Right" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 3.75, 2, -0.25)
+size = Vector3(4.5, 4, 0.5)
+material = ExtResource("6_green")
+
+[node name="Wall_Exit_Left" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -3.75, 2, -11.75)
+size = Vector3(4.5, 4, 0.5)
+material = ExtResource("6_green")
+
+[node name="Wall_Exit_Right" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 3.75, 2, -11.75)
+size = Vector3(4.5, 4, 0.5)
+material = ExtResource("6_green")
+
+[node name="Props" type="Node3D" parent="NavigationRegion3D"]
+
+[node name="Divider1" parent="NavigationRegion3D/Props" instance=ExtResource("10_double")]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, 0, 0, -4.4)
+
+[node name="Divider2" parent="NavigationRegion3D/Props" instance=ExtResource("10_double")]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, 0, 0, -5.6)
+
+[node name="Divider3" parent="NavigationRegion3D/Props" instance=ExtResource("10_double")]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, 0, 0, -6.8)
+
+[node name="Divider4" parent="NavigationRegion3D/Props" instance=ExtResource("10_double")]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, 0, 0, -8)
+
+[node name="WestFront1" parent="NavigationRegion3D/Props" instance=ExtResource("11_wall_case")]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -5.29, 0, -1.3)
+
+[node name="EastFront1" parent="NavigationRegion3D/Props" instance=ExtResource("11_wall_case")]
+transform = Transform3D(6.12323e-17, 0, -1, 0, 1, 0, 1, 0, 6.12323e-17, 5.29, 0, -1.3)
+
+[node name="WestFront2" parent="NavigationRegion3D/Props" instance=ExtResource("11_wall_case")]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -5.29, 0, -2.5)
+
+[node name="EastFront2" parent="NavigationRegion3D/Props" instance=ExtResource("11_wall_case")]
+transform = Transform3D(6.12323e-17, 0, -1, 0, 1, 0, 1, 0, 6.12323e-17, 5.29, 0, -2.5)
+
+[node name="WestAlcove1" parent="NavigationRegion3D/Props" instance=ExtResource("11_wall_case")]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -5.29, 0, -4.6)
+
+[node name="EastAlcove1" parent="NavigationRegion3D/Props" instance=ExtResource("11_wall_case")]
+transform = Transform3D(6.12323e-17, 0, -1, 0, 1, 0, 1, 0, 6.12323e-17, 5.29, 0, -4.6)
+
+[node name="WestAlcove2" parent="NavigationRegion3D/Props" instance=ExtResource("11_wall_case")]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -5.29, 0, -5.8)
+
+[node name="EastAlcove2" parent="NavigationRegion3D/Props" instance=ExtResource("11_wall_case")]
+transform = Transform3D(6.12323e-17, 0, -1, 0, 1, 0, 1, 0, 6.12323e-17, 5.29, 0, -5.8)
+
+[node name="WestAlcove3" parent="NavigationRegion3D/Props" instance=ExtResource("11_wall_case")]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -5.29, 0, -7.8)
+
+[node name="EastAlcove3" parent="NavigationRegion3D/Props" instance=ExtResource("11_wall_case")]
+transform = Transform3D(6.12323e-17, 0, -1, 0, 1, 0, 1, 0, 6.12323e-17, 5.29, 0, -7.8)
+
+[node name="PlateWest" parent="NavigationRegion3D/Props" instance=ExtResource("12_plate")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -3, 0, -6.6)
+label = ExtResource("13_label")
+
+[node name="PlateEast" parent="NavigationRegion3D/Props" instance=ExtResource("12_plate")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 3, 0, -6.6)
+label = ExtResource("13_label")
+
+[node name="ScrollCase" parent="NavigationRegion3D/Props" instance=ExtResource("14_case_low")]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, -2.6, 0, -1.9)
+
+[node name="ReadingBench" parent="NavigationRegion3D/Props" instance=ExtResource("15_bench")]
+transform = Transform3D(6.12323e-17, 0, 1, 0, 1, 0, -1, 0, 6.12323e-17, 2.4, 0, -1.9)
+
+[node name="DoNotTouch" parent="NavigationRegion3D/Props" instance=ExtResource("16_sign")]
+transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, -1.4, 0, -0.9)
+
+[node name="Trim" type="Node3D" parent="."]
+
+[node name="SkirtingWest" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -5.485, 0.09, -6)
+size = Vector3(0.03, 0.18, 11)
+material = ExtResource("8_skirting")
+
+[node name="SkirtingEast" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 5.485, 0.09, -6)
+size = Vector3(0.03, 0.18, 11)
+material = ExtResource("8_skirting")
+
+[node name="SkirtingEntryLeft" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -3.5, 0.09, -0.515)
+size = Vector3(4, 0.18, 0.03)
+material = ExtResource("8_skirting")
+
+[node name="SkirtingEntryRight" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 3.5, 0.09, -0.515)
+size = Vector3(4, 0.18, 0.03)
+material = ExtResource("8_skirting")
+
+[node name="SkirtingExitLeft" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -3.5, 0.09, -11.48)
+size = Vector3(4, 0.18, 0.03)
+material = ExtResource("8_skirting")
+
+[node name="SkirtingExitRight" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 3.5, 0.09, -11.48)
+size = Vector3(4, 0.18, 0.03)
+material = ExtResource("8_skirting")
+
+[node name="CorniceWest" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -5.47, 3.82, -6)
+size = Vector3(0.06, 0.36, 11)
+material = ExtResource("9_moulding")
+
+[node name="CorniceEast" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 5.47, 3.82, -6)
+size = Vector3(0.06, 0.36, 11)
+material = ExtResource("9_moulding")
+
+[node name="CorniceEntryLeft" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -3.5, 3.82, -0.53)
+size = Vector3(4, 0.36, 0.06)
+material = ExtResource("9_moulding")
+
+[node name="CorniceEntryRight" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 3.5, 3.82, -0.53)
+size = Vector3(4, 0.36, 0.06)
+material = ExtResource("9_moulding")
+
+[node name="CorniceExitLeft" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -3.5, 3.82, -11.47)
+size = Vector3(4, 0.36, 0.06)
+material = ExtResource("9_moulding")
+
+[node name="CorniceExitRight" type="CSGBox3D" parent="Trim"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 3.5, 3.82, -11.47)
+size = Vector3(4, 0.36, 0.06)
+material = ExtResource("9_moulding")
+
+[node name="Ceiling" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 4.25, -6)
+use_collision = true
+size = Vector3(12, 0.5, 12)
+material = ExtResource("7_ceiling")
+
+[node name="EntryLink" type="NavigationLink3D" parent="."]
+start_position = Vector3(0, 0, 1)
+end_position = Vector3(0, 0, -1)
+
+[node name="ExitGate" parent="." instance=ExtResource("2_gate")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0, -11.75)
+
+[node name="TwinPlateGate" type="Node" parent="." node_paths=PackedStringArray("plate_a", "plate_b", "gate")]
+script = ExtResource("3_rule")
+plate_a = NodePath("../NavigationRegion3D/Props/PlateWest")
+plate_b = NodePath("../NavigationRegion3D/Props/PlateEast")
+gate = NodePath("../ExitGate")
+
+[node name="ExitLamps" type="Node3D" parent="." node_paths=PackedStringArray("plate_a", "plate_b", "gate", "lamp_a", "lamp_b", "bulb_a", "bulb_b")]
+script = ExtResource("4_lamps")
+plate_a = NodePath("../NavigationRegion3D/Props/PlateWest")
+plate_b = NodePath("../NavigationRegion3D/Props/PlateEast")
+gate = NodePath("../ExitGate")
+lamp_a = NodePath("West/Light")
+lamp_b = NodePath("East/Light")
+bulb_a = NodePath("West/Bulb")
+bulb_b = NodePath("East/Bulb")
+
+[node name="West" type="Node3D" parent="ExitLamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -0.95, 3.45, -11.38)
+
+[node name="Hood" type="MeshInstance3D" parent="ExitLamps/West"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0.09, 0)
+mesh = SubResource("CylinderMesh_hood")
+
+[node name="Bulb" type="MeshInstance3D" parent="ExitLamps/West"]
+mesh = SubResource("SphereMesh_bulb")
+
+[node name="Light" type="OmniLight3D" parent="ExitLamps/West"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, -0.15, 0.25)
+light_energy = 0.0
+omni_range = 4.0
+omni_attenuation = 1.4
+
+[node name="East" type="Node3D" parent="ExitLamps"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0.95, 3.45, -11.38)
+
+[node name="Hood" type="MeshInstance3D" parent="ExitLamps/East"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 0.09, 0)
+mesh = SubResource("CylinderMesh_hood")
+
+[node name="Bulb" type="MeshInstance3D" parent="ExitLamps/East"]
+mesh = SubResource("SphereMesh_bulb")
+
+[node name="Light" type="OmniLight3D" parent="ExitLamps/East"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, -0.15, 0.25)
+light_energy = 0.0
+omni_range = 4.0
+omni_attenuation = 1.4
+
+[node name="LampReading" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 3.4, -1.8)
+light_color = Color(1, 0.84, 0.66, 1)
+light_energy = 1.0
+omni_range = 7.0
+omni_attenuation = 1.1
+
+[node name="LampWestAlcove" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, -3, 3.4, -6)
+light_color = Color(1, 0.84, 0.66, 1)
+light_energy = 1.2
+omni_range = 7.0
+omni_attenuation = 1.1
+shadow_enabled = true
+
+[node name="LampEastAlcove" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 3, 3.4, -6)
+light_color = Color(1, 0.84, 0.66, 1)
+light_energy = 1.2
+omni_range = 7.0
+omni_attenuation = 1.1
+shadow_enabled = true
+
+[node name="LampCorridor" type="OmniLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 3.4, -10.3)
+light_color = Color(1, 0.84, 0.66, 1)
+light_energy = 0.8
+omni_range = 7.0
+omni_attenuation = 1.1
+
+[node name="RoomAir" type="ReflectionProbe" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 2, -6)
+size = Vector3(12, 4.6, 12)
+blend_distance = 0.1
+interior = true
+ambient_mode = 2
+ambient_color = Color(0.26, 0.25, 0.21, 1)
