@@ -26,6 +26,8 @@ const CLOSED: Texture2D = preload("res://ui/stamp_closed.png")
 var _rows: Array[Label] = []
 var _stamp: TextureRect
 var _typing: Tween
+var _fall: Tween
+var _card := 0    # goes up each time the card is cleared, so a stamp still falling knows it's too late
 
 
 func _ready() -> void:
@@ -105,19 +107,25 @@ func stamp_card(won: bool, reason: String, seconds_taken: float, had_book: bool,
 
 ## Stop whatever the card was doing, so nothing of it lands in the next heist.
 func clear() -> void:
+	_card += 1
 	if _typing != null:
 		_typing.kill()
+	if _fall != null:
+		_fall.kill()
 	_stamp.visible = false
 
 
 func _slam() -> void:
+	var card := _card
 	_stamp.visible = true
 	_stamp.scale = Vector2.ONE * 3.2
 	_stamp.modulate.a = 0.0
-	var fall := create_tween().set_parallel()
-	fall.tween_property(_stamp, "scale", Vector2.ONE, 0.12).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	fall.tween_property(_stamp, "modulate:a", 1.0, 0.1)
-	await fall.finished
+	_fall = create_tween().set_parallel()
+	_fall.tween_property(_stamp, "scale", Vector2.ONE, 0.12).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	_fall.tween_property(_stamp, "modulate:a", 1.0, 0.1)
+	await _fall.finished
+	if card != _card:
+		return
 	if not stamp_sound_path.is_empty():
 		(get_node(stamp_sound_path) as AudioStreamPlayer).play()
 	var rest := position

@@ -86,7 +86,7 @@ func _process(delta: float) -> void:
 		model.carrying = holding
 
 	# Every peer can see for itself who's on a plinth, so being a statue needs no network traffic.
-	model.statue = not holding and _is_on_plinth()
+	model.statue = not holding and not _holding_throwable() and _is_on_plinth()
 
 
 ## While the end card is up, the mouse belongs to its Restart button.
@@ -116,7 +116,15 @@ func _is_on_statue_spot() -> bool:
 ## True while standing on one of the empty plinths outside with nothing to give them away. The guard
 ## takes them for one more statue. The plates indoors don't count: she knows what belongs on those.
 func is_posing_as_statue() -> bool:
-	return not holding and _is_on_statue_spot()
+	return not holding and not _holding_throwable() and _is_on_statue_spot()
+
+
+## A statue doesn't hold a marble foot or a handful of coins.
+func _holding_throwable() -> bool:
+	for throwable: Throwable in get_tree().get_nodes_in_group("throwables"):
+		if throwable.holder_id == name.to_int():
+			return true
+	return false
 
 
 func _glide_between_steps(delta: float) -> void:

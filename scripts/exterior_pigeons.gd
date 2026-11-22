@@ -1,8 +1,8 @@
 extends MultiMeshInstance3D
 ## Pigeons on the museum's ledges. They peck and shuffle, and burst into the air when somebody runs
-## past, then settle again on another ledge. Purely cosmetic: each peer runs its own flock and nothing
-## here touches shared game state. `startled` is there if the team wants to treat a scattering flock
-## as noise for the guard.
+## past, then settle again on another ledge. The host runs the flock: it decides when a bird takes off,
+## where it flies and which ledge it comes back to, and tells the client, so both players watch the same
+## birds. The client only animates what it's told. `startled` fires on the host, for the pigeon noise rule.
 
 signal startled(where: Vector3)
 
@@ -43,7 +43,9 @@ func _ready() -> void:
 			"to": perches[i],
 			"wait": randf() * 4.0,
 			"phase": randf() * TAU,
+			"landing": false,
 		})
+	multiplayer.peer_connected.connect(_on_peer_connected)
 
 
 func _process(delta: float) -> void:
@@ -52,31 +54,36 @@ func _process(delta: float) -> void:
 	if _coo_wait <= 0.0:
 		_coo_wait = randf_range(7.0, 19.0)
 		_play(coo_sound, _birds.pick_random().pos)
-	var runners := _runners(delta)
+	var host := multiplayer.is_server()
+	var runners := _runners(delta) if host else []
 	for i in _birds.size():
 		var b: Dictionary = _birds[i]
 		match b.state:
 			"perched":
-				_perch(b, delta, runners)
+				_perch(i, b, delta, runners)
 			"flying":
 				_fly(b, delta)
 			"away":
-				b.wait -= delta
-				if b.wait <= 0.0:
-					_return(b)
+				if host:
+					b.wait -= delta
+					if b.wait <= 0.0:
+						_send_back(i)
 		_write(i, b)
 
 
 ## Every bird at once, for the alarm. Nobody scared them, so nothing here counts as a noise.
 func scatter_all() -> void:
+	if not multiplayer.is_server():
+		return    # the host scatters its flock and tells the client
 	_flap_wait = 0.0
-	for b: Dictionary in _birds:
+	for i in _birds.size():
+		var b: Dictionary = _birds[i]
 		if b.state == "perched":
 			var from: Vector3 = b.pos + Vector3(randf_range(-3.0, 3.0), 0.0, randf_range(-3.0, 3.0))
-			_take_off(b, from, false)
+			_launch(i, from, false)
 
 
-## Everyone who could scare a bird, with how fast they are moving.
+## Everyone who could scare a bird, with how fast they are moving. Host only.
 func _runners(delta: float) -> Array:
 	_window += delta
 	var measuring := _window >= SPEED_WINDOW
@@ -92,29 +99,40 @@ func _runners(delta: float) -> Array:
 	return list
 
 
-func _perch(b: Dictionary, delta: float, runners: Array) -> void:
+func _perch(i: int, b: Dictionary, delta: float, runners: Array) -> void:
 	for r in runners:
 		var distance: float = (r[0] as Vector3).distance_to(b.pos)
 		if distance < CALM_RANGE or (distance < SPOOK_RANGE and r[1] > SPOOK_SPEED):
-			_take_off(b, r[0])
+			_launch(i, r[0], true)
 			return
+	# Shuffling round on the ledge is each screen's own business
 	b.wait -= delta
 	if b.wait <= 0.0:
 		b.wait = randf_range(1.5, 6.0)
 		b.yaw += randf_range(-1.6, 1.6)
 
 
-func _take_off(b: Dictionary, from_where: Vector3, heard: bool = true) -> void:
+## Host: send a bird up, away from whatever scared it.
+func _launch(i: int, from_where: Vector3, heard: bool) -> void:
+	var b: Dictionary = _birds[i]
 	var away := (b.pos as Vector3) - from_where
 	away.y = 0.0
 	away = away.normalized() if away.length() > 0.01 else Vector3.FORWARD
-	b.state = "flying"
-	b.t = 0.0
-	b.from = b.pos
-	b.to = (b.pos as Vector3) + away * 22.0 + Vector3(randf_range(-7.0, 7.0), randf_range(14.0, 22.0), randf_range(-3.0, 3.0))
-	b.yaw = atan2(away.x, away.z)
+	var to: Vector3 = (b.pos as Vector3) + away * 22.0 + Vector3(randf_range(-7.0, 7.0), randf_range(14.0, 22.0), randf_range(-3.0, 3.0))
+	_take_off.rpc(i, to, atan2(away.x, away.z))
 	if heard:
 		startled.emit(b.pos)
+
+
+@rpc("authority", "call_local", "reliable")
+func _take_off(i: int, to: Vector3, yaw: float) -> void:
+	var b: Dictionary = _birds[i]
+	b.state = "flying"
+	b.landing = false
+	b.t = 0.0
+	b.from = b.pos
+	b.to = to
+	b.yaw = yaw
 	if _flap_wait <= 0.0:
 		_flap_wait = 1.5
 		_play(flap_sound, b.pos)
@@ -129,7 +147,7 @@ func _fly(b: Dictionary, delta: float) -> void:
 	at.y += sin(s * PI) * 2.2
 	b.pos = at
 	if b.t >= 1.0:
-		if b.get("landing", false):
+		if b.landing:
 			b.landing = false
 			b.state = "perched"
 			b.wait = randf_range(1.5, 5.0)
@@ -138,24 +156,55 @@ func _fly(b: Dictionary, delta: float) -> void:
 			b.wait = randf_range(SETTLE_TIME.x, SETTLE_TIME.y)
 
 
-## After a while the bird comes back to a free ledge, gliding down from the air.
-func _return(b: Dictionary) -> void:
+## Host: after a while the bird comes back to a free ledge.
+func _send_back(i: int) -> void:
 	var taken: Array[int] = []
 	for other in _birds:
 		taken.append(other.perch)
 	var choices: Array[int] = []
-	for i in perches.size():
-		if not taken.has(i):
-			choices.append(i)
-	if not choices.is_empty():
-		b.perch = choices.pick_random()
+	for p in perches.size():
+		if not taken.has(p):
+			choices.append(p)
+	var perch: int = choices.pick_random() if not choices.is_empty() else int(_birds[i].perch)
+	_come_back.rpc(i, perch)
+
+
+@rpc("authority", "call_local", "reliable")
+func _come_back(i: int, perch: int) -> void:
+	var b: Dictionary = _birds[i]
+	b.perch = perch
 	b.from = b.pos
-	b.to = perches[b.perch]
+	b.to = perches[perch]
 	b.t = 0.0
 	b.state = "flying"
 	b.landing = true
 	var heading: Vector3 = (b.to as Vector3) - (b.from as Vector3)
 	b.yaw = atan2(heading.x, heading.z)
+
+
+## Host: a partner who just joined gets the flock as it is right now.
+func _on_peer_connected(peer_id: int) -> void:
+	if not multiplayer.is_server():
+		return
+	var snapshot: Array = []
+	for b in _birds:
+		snapshot.append([b.state, b.pos, b.from, b.to, b.t, b.perch, b.landing, b.yaw])
+	_sync_flock.rpc_id(peer_id, snapshot)
+
+
+@rpc("authority", "call_remote", "reliable")
+func _sync_flock(snapshot: Array) -> void:
+	for i in mini(snapshot.size(), _birds.size()):
+		var row: Array = snapshot[i]
+		var b: Dictionary = _birds[i]
+		b.state = row[0]
+		b.pos = row[1]
+		b.from = row[2]
+		b.to = row[3]
+		b.t = row[4]
+		b.perch = row[5]
+		b.landing = row[6]
+		b.yaw = row[7]
 
 
 func _play(sound: NodePath, where: Vector3) -> void:

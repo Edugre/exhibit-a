@@ -26,6 +26,7 @@ const FLOOD_NAMES: Array[String] = ["Flood", "Graze", "ArchGraze", "EndBay", "Cr
 @export var siren_path: NodePath = ^"Siren"
 
 var _raised: bool = false
+var _raises := 0    # counts each raise, so a bell waiting from an earlier one stays quiet
 var _level: float = 0.0
 var _clock: float = 0.0
 var _lamps: Array[Dictionary] = []
@@ -85,6 +86,8 @@ func _process(delta: float) -> void:
 
 func _raise() -> void:
 	_raised = true
+	_raises += 1
+	var this_raise := _raises
 	_clock = 0.0
 	_gather_lamps()
 	(get_node(whisper_path) as AudioStreamPlayer).play()
@@ -97,7 +100,7 @@ func _raise() -> void:
 	if pigeons != null:
 		pigeons.scatter_all()
 	await get_tree().create_timer(BELL_DELAY).timeout
-	if _raised:
+	if _raised and this_raise == _raises:
 		(get_node(bell_path) as AudioStreamPlayer3D).play()
 		(get_node(siren_path) as AudioStreamPlayer3D).play()
 

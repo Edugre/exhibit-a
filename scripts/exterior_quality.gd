@@ -44,6 +44,7 @@ func _ready() -> void:
 	for light: Light3D in _all_lights():
 		if light.shadow_enabled:
 			_shadowed.append(light)
+	get_viewport().size_changed.connect(_fit_render_scale)
 	var saved := ConfigFile.new()
 	if saved.load(SETTINGS_PATH) == OK:
 		choice = saved.get_value("graphics", "choice", AUTO)
@@ -90,8 +91,7 @@ func apply(new_level: int) -> void:
 	view.screen_space_aa = Viewport.SCREEN_SPACE_AA_FXAA if low else Viewport.SCREEN_SPACE_AA_DISABLED
 	view.use_debanding = true
 	view.scaling_3d_mode = Viewport.SCALING_3D_MODE_FSR if low else Viewport.SCALING_3D_MODE_BILINEAR
-	var lines := float(DisplayServer.window_get_size().y)
-	view.scaling_3d_scale = clampf(LOW_RENDER_LINES / lines, 0.5, 0.9) if low else (0.88 if not high else 1.0)
+	_fit_render_scale()
 	view.positional_shadow_atlas_size = 1024 if low else (2048 if not high else 4096)
 	environment.ssao_enabled = high
 	moon.shadow_enabled = not low
@@ -114,6 +114,17 @@ func apply(new_level: int) -> void:
 		if steam != null:
 			steam.visible = not low
 	get_tree().call_group("exterior_weather", "on_graphics_changed", level)
+
+
+## How much of the screen the 3D is drawn at. Low depends on the window, so it's worked out again on a resize.
+func _fit_render_scale() -> void:
+	var lines := maxf(float(DisplayServer.window_get_size().y), 1.0)
+	var scale := 1.0
+	if level == Level.LOW:
+		scale = clampf(LOW_RENDER_LINES / lines, 0.5, 0.9)
+	elif level == Level.MEDIUM:
+		scale = 0.88
+	get_viewport().scaling_3d_scale = scale
 
 
 func _named(light: Light3D, groups: Array[String]) -> bool:

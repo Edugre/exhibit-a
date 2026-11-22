@@ -1,6 +1,6 @@
 extends Node
 ## Gameplay rule: a flock going up gives you away. When a run or a close pass scares the pigeons, the
-## guard hears it if she's near enough and comes to look. Runs on the host, on the host's own flock.
+## guard hears it if she's near enough and comes to look. Runs on the host, which runs the flock both players see.
 ## The alarm's scatter doesn't count: that isn't anybody's doing.
 
 const NOISE_RADIUS := 14.0

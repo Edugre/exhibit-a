@@ -67,6 +67,8 @@ var _waypoint_index := 0
 var _wait_timer := 0.0
 var _suspicion := 0.0
 var _target: Node3D = null
+## The player her suspicion is building on. Climbing onto a plinth won't fool her about this one.
+var _watched: Node3D = null
 var _last_seen := Vector3.ZERO
 var _lost_sight_timer := 0.0
 var _start_transform: Transform3D
@@ -106,6 +108,10 @@ func _physics_process(delta: float) -> void:
 				_start_chase(seen)
 		else:
 			_suspicion = maxf(_suspicion - delta / DETECT_TIME, 0.0)
+	if seen != null:
+		_watched = seen
+	elif _suspicion <= 0.0:
+		_watched = null
 
 	if _suspicion > 0.0:
 		_stop(delta)  # she stops to look until she's sure, or has lost them
@@ -212,6 +218,7 @@ func _return_to_patrol() -> void:
 
 
 func _on_heist_reset(_respawn_players: bool) -> void:
+	_watched = null
 	global_transform = _start_transform
 	velocity = Vector3.ZERO
 	_suspicion = 0.0
@@ -253,8 +260,8 @@ func _find_visible_player() -> Node3D:
 	var best_distance := INF
 
 	for player: Node3D in get_tree().get_nodes_in_group("players"):
-		if not chasing and player.is_posing_as_statue():
-			continue  # one more statue, unless she already saw them climb up there
+		if not chasing and player != _watched and player.is_posing_as_statue():
+			continue  # one more statue, unless she was already watching them
 		var chest := player.global_position + Vector3.UP * 1.2
 		var to_player := chest - eye
 		var distance := to_player.length()
