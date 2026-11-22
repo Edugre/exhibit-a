@@ -19,12 +19,16 @@ properties/2/replication_mode = 2
 properties/3/path = NodePath(".:charges")
 properties/3/spawn = true
 properties/3/replication_mode = 2
+properties/4/path = NodePath(".:slot")
+properties/4/spawn = true
+properties/4/replication_mode = 2
 
 [node name="JammerPickup" type="RigidBody3D"]
 editor_description = "The Signal Jammer lying in the museum (one per heist, on the lobby desk). The collision is a little bigger than the jammer, so it's easy to aim the interact ray at."
 mass = 0.4
 continuous_cd = true
 script = ExtResource("1_script")
+display_name = "Signal Jammer"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("Shape_pickup")

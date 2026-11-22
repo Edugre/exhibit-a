@@ -70,19 +70,10 @@ func _process(_delta: float) -> void:
 func interact(peer_id: int) -> void:
 	if not multiplayer.is_server() or GameState.phase != GameState.Phase.PLAYING:
 		return
-	if _is_holding_something(peer_id):
-		return
+	# Whatever's in the hotbar stays there: the book takes both hands, so nothing else is in hand meanwhile.
 	var state := GameState.artifact_state
 	if state == GameState.ArtifactState.AVAILABLE or state == GameState.ArtifactState.DROPPED:
 		GameState.set_artifact(GameState.ArtifactState.CARRIED, peer_id)
-
-
-## One thing in your hands at a time, so the book and a throwable can't overlap.
-func _is_holding_something(peer_id: int) -> bool:
-	for throwable: Throwable in get_tree().get_nodes_in_group("throwables"):
-		if throwable.holder_id == peer_id:
-			return true
-	return false
 
 
 ## Any peer: asks the host to let go of the book.
