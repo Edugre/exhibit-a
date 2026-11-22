@@ -5,7 +5,7 @@ leaves a hook for it.
 
 ## Decisions
 
-- **Linear chain.** Entrance (extraction + van) first, then 3 shuffled rooms, then the vault last.
+- **Linear chain.** The entrance lobby first, then 3 shuffled rooms, then the vault last.
 - **Pool of 4 rooms, 3 used per run**, in random order. Both the order and which room is left out change.
 - **New order on every restart.** The host picks it; both peers rebuild.
 - **Room content:** guard patrols, co-op puzzle gates, throwable pickups, and a hook for the new gadget.
@@ -13,14 +13,16 @@ leaves a hook for it.
 ## Run layout
 
 ```
-[Entrance / extraction] -> [Pool room] -> [Pool room] -> [Pool room] -> [Gallery + Vault]
+(plaza + van) -> [Entrance lobby] -> [Pool room] -> [Pool room] -> [Pool room] -> [Gallery + Vault]
        fixed                  shuffled: 3 of 4                          fixed (HW #3 puzzle)
 ```
 
 The current gallery, plates and vault become the fixed **Vault room**. The HW #3 puzzle and
-the artifact stay exactly as they are. The extraction area becomes the fixed **Entrance room**.
-Players spawn in the entrance, cross the museum to steal the artifact, and carry it all the way
-back to the van. Every room is crossed twice, so the stealth matters more.
+the artifact stay exactly as they are. Since the exterior merged (`museum-extras`), the van and
+drop zone live outside on the plaza (`World/Exterior`, `World/Getaway`) and stay there. The fixed
+**Entrance room** is the lobby inside the front doors, which joins the exterior to the first shuffled room.
+Players enter through the lobby, cross the museum to steal the artifact, and carry it all the way
+back out to the van. Every room is crossed twice, so the stealth matters more.
 
 ## Room contract (every room scene follows this)
 

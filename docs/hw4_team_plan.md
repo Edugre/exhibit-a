@@ -1,6 +1,7 @@
 # HW #4 team plan: three developers, three coding agents
 
 This splits HW #4 (the [spec](hw4_spec.md)) into three tracks that can run at the same time.
+The art that goes into the rooms is in [hw4_assets_plan.md](hw4_assets_plan.md), in priority order.
 The design behind the rooms is in [hw4_rooms_plan.md](hw4_rooms_plan.md). This doc covers
 **who does what, in what order, and what blocks what**.
 
@@ -93,7 +94,8 @@ Task IDs are used for branch names (`hw4/a1-split-museum`) and PR titles.
 - Done when: the headless check passes and the contract table in `hw4_rooms_plan.md` matches the code.
 
 **A1: Split the museum + path refactor** · hard: A0
-- Turn `museum.tscn` into `entrance_room` (van, extraction, spawns) and `vault_room`
+- Turn `museum.tscn` into `entrance_room` (the lobby inside the front doors, joining the exterior; the van
+  and drop zone stay outside in `World/Exterior` and `World/Getaway`) and `vault_room`
   (gallery, plates, vault, artifact spot, current guard). A `World/Museum` builder places them in a **fixed order**.
 - Replace the hard-coded paths: `artifact.gd`, `drop_zone.gd`, `guard.gd` waypoints, `main.gd` spawn points,
   and `throwable.gd` (`../../Players` breaks once throwables live inside rooms).
