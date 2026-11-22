@@ -128,7 +128,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 - Pressure plate puzzle condition and vault door (scripts/vault_puzzle.gd, scripts/pressure_plate.gd, scripts/vault_door.gd)
 - Museum layout: builds the rooms in a line from the front doors (lobby, then the gallery and vault), and tells the artifact, drop zone and spawning where things are (scripts/museum_layout.gd)
 - Room contract for HW #4: how rooms line up door to door, what each room provides, and the exit gate that stays open once the artifact is taken (scripts/room.gd, scripts/room_gate.gd, scripts/room_catalog.gd, scenes/rooms/room_template.tscn)
-- Two-plate timing gate for Twin Archives: the gate opens when both plates are pressed within 2 seconds of each other (scripts/gates/twin_plate_gate.gd)
+- Two-plate timing gate for Twin Archives: the gate opens when both plates are pressed within 2 seconds of each other (scripts/gates/twin_plate_gate.gd). A lamp over the exit for each plate shows each player when the other pressed, worked out by every peer from what it already receives (scripts/gates/twin_plate_lamps.gd)
 - Guard AI: patrol, vision cone, suspicion, chase, investigation, catch (scripts/guard.gd)
 - Noise system and throw impact rule (scripts/noise_system.gd, scripts/throwable.gd)
 - Artifact pickup, carrying and dropping (scripts/artifact.gd)
