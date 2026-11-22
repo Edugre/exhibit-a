@@ -72,8 +72,17 @@ func set_artifact(state: ArtifactState, holder: int = 0) -> void:
 	_apply_state.rpc(phase, time_left, end_reason, state, holder, guard_alerted)
 
 
+## A guard reports a change in her own `alerted`. The alert stays up while any guard is still alerted,
+## so one guard calming down doesn't hide another one's chase.
 func set_alert(alerted: bool) -> void:
-	if not multiplayer.is_server() or alerted == guard_alerted:
+	if not multiplayer.is_server():
+		return
+	if not alerted:
+		for guard in get_tree().get_nodes_in_group("guards"):
+			if guard.alerted:
+				alerted = true
+				break
+	if alerted == guard_alerted:
 		return
 	_apply_state.rpc(phase, time_left, end_reason, artifact_state, artifact_holder, alerted)
 

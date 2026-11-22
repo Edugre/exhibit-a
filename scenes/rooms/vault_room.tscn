@@ -1,0 +1,184 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/room.gd" id="1_room"]
+[ext_resource type="PackedScene" path="res://scenes/vault_door.tscn" id="2_door"]
+[ext_resource type="Texture2D" path="res://assets/door/portrait_label.png" id="3_label"]
+[ext_resource type="Texture2D" path="res://assets/plates/label_achilles.png" id="4_achilles"]
+[ext_resource type="Texture2D" path="res://assets/plates/label_helen.png" id="5_helen"]
+[ext_resource type="PackedScene" uid="uid://ddobajultcxkp" path="res://scenes/pressure_plate.tscn" id="6_plate"]
+[ext_resource type="Script" uid="uid://dwf7uthkm8ajy" path="res://scripts/vault_puzzle.gd" id="7_puzzle"]
+[ext_resource type="PackedScene" path="res://assets/artifact/book_stand.glb" id="8_stand"]
+[ext_resource type="PackedScene" uid="uid://c7djabat5ogge" path="res://scenes/guard.tscn" id="9_guard"]
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_room"]
+geometry_parsed_geometry_type = 1
+cell_height = 0.1
+agent_height = 1.6
+agent_radius = 0.25
+agent_max_climb = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_label"]
+albedo_texture = ExtResource("3_label")
+emission_enabled = true
+emission_energy_multiplier = 0.45
+emission_texture = ExtResource("3_label")
+
+[sub_resource type="QuadMesh" id="QuadMesh_label"]
+material = SubResource("StandardMaterial3D_label")
+size = Vector2(0.66, 0.38)
+
+[node name="VaultRoom" type="Node3D"]
+script = ExtResource("1_room")
+
+[node name="Entry" type="Marker3D" parent="."]
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+navigation_mesh = SubResource("NavigationMesh_room")
+
+[node name="Geometry" type="CSGCombiner3D" parent="NavigationRegion3D"]
+use_collision = true
+
+[node name="GalleryFloor" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, -6)
+size = Vector3(16, 1, 12)
+
+[node name="VaultFloor" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, -15)
+size = Vector3(6, 1, 6)
+
+[node name="Gallery_Wall_North_Left" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.75, 2, -12)
+size = Vector3(6.5, 4, 0.5)
+
+[node name="Gallery_Wall_North_Right" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.75, 2, -12)
+size = Vector3(6.5, 4, 0.5)
+
+[node name="Gallery_Wall_Entry_Left" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.75, 2, -0.25)
+size = Vector3(6.5, 4, 0.5)
+
+[node name="Gallery_Wall_Entry_Right" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.75, 2, -0.25)
+size = Vector3(6.5, 4, 0.5)
+
+[node name="Gallery_Wall_East" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 2, -6)
+size = Vector3(0.5, 4, 12)
+
+[node name="Gallery_Wall_West" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 2, -6)
+size = Vector3(0.5, 4, 12)
+
+[node name="Vault_Wall_East" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 2, -15)
+size = Vector3(0.5, 4, 6)
+
+[node name="Vault_Wall_West" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 2, -15)
+size = Vector3(0.5, 4, 6)
+
+[node name="Vault_Wall_North" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -17.75)
+size = Vector3(6, 4, 0.5)
+
+[node name="Crate" type="CSGBox3D" parent="NavigationRegion3D/Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0.5, -3)
+
+[node name="ArtifactPedestal" type="CSGCylinder3D" parent="NavigationRegion3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -16)
+use_collision = true
+height = 1.0
+
+[node name="PlateA" parent="NavigationRegion3D" instance=ExtResource("6_plate")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, -8)
+label = ExtResource("4_achilles")
+
+[node name="PlateB" parent="NavigationRegion3D" instance=ExtResource("6_plate")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, -8)
+label = ExtResource("5_helen")
+
+[node name="Ceiling" type="CSGCombiner3D" parent="."]
+use_collision = true
+
+[node name="GalleryRoof" type="CSGBox3D" parent="Ceiling"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.25, -6.15)
+size = Vector3(16.5, 0.5, 12.3)
+
+[node name="VaultRoof" type="CSGBox3D" parent="Ceiling"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.25, -15.075)
+size = Vector3(6.5, 0.5, 5.85)
+
+[node name="EntryLink" type="NavigationLink3D" parent="."]
+start_position = Vector3(0, 0, 1)
+end_position = Vector3(0, 0, -1)
+
+[node name="NightLights" type="Node3D" parent="."]
+
+[node name="RoomAir" type="ReflectionProbe" parent="NightLights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -9.2)
+size = Vector3(17, 4.6, 19.4)
+blend_distance = 0.1
+interior = true
+ambient_mode = 2
+ambient_color = Color(0.3, 0.25, 0.22, 1)
+ambient_color_energy = 0.5
+
+[node name="GalleryWest" type="OmniLight3D" parent="NightLights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 3.5, -6)
+light_color = Color(1, 0.82, 0.62, 1)
+light_energy = 1.6
+omni_range = 10.0
+omni_attenuation = 1.1
+
+[node name="GalleryEast" type="OmniLight3D" parent="NightLights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 3.5, -6)
+light_color = Color(1, 0.82, 0.62, 1)
+light_energy = 1.6
+omni_range = 10.0
+omni_attenuation = 1.1
+
+[node name="Vault" type="OmniLight3D" parent="NightLights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.4, -15)
+light_color = Color(1, 0.78, 0.56, 1)
+light_energy = 0.9
+omni_range = 7.0
+omni_attenuation = 1.1
+
+[node name="VaultDoor" parent="." node_paths=PackedStringArray("plate_left", "plate_right") instance=ExtResource("2_door")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, -11.63)
+plate_left = NodePath("../NavigationRegion3D/PlateA")
+plate_right = NodePath("../NavigationRegion3D/PlateB")
+
+[node name="PortraitLabel" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.05, 1.55, -11.74)
+mesh = SubResource("QuadMesh_label")
+
+[node name="BookStand" parent="." instance=ExtResource("8_stand")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -16)
+
+[node name="ArtifactSpot" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.81915206, -0.57357645, 0, 0.57357645, 0.81915206, 0, 1.3668, -15.9036)
+
+[node name="GuardWaypoints" type="Node3D" parent="."]
+
+[node name="Wp1" type="Marker3D" parent="GuardWaypoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, -10)
+
+[node name="Wp2" type="Marker3D" parent="GuardWaypoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, -10)
+
+[node name="Wp3" type="Marker3D" parent="GuardWaypoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, -2)
+
+[node name="Wp4" type="Marker3D" parent="GuardWaypoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, -2)
+
+[node name="VaultPuzzle" type="Node" parent="." node_paths=PackedStringArray("plate_a", "plate_b", "door")]
+script = ExtResource("7_puzzle")
+plate_a = NodePath("../NavigationRegion3D/PlateA")
+plate_b = NodePath("../NavigationRegion3D/PlateB")
+door = NodePath("../VaultDoor")
+
+[node name="Guard" parent="." instance=ExtResource("9_guard")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, -10)

@@ -5,7 +5,6 @@
 
 [node name="DropZone" type="Node3D"]
 script = ExtResource("1_zone")
-spot_path = NodePath("../../Museum/ExtractionSpot")
 players_path = NodePath("../../Players")
 
 [node name="Model" parent="." instance=ExtResource("2_glb")]
