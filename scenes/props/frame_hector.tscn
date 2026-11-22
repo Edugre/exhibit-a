@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://assets/interior/vault/frame_hector.gltf" id="1_model"]
+
+[node name="FrameHector" type="Node3D"]
+editor_description = "Asset P3.6: an empty gilt frame, 1.0 x 1.3 m, with a card hung in it and its brass label below. Origin: the frame's centre on the wall's surface, facing +z (like the P1.3 paintings). No collision."
+
+[node name="Mesh" parent="." instance=ExtResource("1_model")]
