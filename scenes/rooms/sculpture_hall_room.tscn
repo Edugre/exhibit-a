@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/room.gd" id="1_room"]
 [ext_resource type="PackedScene" path="res://scenes/room_gate.tscn" id="2_gate"]
-[ext_resource type="PackedScene" path="res://scenes/guard.tscn" id="3_guard"]
+[ext_resource type="PackedScene" path="res://scenes/staff.tscn" id="3_guard"]
 [ext_resource type="Material" path="res://assets/interior/kit/int_floor_marble.tres" id="4_marble"]
 [ext_resource type="Material" path="res://assets/interior/kit/int_wall_paint.tres" id="5_paint"]
 [ext_resource type="Material" path="res://assets/interior/kit/int_ceiling.tres" id="6_ceiling"]
