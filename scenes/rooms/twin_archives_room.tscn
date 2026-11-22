@@ -20,6 +20,8 @@
 [ext_resource type="PackedScene" path="res://scenes/props/doorway_portal.tscn" id="k1_portal"]
 [ext_resource type="PackedScene" path="res://scenes/props/doorway_jambs.tscn" id="k1_jambs"]
 [ext_resource type="PackedScene" path="res://scenes/props/room_plaque_twin_archives.tscn" id="k1_plaque"]
+[ext_resource type="PackedScene" path="res://scenes/props/painting_narcissus.tscn" id="p13_narcissus"]
+[ext_resource type="PackedScene" path="res://scenes/props/painting_disputed_apple.tscn" id="p13_disputed_apple"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_room"]
 geometry_parsed_geometry_type = 1
@@ -325,3 +327,12 @@ editor_description = "Asset K1: the stone arch and this room's plaque on the Ent
 
 [node name="ExitJambs" parent="Doorways" instance=ExtResource("k1_jambs")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -12)
+
+[node name="Paintings" type="Node3D" parent="."]
+editor_description = "Asset P1.3: framed paintings with their labels and picture lights. Art only, outside the navigation region."
+
+[node name="Narcissus" parent="Paintings" instance=ExtResource("p13_narcissus")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -5.5, 1.7, -10)
+
+[node name="DisputedApple" parent="Paintings" instance=ExtResource("p13_disputed_apple")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 5.5, 1.6, -10)
