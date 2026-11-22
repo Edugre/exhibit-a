@@ -1,0 +1,15 @@
+[gd_resource type="StandardMaterial3D" format=3]
+
+[ext_resource type="Texture2D" path="res://assets/interior/sculpture/int_sculpture_albedo.png" id="1_albedo"]
+[ext_resource type="Texture2D" path="res://assets/interior/sculpture/int_sculpture_normal.png" id="2_normal"]
+
+[resource]
+albedo_texture = ExtResource("1_albedo")
+transparency = 2
+alpha_scissor_threshold = 0.5
+cull_mode = 2
+roughness = 0.85
+normal_enabled = true
+normal_texture = ExtResource("2_normal")
+backlight_enabled = true
+backlight = Color(0.42, 0.38, 0.3, 1)
