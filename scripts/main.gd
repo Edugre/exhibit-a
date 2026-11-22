@@ -20,6 +20,7 @@ const PLAYER_SCENE := preload("res://scenes/player.tscn")
 
 func _ready() -> void:
 	player_spawner.spawn_function = _create_player
+	_add_menu_card()
 	host_button.pressed.connect(_on_host_pressed)
 	join_button.pressed.connect(_on_join_pressed)
 	graphics_option.selected = _graphics().choice + 1  # Auto is -1, so the list runs Auto, Low, Medium, High
@@ -28,6 +29,16 @@ func _ready() -> void:
 	NetworkManager.connected_to_host.connect(_on_connected_to_host)
 	NetworkManager.connection_failed.connect(_on_connection_failed)
 	NetworkManager.host_disconnected.connect(_on_host_disconnected)
+
+
+## The objective and the controls beside the menu, so a new player reads them before they host or join.
+func _add_menu_card() -> void:
+	var card := ControlsCard.new()
+	menu.get_parent().add_child(card)
+	card.set_anchors_and_offsets_preset(Control.PRESET_CENTER_RIGHT, Control.PRESET_MODE_MINSIZE, 72)
+	card.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	card.grow_vertical = Control.GROW_DIRECTION_BOTH
+	menu.visibility_changed.connect(func() -> void: card.visible = menu.visible)
 
 
 func _graphics() -> Node:

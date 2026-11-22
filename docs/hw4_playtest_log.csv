@@ -1,0 +1,6 @@
+tester,round,session,date,build,partner,task,limit,outcome,end_time_left,haul,q1_seconds_to_pass_grid,q1_alarms,q1_method,q1_hints,q2_took_crowbar,q2_cases_broken,q2_seconds_to_librarian,q2_understood_cost,total_hints,assistance_given,observations,debrief_goal,debrief_unsure,debrief_grid,debrief_case,debrief_last_result,rating_optional
+P1,R1,S1,,,P2,Steal the book and deliver it to the van (seed 42),4:30 timer or one catch,,,,,,,,,,,,,,,,,,,,
+P2,R1,S1,,,P1,Steal the book and deliver it to the van (seed 42),4:30 timer or one catch,,,,,,,,,,,,,,,,,,,,
+P3,R1,S2,,,,Steal the book and deliver it to the van (seed 42),4:30 timer or one catch,,,,,,,,,,,,,,,,,,,,
+P4,R1,S2,,,,Steal the book and deliver it to the van (seed 42),4:30 timer or one catch,,,,,,,,,,,,,,,,,,,,
+P1,R2,S3,,,,Steal the book and deliver it to the van (seed 42),4:30 timer or one catch,,,,,,,,,,,,,,,,,,,,
