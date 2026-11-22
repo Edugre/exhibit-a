@@ -48,9 +48,10 @@ You have **3 minutes, plus 30 seconds for every room between the lobby and the g
 | Look | Mouse |
 | Jump | Space |
 | Sneak (move slower) | Ctrl |
-| Interact: pick up the book, the heel or a coin; drop the book | E |
+| Interact: pick up the book, the heel, a coin or the jammer; drop the book | E |
 | Throw the heel or a coin | Left mouse button |
-| Use the Signal Jammer | Q |
+| Use the Signal Jammer (while you carry it) | Q |
+| Put the jammer down for your partner (with nothing else in hand) | Left mouse button |
 | Free / recapture the mouse | Esc / click |
 
 ## Implemented features
@@ -60,7 +61,7 @@ You have **3 minutes, plus 30 seconds for every room between the lobby and the g
 - **Four pool rooms (HW #4):** Sculpture Hall, Twin Archives, Laser Corridor and Security Office (see the table above). Each has its own props and lighting, and most have a brass plaque over the doorway naming the room.
 - **Cooperative puzzles:** two pressure plinths that must be held at the same time open the vault door, and each plinth lights a picture lamp on the door while it is pressed. Twin Archives asks for two presses within 2 seconds from rooms apart. The Laser Corridor asks the players to hand the switches off between them.
 - **Room sounds (HW #4):** every room hums at its own pitch; clocks tick in the lobby and the archives, floorboards creak and pages rustle in Twin Archives, the security office buzzes under its tubes with radio chatter from the desk, and the laser grid hums while it's on and zaps when someone walks into it.
-- **Signal Jammer gadget (HW #4):** each player has two charges per heist (Q). A charge switches off every jammable thing within 6 m for 6 seconds, which right now means laser grids. The HUD shows the charges left. Everyone can see it working: the jammer rides on each player's belt and comes up into your view when you use it, a ring of light sweeps out to its range with a burst of radio static on both screens, and a jammed grid throws sparks while its beams sputter. A use that jams nothing just clicks.
+- **Signal Jammer gadget (HW #4):** one jammer per heist, waiting on the lobby's ticket desk with its LED blinking. Either player picks it up (E); it clips to their belt, and with nothing else in hand the throw button puts it down for the other. It has two charges for the whole heist, which go wherever it goes (Q). A charge switches off every jammable thing within 6 m for 6 seconds, which right now means laser grids. The HUD shows the charges left. Everyone can see it working: the jammer rides on each player's belt and comes up into your view when you use it, a ring of light sweeps out to its range with a burst of radio static on both screens, and a jammed grid throws sparks while its beams sputter. A use that jams nothing just clicks.
 - **Artifact:** pick up, carry, drop, and deliver the book. Only one player can hold it at a time, and you can't carry the book and the heel at once.
 - **Guard AI:** patrols a waypoint loop, detects players with a flashlight vision cone blocked by walls, chases (through doorways into other rooms), investigates noises and last-seen positions, then returns to patrol. Catching a player ends the heist. A run has up to four guards across its rooms.
 - **Throwable and noise:** the Heel of Achilles can be thrown. Its impact makes a noise that sends any guard within 8 m to investigate. Heels and coins wait on the plaza and in every guarded room.
@@ -163,7 +164,7 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 - Pigeons as an alarm: a scared flock calls the guard (scripts/pigeon_noise.gd). The host runs the flock and tells the client, so both players see the same birds (scripts/exterior_pigeons.gd)
 - Passing for a statue on the plinths outside (scripts/player.gd, scripts/guard.gd)
 - Fountain coins as a second, quieter throwable (scenes/coin.tscn, scripts/throwable.gd)
-- Signal Jammer gadget: each player has 2 charges per heist. The host checks the charges and the range (6 m), spends a charge only when something is jammed, and disables every jammable object in range for 6 seconds (scripts/gadget_jammer.gd, scripts/gadget_hud.gd). The host tells every peer when a charge is spent and what it jammed, and each peer plays the pulse and the jammed look from that (scripts/jam_pulse.gd, scripts/signal_jammer_model.gd, show_jammed in scripts/laser_grid.gd)
+- Signal Jammer gadget: one jammer per heist, a thing in the museum that either player can pick up and put down for the other (scripts/jammer_pickup.gd). It has 2 charges for the whole heist; the host decides who holds it and spends its charges. The host checks the charges and the range (6 m), spends a charge only when something is jammed, and disables every jammable object in range for 6 seconds (scripts/gadget_jammer.gd, scripts/gadget_hud.gd). The host tells every peer when a charge is spent and what it jammed, and each peer plays the pulse and the jammed look from that (scripts/jam_pulse.gd, scripts/signal_jammer_model.gd, show_jammed in scripts/laser_grid.gd)
 - Laser grid: walking through an active grid sets off an alarm, a loud noise (20 m) that sends guards to look, repeated every 1.5 s while someone stays in the beams. It is on while powered and not jammed; standing in it when it comes back on trips it at once (scripts/laser_grid.gd)
 - Laser Corridor room rule: a switch on each side of the grid drops it while anyone stands on it, so the players hand off (one holds the near switch while the other crosses, then the far switch brings the first one over), or spend a jammer charge to cross together. Once the artifact is taken, the grid stays off for the way back. The switches are floor pads, so standing on one doesn't pass you off as a statue the way the plinths do (scripts/laser_corridor.gd, scenes/rooms/laser_corridor_room.tscn)
 - Weather per heist, rolled by the host and sent to the client (scripts/exterior_weather.gd)

@@ -1,0 +1,35 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/jammer_pickup.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://scenes/signal_jammer_model.tscn" id="2_model"]
+
+[sub_resource type="BoxShape3D" id="Shape_pickup"]
+size = Vector3(0.16, 0.2, 0.12)
+
+[sub_resource type="SceneReplicationConfig" id="Sync_pickup"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath(".:holder_id")
+properties/2/spawn = true
+properties/2/replication_mode = 2
+properties/3/path = NodePath(".:charges")
+properties/3/spawn = true
+properties/3/replication_mode = 2
+
+[node name="JammerPickup" type="RigidBody3D"]
+editor_description = "The Signal Jammer lying in the museum (one per heist, on the lobby desk). The collision is a little bigger than the jammer, so it's easy to aim the interact ray at."
+mass = 0.4
+continuous_cd = true
+script = ExtResource("1_script")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("Shape_pickup")
+
+[node name="Model" parent="." instance=ExtResource("2_model")]
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("Sync_pickup")
