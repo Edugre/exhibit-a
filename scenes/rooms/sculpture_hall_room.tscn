@@ -30,6 +30,9 @@
 [ext_resource type="PackedScene" path="res://scenes/props/statue_bust_homer.tscn" id="p31_homer"]
 [ext_resource type="PackedScene" path="res://scenes/props/plinth_away_for_cleaning.tscn" id="p31_cleaning"]
 [ext_resource type="PackedScene" path="res://scenes/props/icarus_wings.tscn" id="p31_wings"]
+[ext_resource type="PackedScene" path="res://scenes/props/exit_sign.tscn" id="p15_exit_sign"]
+[ext_resource type="PackedScene" path="res://scenes/props/pendant_lamp.tscn" id="p15_pendant_lamp"]
+[ext_resource type="PackedScene" path="res://scenes/props/wall_vent.tscn" id="p15_wall_vent"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_room"]
 geometry_parsed_geometry_type = 1
@@ -296,6 +299,24 @@ editor_description = "Asset P3.1: Icarus's wings on three wires, flying towards 
 
 [node name="IcarusWings" parent="Hanging" instance=ExtResource("p31_wings")]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 3.2, -5.4)
+
+[node name="Fixtures" type="Node3D" parent="."]
+editor_description = "Asset P1.5: lamps over the room lights (the middle one clear of Icarus's wings), the EXIT sign by the way back out, and a vent over the west crate stack. Art only, outside the navigation region."
+
+[node name="PendantSouth" parent="Fixtures" instance=ExtResource("p15_pendant_lamp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 3.72, -2.8)
+
+[node name="PendantMiddle" parent="Fixtures" instance=ExtResource("p15_pendant_lamp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 3.72, -6)
+
+[node name="PendantNorth" parent="Fixtures" instance=ExtResource("p15_pendant_lamp")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, -0, 0, 1, 0, 3.72, -9.2)
+
+[node name="ExitSign" parent="Fixtures" instance=ExtResource("p15_exit_sign")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, -0, 0, -1, 2.4, 2.95, -0.5)
+
+[node name="Vent" parent="Fixtures" instance=ExtResource("p15_wall_vent")]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -5.5, 2.75, -5.4)
 
 [node name="Sounds" type="Node3D" parent="."]
 editor_description = "Asset P4: this room's background sound (RoomTone nodes). Cosmetic and local; nothing is synced."
