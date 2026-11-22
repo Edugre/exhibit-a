@@ -16,20 +16,30 @@ Exhibit A is a two-player online co-op heist game in the “friendslop” style 
 
 Getting in takes teamwork. Players solve puzzles that need both of them at once, like holding two pressure plates down together to open the vault. Security guards and the museum’s librarian patrol the halls with flashlights, and getting caught ends the heist. Every noise draws their attention, which cuts both ways: a careless player gives the team away, but a well-thrown object can lure a guard out of the way.
 
-Once they have an artifact, players must carry it out and load it into the getaway van before time runs out. The full game will feature hand-designed rooms full of puzzles and secrets, arranged in a new order on every run, along with gadgets that open up new ways to sneak, distract, and escape.
+Once they have an artifact, players must carry it out and load it into the getaway van before time runs out. The museum is built from hand-designed rooms, each with its own puzzle or guards, and the host arranges them in a new order on every run. A Signal Jammer gadget opens up another way past the museum's security.
 
 ## Objective
 Steal **The Last Book of Alexandria** and get it into the Trojan Van before the museum opens.
 
-1. Stand on the two empty statue plates **at the same time** (one player each) to swing open the portrait door to the vault.
-82. Pick up the book and carry it out of the museum.
-3. Step onto the painted drop zone next to the van while carrying it.
+1. Walk in through the front doors and the lobby, then through **two or three rooms picked and shuffled for this run** (see below).
+2. In the gallery at the back, stand on the two empty statue plates **at the same time** (one player each) to swing open the portrait door to the vault.
+3. Pick up the book and carry it all the way back out of the museum. Puzzle doors and laser grids stay open for the way back.
+4. Step onto the painted drop zone next to the van while carrying it.
 
-You have **3 minutes, plus 30 seconds for every room between the lobby and the vault** (4 or 4½ minutes in a full run). The librarian patrols the gallery with a flashlight: if she spots you, she gives chase, and if she catches either of you, the heist fails. Throw the Heel of Achilles or a coin to make a noise and lure her away; you'll find them on the plaza and in the rooms that have guards.
+The rooms between the lobby and the gallery come from this pool:
+
+| Room | What stands in your way |
+|---|---|
+| Sculpture Hall | A guard on a long patrol. Crates and draped statues give cover, and there's a Heel to throw. |
+| Twin Archives | The exit only opens if both players press their plates **within 2 seconds of each other**, from alcoves where they can't see each other. A lamp over the exit shows each press. |
+| Laser Corridor | A laser grid that sets off the alarm. Hold the switch on one side while your partner crosses, then swap, or spend a jammer charge to cross together. There's also a guard. |
+| Security Office | Two guards whose patrols cross, with a Heel and a coin to split them up. |
+
+You have **3 minutes, plus 30 seconds for every room between the lobby and the gallery** (4 or 4½ minutes). Librarians patrol with flashlights: if one spots you, she gives chase, and if she catches either of you, the heist fails. Throw the Heel of Achilles or a coin to make a noise and lure her away; you'll find them on the plaza and in the rooms that have guards.
 
 - **Win:** the book is delivered to the drop zone.
 - **Lose:** the guard catches a player, or the timer runs out.
-- After either outcome, either player can press **Restart** to play again together.
+- After either outcome, either player can press **Restart** to play again together. A restart builds a new run with a new room order.
 
 ## Controls
 | Action | Key |
@@ -45,12 +55,15 @@ You have **3 minutes, plus 30 seconds for every room between the lobby and the v
 
 ## Implemented features
 - **Online co-op for two players:** one player hosts, the other joins by IP. The host runs all game rules and both screens stay in sync.
-- **One museum gallery and a vault inside a full museum exterior.** The heist starts on the plaza at night in front of a Fifth Avenue-style museum front, built at true scale from OpenStreetMap data, with the getaway van parked at the curb. The block is walkable all the way round, with traffic, pigeons, fountains and sound.
-- **Cooperative puzzle:** two pressure plinths that must be held at the same time open the vault door. Each plinth lights a picture lamp on the door while it is pressed.
+- **A museum of rooms behind a full museum exterior.** The heist starts on the plaza at night in front of a Fifth Avenue-style museum front, built at true scale from OpenStreetMap data, with the getaway van parked at the curb. The block is walkable all the way round, with traffic, pigeons, fountains and sound. Inside, a lobby leads through the run's rooms to the gallery and vault at the back.
+- **Procedural room ordering (HW #4):** every run, the host shuffles the four pool rooms with a seeded shuffle and keeps two or three that fit the building, in that order. The client gets the host's rooms, including after a restart or when joining late.
+- **Four pool rooms (HW #4):** Sculpture Hall, Twin Archives, Laser Corridor and Security Office (see the table above). Each has its own props and lighting, and most have a brass plaque over the doorway naming the room.
+- **Cooperative puzzles:** two pressure plinths that must be held at the same time open the vault door, and each plinth lights a picture lamp on the door while it is pressed. Twin Archives asks for two presses within 2 seconds from rooms apart. The Laser Corridor asks the players to hand the switches off between them.
+- **Signal Jammer gadget (HW #4):** each player has two charges per heist (Q). A charge switches off every jammable thing within 6 m for 6 seconds, which right now means laser grids. The HUD shows the charges left.
 - **Artifact:** pick up, carry, drop, and deliver the book. Only one player can hold it at a time, and you can't carry the book and the heel at once.
-- **Guard AI:** patrols a waypoint loop, detects players with a flashlight vision cone blocked by walls, chases, investigates noises and last-seen positions, then returns to patrol. Catching a player ends the heist.
-- **Throwable and noise:** the Heel of Achilles can be thrown. Its impact makes a noise that sends the guard within 8 m to investigate.
-- **Heist rules:** 3-minute countdown, win/lose outcomes, and a synchronized restart that resets the players, guard, door, plinths, book, and heel.
+- **Guard AI:** patrols a waypoint loop, detects players with a flashlight vision cone blocked by walls, chases (through doorways into other rooms), investigates noises and last-seen positions, then returns to patrol. Catching a player ends the heist. A run has up to four guards across its rooms.
+- **Throwable and noise:** the Heel of Achilles can be thrown. Its impact makes a noise that sends any guard within 8 m to investigate. Heels and coins wait on the plaza and in every guarded room.
+- **Heist rules:** a countdown of 3 minutes plus 30 seconds per pool room, win/lose outcomes, and a synchronized restart that builds a new run and resets the players, book, throwables and jammer charges.
 - **HUD:** time remaining, artifact status (locked / vault open / carried by you or your partner / dropped / in the van), guard alert indicator, waiting-for-partner message, and the end screen.
 - **Getaway cutscene** on a win: the van gallops off down the avenue before the end screen appears.
 - **More ways to sneak and distract:** fountain coins are a second, quieter throwable. Standing still on an empty plinth outside passes you off as a statue, unless the guard was already watching you. A flock of pigeons scared into the air brings her over.
@@ -63,7 +76,7 @@ You have **3 minutes, plus 30 seconds for every room between the lobby and the v
 ## Technology stack & dependencies
 - **Godot 4.7.2 stable**, Standard edition, scripted entirely in **GDScript**.
 - **Networking:** Godot's high-level multiplayer API over ENet (UDP port 7777).
-- **Assets:** Blender (all models made for this project, exported as glTF `.glb`).
+- **Assets:** Blender (all models made for this project, exported as glTF `.glb` and `.gltf`). Most HW #4 and exterior assets are built by our own Python scripts that run Blender in the background, with textures and sounds drawn by Python (numpy, scipy, Pillow). These are asset tools only, not part of the game.
 - **Version control:** Git and GitHub.
 - No addons, Asset Library plugins, or third-party packages.
 
@@ -73,6 +86,9 @@ You have **3 minutes, plus 30 seconds for every room between the lobby and the v
 3. **Two players on one machine:** Debug → Customize Run Instances → Enable Multiple Instances, set to 2, then press F5. Click **Host** in one window and **Join** in the other (leave the address blank for `127.0.0.1`).
 4. **Two machines on the same network:** each player runs the project. One clicks **Host**; the other types the host's local IP address and clicks **Join**. The host's firewall must allow UDP port 7777.
 5. The heist starts automatically once both players are connected.
+
+### Trying a specific run
+The host's Output panel prints each run as `Museum run N (seed S): room, room, …`. On `World/Museum` in `scenes/main.tscn`, set **Debug Seed** to replay a run, or **Debug Order** to pick the rooms yourself (0 Sculpture Hall, 1 Twin Archives, 2 Laser Corridor, 3 Security Office).
 
 ### Graphics levels
 The game picks Low, Medium or High for each computer and steps down by itself if it runs slowly. The Graphics option in the menu overrides that. Low is built for weak laptops: it draws at a lower resolution and scales up, and the floodlights and their shadows come from a baked texture instead of real lights.
@@ -86,6 +102,9 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 | High-level multiplayer: ENet, RPCs, MultiplayerSpawner/Synchronizer | | Artifact ownership, carrying, dropping, delivery (`artifact.gd`, `drop_zone.gd`) |
 | glTF import, skeletons, AnimationPlayer | | Noise and distraction rules (`noise_system.gd`, `throwable.gd`) |
 | UI controls (Label, Button, containers) | | Host authority and networking flow (`network_manager.gd`, `main.gd`, `player.gd`), HUD (`hud.gd`) |
+| RandomNumberGenerator (a seeded random source) | | Procedural room ordering: our own Fisher–Yates and the fit-the-building rule (`room_order.gd`), and building the museum from rooms (`museum_layout.gd`, `room.gd`) |
+| CSG geometry, runtime navmesh baking, NavigationLink3D | | Room puzzle rules: the two-press timing gate and exit gates that open for the way back (`twin_plate_gate.gd`, `room_gate.gd`) |
+| Area3D overlap detection | | Gadget and laser rules: jammer charges and range, the laser alarm, and the switch hand-off (`gadget_jammer.gd`, `laser_grid.gd`, `laser_corridor.gd`) |
 
 ### Godot-provided systems
    - High-level multiplayer (ENetMultiplayerPeer, RPCs)
@@ -119,9 +138,10 @@ The game picks Low, Medium or High for each computer and steps down by itself if
    - ConfigFile (remembering the graphics level picked in the menu)
    - Physics interpolation fraction (drawing the camera and models between physics steps, so movement is smooth on fast screens)
    - ReflectionProbe with custom ambient light (the rooms' dim indoor air at night)
-   - NavigationServer3D baking from collision shapes (the guard's map, out through the doors to the curb)
+   - NavigationServer3D baking from collision shapes (the guard's map of the steps and plaza out to the curb, and each room's map when it is built)
    - NavigationRegion3D baked at runtime per room, and NavigationLink3D through each doorway (HW #4 rooms: guards can follow you from room to room)
    - RandomNumberGenerator with a seed (the random source for the room shuffle, so a run can be replayed from its seed)
+   - Spatial shaders (the interior's world-space parquet, marble, plaster and carved cornice, so they work on plain CSG boxes)
 
 ### Systems we wrote
 - Heist timer, outcome and synchronized restart. The timer is 180 s plus 30 s for each pool room in the run, set by the host when the heist starts (scripts/game_state.gd)
@@ -149,11 +169,12 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 - Cosmetic exterior life: flickering lanterns, front doors that open for anyone near them, traffic that obeys the signal and honks at people in the road, and the opening shot (scripts/exterior_flicker.gd, scripts/exterior_doors.gd, scripts/exterior_traffic.gd, scripts/menu_camera.gd). Each peer runs its own, and none of it touches game state
 
 ## Known limitations
-- The shuffle can only pick from pool rooms that are finished, so until all four are in, runs are shorter and repeat more.
+- The Laser Corridor is 14 m deep, 2 m more than the other pool rooms, so any run that picks it only has room for one other pool room. Half of all runs have two pool rooms instead of three.
 - Sneaking only slows the player down. It doesn't yet affect how quickly the guard notices you or make footsteps quieter.
 - Exactly two players. There is no lobby or matchmaking: the client must type the host's IP address, and playing across different networks needs port 7777 forwarded on the host's router.
 - If the host quits, the client is sent back to the main menu; the session can't continue without the host.
-- There are two throwables, the heel and the fountain coins. The Laser Corridor is the only room with something to jam so far. Its switches are the plinth-style pressure plates, and its displays are the shared crates and cases until its own props are made.
+- There are two throwables, the heel and the fountain coins. Laser grids are the only thing the Signal Jammer can switch off so far. The Laser Corridor's switches are the plinth-style pressure plates, and its displays are the shared crates and cases until its own props are made.
+- The lobby is still a plain greybox room, the Laser Corridor and the vault have no doorway plaque yet, and the rooms have no sound of their own.
 - The whole game takes place at night.
 
 ## Asset credits
@@ -183,6 +204,9 @@ Eduardo Goncalvez (PID: 6526311)
 - Greybox level: Designed the layout of the museum level (`museum.tscn`).
 - Game state: Worked on `game_state.gd`, which holds the timer, outcome, and synced restart, and connected it to `hud.gd` and `hud.tscn` to show it on screen.
 - Guard AI: Implemented the guard AI, which covers patrol, vision cone, chase, and catching a player (`guard.gd`, `guard.tscn`).
+- HW #4 planning: Wrote the HW #4 rooms, team and asset plans that split the work into three tracks (`docs/`).
+- HW #4 rooms and ordering: The room contract and template, splitting the museum into rooms, spawning them from the host and rebuilding them on restart, the room ordering rule, and the timer that scales with the run (`room.gd`, `room_gate.gd`, `room_catalog.gd`, `museum_layout.gd`, `room_order.gd`, `game_state.gd`, `entrance_room.tscn`, `vault_room.tscn`).
+- HW #4 throwables and props: Placed the throwables in the rooms (B5), and made the rope barriers, bench and signs (`assets/interior/barrier_bench/`, `assets/interior/signs/`).
 
 Alex Waisman (PID: 6529880)
 - Assets: Made all the 3D models and their textures in Blender, with help from Claude through an MCP connection: the player and guard (`assets/characters/`), the book artifact (`assets/artifact/`), the portrait door (`assets/door/`), the statue plinths (`assets/plates/`), the Heel of Achilles throwable (`assets/throwable/`), and the Trojan Van and drop zone (`assets/getaway/`).
@@ -201,7 +225,7 @@ Jonathan Serrano (6524435)
 
 ## GenAI statement
 
-Tools used: CXlaude Code and Blender MCP Connection.
+Tools used: Claude Code and Blender MCP Connection.
 
 Representative prompts:
 - "Review my noise and guard logic and identify edge cases I should test."
