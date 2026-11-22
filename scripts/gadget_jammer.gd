@@ -1,21 +1,22 @@
 class_name GadgetJammer
 extends Node
-## Signal Jammer, the HW #4 gadget. A child of each player.
-## The owner presses use_gadget and asks the host. The host checks the phase, the charges and the range,
-## spends a charge, and jams every "jammable" object close enough. Charges live on the host
-## and are sent to every peer; they reset at the start of every heist.
+## Signal Jammer, the HW #4 gadget: one player's side of it. A child of each player.
+## There's one jammer per heist, a JammerPickup lying in the museum (on the lobby's ticket desk). Whoever
+## picks it up can use it (use_gadget) and put it down for their partner (throw, with nothing else in hand).
+## The owner asks the host; the host checks the phase, who's holding it, its charges and the range, spends a
+## charge, and jams every "jammable" object close enough. The charges belong to the jammer, not the player.
 ##
 ## Jammable targets: in group "jammable", with a host-only method jam(seconds: float) -> void.
 ## They can also have show_jammed(seconds: float) -> void, which every peer calls for the look.
 ##
-## The look (asset item P2.4): the jammer rides on every player's belt, comes up into the owner's view
+## The look (asset item P2.4): the jammer rides on its holder's belt, comes up into the holder's view
 ## when they press the key, and a spent charge plays a pulse on every screen.
 
-const MAX_CHARGES := 2
 const JAM_SECONDS := 6.0
 const JAM_RANGE := 6.0  # metres from the player to the target
 const NO_CHARGES_TEXT := "Jammer empty"
 const NO_TARGET_TEXT := "Nothing to jam in range"
+const NO_JAMMER_TEXT := "You don't have the jammer"
 
 const MODEL := preload("res://scenes/signal_jammer_model.tscn")
 const PULSE := preload("res://scenes/jam_pulse.tscn")
@@ -28,9 +29,6 @@ var _view_down := Transform3D(Basis.from_euler(Vector3(-0.6, 0.35, 0.2)), Vector
 var _view_up := Transform3D(Basis.from_euler(Vector3(0.1, 0.35, 0.12)), Vector3(0.2, -0.2, -0.38))
 const VIEW_HOLD := 0.7  # seconds it stays up
 
-## How many charges this player has left. Set only by the host, shown by every peer.
-var charges: int = MAX_CHARGES
-
 @onready var player: CharacterBody3D = get_parent()
 @onready var hud: GadgetHud = $GadgetHud
 
@@ -41,17 +39,17 @@ var _dud_player: AudioStreamPlayer
 
 
 func _enter_tree() -> void:
-	# The player hands its authority to all its children. The charges belong to the host, so take it back.
+	# The player hands its authority to all its children. The jammer's rules belong to the host, so take it back.
 	set_multiplayer_authority(1)
 
 
 func _ready() -> void:
 	hud.visible = player.is_multiplayer_authority()
-	hud.show_charges(charges, MAX_CHARGES)
-	GameState.heist_reset.connect(_on_heist_reset)  # only fires on the host
+	hud.charges_label.visible = false
 	# The player's own nodes aren't ready yet (children are ready first), so find them by path.
 	_belt_model = MODEL.instantiate()
 	_belt_model.transform = BELT
+	_belt_model.visible = false
 	player.get_node(^"Model").add_child(_belt_model)  # the owner's model is hidden, and this with it
 	if player.is_multiplayer_authority():
 		_view_model = MODEL.instantiate()
@@ -63,12 +61,50 @@ func _ready() -> void:
 		add_child(_dud_player)
 
 
+## Every peer works out from the jammer's synced holder whether it's on this player's belt.
+func _process(_delta: float) -> void:
+	var pickup := jammer()
+	var mine := holding()
+	_belt_model.visible = mine
+	if player.is_multiplayer_authority():
+		hud.charges_label.visible = mine
+		if mine:
+			hud.charges_label.text = "Jammer [Q]: %d / %d   ·   put down [LMB]" % [pickup.charges, JammerPickup.MAX_CHARGES]
+
+
 func _unhandled_input(event: InputEvent) -> void:
-	if not player.is_multiplayer_authority():
+	if not player.is_multiplayer_authority() or Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
 		return
-	if event.is_action_pressed("use_gadget") and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
-		_raise_into_view()  # straight away, so the key feels answered before the host replies
+	if event.is_action_pressed("use_gadget"):
+		if holding():
+			_raise_into_view()  # straight away, so the key feels answered before the host replies
 		_request_use.rpc_id(1)
+	elif event.is_action_pressed("throw") and holding() and not _hands_full():
+		_request_drop.rpc_id(1)  # the throw button puts the jammer down when there's nothing to throw
+
+
+## The jammer for this run, wherever it is. null between a restart's free and spawn.
+func jammer() -> JammerPickup:
+	for pickup: JammerPickup in get_tree().get_nodes_in_group("jammer_pickup"):
+		if not pickup.is_queued_for_deletion():
+			return pickup
+	return null
+
+
+func holding() -> bool:
+	var pickup := jammer()
+	return pickup != null and pickup.is_held_by(player.name.to_int())
+
+
+## Holding the book or something to throw: then the throw button is theirs, not the jammer's.
+func _hands_full() -> bool:
+	var me := player.name.to_int()
+	if GameState.artifact_state == GameState.ArtifactState.CARRIED and GameState.artifact_holder == me:
+		return true
+	for throwable: Throwable in get_tree().get_nodes_in_group("throwables"):
+		if throwable.holder_id == me:
+			return true
+	return false
 
 
 # --- Host only ---------------------------------------------------------------
@@ -79,11 +115,16 @@ func _request_use() -> void:
 		return
 	var sender_id := multiplayer.get_remote_sender_id()
 	if sender_id != player.name.to_int():
-		return  # only the owner may use their own jammer
+		return  # each player asks through their own GadgetJammer
 	if GameState.phase != GameState.Phase.PLAYING:
 		return
 
-	if charges <= 0:
+	var pickup := jammer()
+	if pickup == null or not pickup.is_held_by(sender_id):
+		_show_message.rpc_id(sender_id, NO_JAMMER_TEXT)
+		_play_dud.rpc_id(sender_id)
+		return
+	if pickup.charges <= 0:
 		_show_message.rpc_id(sender_id, NO_CHARGES_TEXT)
 		_play_dud.rpc_id(sender_id)
 		return
@@ -99,9 +140,21 @@ func _request_use() -> void:
 	for target: Node in targets:
 		target.jam(JAM_SECONDS)
 		jammed.append(target.get_path())
-	_set_charges.rpc(charges - 1)
+	pickup.spend()
 	_play_pulse.rpc(player.global_position, jammed)
 	_show_message.rpc_id(sender_id, "Jammed %d for %d s" % [targets.size(), int(JAM_SECONDS)])
+
+
+@rpc("any_peer", "call_local", "reliable")
+func _request_drop() -> void:
+	if not multiplayer.is_server():
+		return
+	var sender_id := multiplayer.get_remote_sender_id()
+	if sender_id != player.name.to_int() or _hands_full():
+		return
+	var pickup := jammer()
+	if pickup and pickup.is_held_by(sender_id):
+		pickup.drop_from(player)
 
 
 func _targets_in_range() -> Array[Node]:
@@ -114,17 +167,7 @@ func _targets_in_range() -> Array[Node]:
 	return found
 
 
-func _on_heist_reset(_respawn_players: bool) -> void:
-	_set_charges.rpc(MAX_CHARGES)
-
-
 # --- Replication -------------------------------------------------------------
-
-@rpc("authority", "call_local", "reliable")
-func _set_charges(value: int) -> void:
-	charges = clampi(value, 0, MAX_CHARGES)
-	hud.show_charges(charges, MAX_CHARGES)
-
 
 @rpc("authority", "call_local", "reliable")
 func _show_message(text: String) -> void:
@@ -147,12 +190,12 @@ func _play_pulse(at: Vector3, jammed: Array) -> void:  # untyped: typed arrays d
 			target.show_jammed(JAM_SECONDS)
 
 
-## Owner only: the jammer did nothing (nothing in range, or no charge left).
+## Owner only: the jammer did nothing (not holding it, nothing in range, or no charge left).
 @rpc("authority", "call_local", "reliable")
 func _play_dud() -> void:
 	if _dud_player:
 		_dud_player.play()
-	if _view_model:
+	if _view_model and holding():
 		_view_model.blink_twice()
 
 

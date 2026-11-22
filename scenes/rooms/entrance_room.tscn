@@ -17,6 +17,7 @@
 [ext_resource type="Script" path="res://scripts/room_tone.gd" id="p4_tone"]
 [ext_resource type="AudioStream" path="res://assets/interior/sounds/amb_hvac.wav" id="p4_amb_hvac"]
 [ext_resource type="AudioStream" path="res://assets/interior/sounds/amb_clock.wav" id="p4_amb_clock"]
+[ext_resource type="PackedScene" path="res://scenes/jammer_pickup.tscn" id="g1_jammer"]
 
 [sub_resource type="NavigationMesh" id="NavigationMesh_room"]
 geometry_parsed_geometry_type = 1
@@ -88,6 +89,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6, 0, -1.3)
 
 [node name="DonationBox" parent="NavigationRegion3D/Props" instance=ExtResource("12_donation")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4, 0, -4.7)
+
+[node name="Jammer" parent="." instance=ExtResource("g1_jammer")]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -4.1, 1.12, -4)
 
 [node name="Trim" type="Node3D" parent="."]
 
