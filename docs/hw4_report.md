@@ -1,12 +1,11 @@
 # Exhibit A: HW #4 design and playtest report
 
 **Team:** Eduardo Goncalvez (6526311), Alex Waisman (6529880), Jonathan Serrano (6524435)
-**Build tested:** `[TEAM: commit hash / tag hw4-r1]` (Round 1), `[TEAM: hw4-r2]` (Round 2). Godot 4.7.2 stable, Windows 11.
+**Build tested:** Round 1: the 2026-11-20 local build (no hotbar yet). Round 2: the 2026-11-22 build. Godot 4.7.2 stable, Windows 11.
 **Segment:** one full heist on room seed 42: plaza → Lobby → Hall of Arms (Laser Corridor) → Sculpture Hall → Security Office → Gallery + Vault → back out to the van.
 
-> **Draft status.** Sections 1–4 and 9 are drafted from the build and need the team to confirm or edit (marked
-> **[TEAM]**). Sections 5–8 must be filled from the real sessions in `hw4_playtest_log.csv`. Don't fill them
-> with anything that didn't happen.
+> **Draft status.** Sections 5–8 are filled from `hw4_playtest_log.csv`. Remaining **[TEAM]** notes must be
+> confirmed or removed before submitting.
 
 ---
 
@@ -72,7 +71,7 @@ the risky actions (a loud case, a mistimed hand-off at the grid) really are.
 instead of two: every room behind the lobby watched. Bells would come far more often, the librarian would rarely
 be on her quiet route, and breaking a case would almost always have a staff member within 10 m. Pocketing loot
 would become a much worse bet, and the timer (180 s + 30 s per pool room) would get tight. Two staff leave some
-quiet rooms where the crowbar is tempting. **[TEAM: if a playtest shows this, cite it.]**
+quiet rooms where the crowbar is tempting. The playtests point the same way: on the Round 1 build, before the budget, P1 said "there were too many guards" and S1 was caught 3 times; on the budgeted build P1 and P2 were caught once (section 8; familiarity also played a part).
 
 **Timer × room order:** the seed decides the rooms, and the timer grows by 30 s per pool room, so a three-room
 run gets 4:30. Carrying the book means walking the whole route twice, so time pressure peaks on the way out.
@@ -87,7 +86,7 @@ actionable.
 
 | Feedback item | Change or justified deferral | File/system or build evidence | Verification / next step |
 |---|---|---|---|
-| HW #3: no corrections requested; the core co-op loop (plates, artifact, extraction, guard, throwable noise, HUD, restart) works. | Kept the loop and built HW #4 on it. The vault puzzle, drop zone and restart rules are unchanged. The artifact rule changed only so the book can be picked up with hotbar items stowed. The single guard became the librarian plus night staff. | `vault_puzzle.gd`, `artifact.gd`, `drop_zone.gd`, `game_state.gd`; `boss.gd`, `staff.gd` | **[TEAM: confirm from Round 1]** every session plays the full loop: plates → book → van → end card → Restart. |
+| HW #3: no corrections requested; the core co-op loop (plates, artifact, extraction, guard, throwable noise, HUD, restart) works. | Kept the loop and built HW #4 on it. The vault puzzle, drop zone and restart rules are unchanged. The artifact rule changed only so the book can be picked up with hotbar items stowed. The single guard became the librarian plus night staff. | `vault_puzzle.gd`, `artifact.gd`, `drop_zone.gd`, `game_state.gd`; `boss.gd`, `staff.gd` | Confirmed in the playtests: all 3 sessions played the full loop (plates → book → van → end card), and every pair used Restart after a catch before winning (`hw4_playtest_log.csv`). |
 | HW #3: the README separates engine services from team-written systems. | Every HW #4 system was added to both lists as it was built, including the new engine features we used. | README: "Godot-provided systems" (e.g. Decal, SubViewport icons, render layers); "Systems we wrote" (room ordering, guard budget, hotbar, loot) | Checked in each pull request; reread before submission. |
 | HW #3: the README explains GenAI use and verification. | Rewrote the GenAI statement for HW #4, because Claude Code's role grew: it now says what it wrote and proposed, gives real prompts, and says how we checked it. | README: "GenAI statement" (PR #65) | **[TEAM]** each member confirms their own AI use and can explain the systems. |
 | Proposal feedback (HW #4 scope): add a small number of rooms. | Four pool rooms; each run uses three, between the lobby and the gallery/vault. | `scenes/rooms/` (Sculpture Hall, Twin Archives, Laser Corridor, Security Office); `room_catalog.gd` | Each room built and its navigation checked (every exit and guard waypoint reachable). |
@@ -97,41 +96,79 @@ actionable.
 
 ## 5. Test method
 
-- **Participants:** [TEAM] testers from outside the team, IDs P1–P[n]. Two players per session (the game is
-  two-player co-op); where only one outside tester was available, a team member partnered and was told to follow,
-  not lead (logged as assistance).
-- **Sessions:** [TEAM: dates]. Round 1: [n] sessions. Round 2: [n] sessions with returning tester(s) [IDs].
-- **Same for everyone:** build [hash], room seed 42, the starting instruction and controls card in
-  `hw4_playtest_kit.md`, the task (book to the van), and the limit (4:30 timer or one catch).
-- **Hint rule:** a hint only after 60 s stuck in one spot; exact words and time logged.
+- **Participants:** 3 testers from outside the team, P1–P3. The game is two-player co-op, so P1 and P2 played
+  together. P3 played with a team member (Eduardo) as partner. He was told to follow, not lead, and gave P3 no help.
+- **Sessions:** Round 1: S1 (P1 + P2, 2026-11-20) and S2 (P3 + Eduardo, 2026-11-21), both on the same 2026-11-20
+  local build, which had no hotbar yet (one held item at a time). Round 2: S3 (P1 + P2 returning, 2026-11-22) on
+  the revised 2026-11-22 build. We count sessions per tester because the game is two-player: 3 tester-sessions in
+  Round 1 and 2 in Round 2, 5 in total.
+- **Same for everyone:** room seed 42, the task (book to the van) and the limit (4:30 timer or one catch). If a
+  run ended in a catch, the pair restarted from the end card, and we logged every attempt.
+  **[TEAM: confirm every session heard the starting instruction in `hw4_playtest_kit.md` word for word.]**
+- **Hint rule:** a hint only when a pair was stuck. Each hint is counted in the log. S1's hint wording wasn't
+  written down; we know only that it was about the jammer.
+- **Measures:** attempts and catches, time left on the winning attempt, hints, the laser-grid method (and
+  alarms, and seconds where we timed it), crowbar taken and cases broken, plus the same debrief questions after
+  each session. In Round 2 we added one question: "Did you notice the text when holding an item? Did it help?"
+- **Raw data:** every session row, with observations and debrief answers, is in `hw4_playtest_log.csv`. Debrief
+  answers marked "facilitator summary" are our summary of what the pair said, not their exact words.
 
-## 6. Round 1 results **[TEAM: from the log, counts only; no claims beyond the sample]**
+## 6. Round 1 results
 
 | Tester / round / build | Task and limit | Outcome and measures | Observation / player response | Assistance |
 |---|---|---|---|---|
-| P1 / R1 / | | | | |
-| P2 / R1 / | | | | |
-| P3 / R1 / | | | | |
+| P1 + P2 / R1 (S1) / 11-20 build | Book to the van, seed 42; 4:30 or one catch | Won on attempt 4 (caught 3 times); 2:34 left. Grid: switches, ~10 s, 2 alarms. Crowbar picked up, 0 cases broken. | Couldn't find the jammer. Didn't know the crowbar breaks cases. Solved the two vault plates themselves. Searched every room for items. P1: "there were too many guards." Debrief: knew to steal the book but weren't sure where it was; "the librarian saw them and captured them." | 1 hint, about the jammer (they never used it) |
+| P3 / R1 (S2) / 11-20 build | Same | Won on attempt 2 (caught once); 1:51 left. Attempt 1: walked through the beams, alarm, caught. Attempt 2: jammer. Crowbar picked up, 2 cases broken. | Held Tab for the controls. Understood the crowbar's cost from the glass noise and "She's coming" text. Wished they could pick up everything. Wanted a volume slider; confused that the book and gadgets drop with different keys; suggested hold-to-throw strength. "I walked through the laser grid to see what it would happen and it alerted the librarian." | 1 hint, that the jammer works on the lasers (after the first catch). Partner (team member) gave no help. |
 
-**Q1:** [e.g. "x of y pairs got past the grid without a hint; median time z s; methods ..."]
-**Q2:** [e.g. "x of y took the crowbar; x broke a case; x said they expected the librarian"]
+**Q1 (laser grid):** 2 of 2 sessions got past the grid. 0 of 2 found or used the jammer without a hint. S1 used
+the switch hand-off (~10 s, 2 alarms). P3 walked into the beams on the first attempt, which caused the catch,
+then used the jammer after a hint.
+**Q2 (crowbar):** 2 of 2 sessions picked up the crowbar. 1 of 2 broke cases (P3, 2 cases) and understood the
+cost from the noise and the on-screen text. S1 never used it and said they didn't know what it was for.
+
+**Other problems seen in Round 1:** the librarian got stuck in the library puzzle and on frames while chasing;
+the staff animations broke when they saw a player; the player model sometimes glitched during the escape. The
+team also noted the chase has no music.
 
 ## 7. Revisions based on Round 1 (at least two distinct changes)
 
 | Observed problem (cite the session) | Hypothesis | Implemented change (file, build) | Retest result and limitation |
 |---|---|---|---|
-| | | | |
-| | | | |
+| S1: caught 3 times before winning; P1 said "there were too many guards." | With too many night staff, the bells pull the librarian to the players too often, so careful play still gets caught. | **Guard budget:** each run keeps one night staff per two rooms behind the lobby (`GuardBudget.ROOMS_PER_STAFF = 2`). `guard_budget.gd`, `museum_layout.gd`; commit `dc4d33c`, 2026-11-22 build. | S3 (P1 + P2): caught 1 time (was 3), won on attempt 2 (was 4); they said the number of guards felt better. Limitation: they already knew the route and the librarian from Round 1. |
+| S2: P3 wished they could pick up everything. The Round 1 build only let a player hold one item at a time. | Holding one item at a time made players drop or skip tools, so they couldn't plan which tools to bring. | **Four-slot hotbar** for the throwables and the jammer (keys 1–4 or the mouse wheel). `hotbar.gd`, `carryable.gd` and changes to `player.gd`; commit `99877fa`, 2026-11-22 build. | S3: they carried several items and planned who held what. They used the jammer at the grid (switches in S1). New bug: hotbar items stayed after a restart (seen by P2). Limitation: no Round 1 count of items carried to compare with. |
 
-*Changes made before Round 1 (the hotbar, the guard budget, loot, the sign and guard-collision fixes) were not
-driven by outside testers and are not counted here.*
+*Other changes in the 2026-11-22 build (loot, the sign and guard-collision fixes) weren't driven by the
+playtests and aren't counted here.* **[TEAM: if the on-screen text for held items was added after Round 1, list
+it here as a change too. If it was already in the Round 1 build, delete this note.]**
 
-## 8. Round 2 retest and limitations **[TEAM]**
+## 8. Round 2 retest and limitations
 
-- Returning tester(s): [IDs], same seed, task and measures.
-- Comparison: [measure in R1 → R2].
-- Limitations: returning testers already know the game; a small sample (n = [ ]); [team-member partner in some
-  sessions]; [anything else that happened].
+- **Returning testers:** P1 and P2 (S3, 2026-11-22). Same seed, task, limit and measures as Round 1, plus one
+  extra debrief question about the held-item text.
+
+| Measure (P1 + P2) | Round 1 (S1) | Round 2 (S3) |
+|---|---|---|
+| Attempts to win | 4 | 2 |
+| Times caught | 3 | 1 (by the librarian) |
+| Time left on the winning attempt | 2:34 | 2:25 |
+| Hints | 1 | 0 |
+| Laser grid | Switches | Jammer |
+| Cases broken | 0 (crowbar never used) | 3 |
+| Guards (their words) | "too many guards" (P1) | the number felt better |
+
+- **Interpretation:** fewer catches, fewer attempts and no hints fit the guard change. Planning who carried
+  what fits the hotbar. Time left fell by 9 s. They broke 3 cases this time and none before, which may explain
+  the extra time, but we didn't measure it. In S3 they said the held-item text helped them understand the crowbar
+  and jammer.
+- **Limitations:**
+  - P1 and P2 had already played 4 attempts in Round 1. They knew the goal, the route, the switches and the
+    librarian, so some or all of the improvement may be familiarity, not the changes.
+  - The sample is small: 3 testers, 1 returning pair.
+  - P3's partner was a team member.
+  - Both pairs restarted after catches, so the "one catch" limit wasn't applied strictly.
+  - S1's hint wording and some timings (grid seconds in S2 and S3, seconds to the librarian) weren't recorded.
+  - S1's and S3's debriefs were summarised for the pair, not recorded per person.
+  - No new tester played the revised build.
 
 ## 9. HW #5 plan (prioritized) **[TEAM: reorder after the playtests]**
 
