@@ -95,6 +95,20 @@ You have **3 minutes, plus 30 seconds for every room between the lobby and the g
 4. **Two machines on the same network:** each player runs the project. One clicks **Host**; the other types the host's local IP address and clicks **Join**. The host's firewall must allow UDP port 7777.
 5. The heist starts automatically once both players are connected.
 
+### The submission zip
+Canvas takes 50 MB at most, and the repository's assets are far bigger, so the zip is built by a script from the
+committed files: `python tools/make_submission.py` (needs Python 3 and Pillow) writes
+`CAP4052_HW4_Goncalvez_Waisman_Serrano.zip`, about 47 MB. Compared with the repository, it:
+- leaves out the asset source files (`.blend` files and large images under `source/` folders), but keeps the
+  Python scripts that generate the assets;
+- leaves out the textures Godot extracts from `.glb` models, which Godot writes again on the first import;
+- scales textures larger than 1024 px down to 1024 (UI images are untouched), and stores the opaque textures
+  inside `.glb` models as JPEG.
+
+So the game in the zip looks a little softer up close than the repository build. The full-resolution project is
+on GitHub: https://github.com/Edugre/exhibit-a. We checked that a fresh import of the zip gives no errors and
+that the game runs.
+
 ### Trying a specific run
 The host's Output panel prints each run as `Museum run N (seed S): room, room, …`. On `World/Museum` in `scenes/main.tscn`, set **Debug Seed** to replay a run, or **Debug Order** to pick the rooms yourself (0 Sculpture Hall, 1 Twin Archives, 2 Laser Corridor, 3 Security Office).
 
