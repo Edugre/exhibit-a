@@ -7,3 +7,6 @@ __pycache__/
 
 # Submission zips built by tools/make_submission.py
 CAP4052_*.zip
+
+# Exported builds (Godot export_presets.cfg writes to build/)
+build/

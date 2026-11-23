@@ -77,12 +77,23 @@ quiet rooms where the crowbar is tempting. **[TEAM: if a playtest shows this, ci
 **Timer × room order:** the seed decides the rooms, and the timer grows by 30 s per pool room, so a three-room
 run gets 4:30. Carrying the book means walking the whole route twice, so time pressure peaks on the way out.
 
-## 4. HW #3 feedback response **[TEAM: paste the HW #3 grading feedback (released Nov 12) and fill in]**
+## 4. HW #3 feedback response
+
+The HW #3 feedback (Kianoosh Boroojeni) praised the prototype's student-written co-op rules, synced heist state,
+puzzle, artifact and extraction, guard, throwable noise, HUD and restart, and the README's separation of engine
+services from team-written systems. **It asked for no corrections.** So there was nothing to fix; the table shows
+how we kept what it praised, and how we followed the HW #4 scope from the approved proposal's feedback, which was
+actionable.
 
 | Feedback item | Change or justified deferral | File/system or build evidence | Verification / next step |
 |---|---|---|---|
-| | | | |
-| | | | |
+| HW #3: no corrections requested; the core co-op loop (plates, artifact, extraction, guard, throwable noise, HUD, restart) works. | Kept the loop and built HW #4 on it. The vault puzzle, drop zone and restart rules are unchanged. The artifact rule changed only so the book can be picked up with hotbar items stowed. The single guard became the librarian plus night staff. | `vault_puzzle.gd`, `artifact.gd`, `drop_zone.gd`, `game_state.gd`; `boss.gd`, `staff.gd` | **[TEAM: confirm from Round 1]** every session plays the full loop: plates → book → van → end card → Restart. |
+| HW #3: the README separates engine services from team-written systems. | Every HW #4 system was added to both lists as it was built, including the new engine features we used. | README: "Godot-provided systems" (e.g. Decal, SubViewport icons, render layers); "Systems we wrote" (room ordering, guard budget, hotbar, loot) | Checked in each pull request; reread before submission. |
+| HW #3: the README explains GenAI use and verification. | Rewrote the GenAI statement for HW #4, because Claude Code's role grew: it now says what it wrote and proposed, gives real prompts, and says how we checked it. | README: "GenAI statement" (PR #65) | **[TEAM]** each member confirms their own AI use and can explain the systems. |
+| Proposal feedback (HW #4 scope): add a small number of rooms. | Four pool rooms; each run uses three, between the lobby and the gallery/vault. | `scenes/rooms/` (Sculpture Hall, Twin Archives, Laser Corridor, Security Office); `room_catalog.gd` | Each room built and its navigation checked (every exit and guard waypoint reachable). |
+| Proposal feedback: procedural room ordering. | Our own seeded Fisher–Yates plus a fit-the-building rule; the host builds the rooms and the client receives them. A room seed field replays a run. | `room_order.gd`, `museum_layout.gd`, menu seed field | Same seed → same rooms and night staff across runs and restarts (tested). The loot layout is drawn from the same seed. The playtests all use seed 42. |
+| Proposal feedback: one further gadget. | The Signal Jammer: two charges per heist, jams the laser grid. | `gadget_jammer.gd`, `jammer_pickup.gd`, `laser_grid.gd` | Host and client both see who holds it, in hand or on the belt (tested). |
+| Proposal feedback: grappling and a large museum stay stretch goals; HW #5 focuses on playtesting, clarity, balance and polish. | **Deferred** grappling: the time went to the required rooms, ordering and gadget. HW #4 already starts the playtesting. | — | Grappling is optional for HW #5; clarity and balance follow the playtest results (section 9). |
 
 ## 5. Test method
 
