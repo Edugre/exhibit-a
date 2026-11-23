@@ -276,8 +276,8 @@ Alex Waisman (PID: 6529880)
 - HW #4 rooms: Built Sculpture Hall, Twin Archives and the Security Office (`sculpture_hall_room.tscn`, `twin_archives_room.tscn`, `security_office_room.tscn`).
 - HW #4 Twin Archives puzzle: The two-plate timing gate and the lamps over its exit (`gates/twin_plate_gate.gd`, `gates/twin_plate_lamps.gd`), and a fix so plate presses from a room being rebuilt are ignored.
 - HW #4 librarian and night staff: Made the librarian the one boss, with night staff who see players and ring a bell to call her (`boss.gd`, `staff.gd`, `staff_model.gd`, `staff.tscn`, `staff_model.tscn`, the bell sound, `docs/boss_and_staff.md`).
-- HW #4 props and set dressing: The conservation crates and draped statue, the glass display cases, the archive bookcases, the archive set (card catalogue, reading tables, lamps, chairs, rolling ladder, scroll rack), the office set (security desk, monitor wall, lockers, key board, chair), the Sculpture Hall statues (Venus, the Discus Thrower, Homer and Icarus's wings), framed paintings with labels and picture lights, doorway arches, exit jambs and room plaques, and ceiling fixtures, EXIT signs and wall vents (`assets/interior/`, `scenes/props/`, and the build scripts in `assets/interior/source/tools/`).
-- HW #4 ambience: The CCTV screens and the failing lights in the Security Office and Twin Archives (`cctv_screen.gdshader`, `ambient/failing_light.gd`).
+- HW #4 props and set dressing: The conservation crates and draped statue, the glass display cases, the archive bookcases, the archive set (card catalogues, a reading table, lamps, chairs, a rolling ladder, scroll racks), the office set (security desk, monitor wall, lockers, key board, chair), the Sculpture Hall statues (Venus, the Discus Thrower, Homer, Icarus's wings and Galatea's empty plinth), framed paintings with labels and picture lights, doorway arches, exit jambs and room plaques, and ceiling fixtures, EXIT signs and wall vents (`assets/interior/`, `scenes/props/`, and the build scripts in `assets/interior/source/tools/`).
+- HW #4 ambience: The live CCTV screens and the failing tube light in the Security Office, and moths round the reading lamps in Twin Archives (`cctv_screen.gdshader`, `ambient/failing_light.gd`, `reading_lamp.tscn`).
 - HW #4 fixes: The alarm after a restart reads the new run's room lights (`exterior_alarm.gd`), and fixes from two code reviews (`guard.gd`, `player.gd`, `artifact.gd`, `vault_puzzle.gd`, `hud.gd`, `network_manager.gd` and others).
 
 
@@ -297,8 +297,8 @@ Jonathan Serrano (PID: 6524435)
 This is a Category 2 assignment, so here is what we used, what it did, and how we checked it, as accurately as we can.
 
 ### Tools
-- **Claude Code** (Anthropic's coding agent, with the Claude Opus model, in the Claude desktop app). Eduardo used it throughout HW #3 and HW #4. **[TEAM: Alex and Jonathan, add whether and how you used it for your HW #4 work.]**
-- **Claude through a Blender MCP connection.** Alex used it to make the 3D models.
+- **Claude Code** (Anthropic's coding agent, with the Claude Opus model, in the Claude desktop app). Eduardo used it throughout HW #3 and HW #4. Jonathan used it in HW #4 to help write the tests for the Signal Jammer and the Laser Corridor, to structure the playtest notes into the session log, and to draft the report's playtest sections and his README updates from those notes (see below).
+- **Claude through a Blender MCP connection.** Alex used it to make the 3D models and assets.
 
 ### What Claude Code did in HW #4 (Eduardo's share)
 Claude Code did much more than give suggestions. Working from Eduardo's prompts, it:
@@ -320,7 +320,9 @@ Claude Code did much more than give suggestions. Working from Eduardo's prompts,
 - **Direction:** we chose what to build, and in what order, and decided which proposals to keep. For example, we asked for a hotbar, fewer guards, a room seed field, and loot with a crowbar. We also rejected or redirected work, like how the crowbar is held and a separate PR for bug fixes.
 - **Bugs:** we found bugs by playing, such as the guards jamming and a sign showing the wrong print, and reported them.
 - **Playtesting:** we ran it with real people outside the team. Every tester, observation, measure and debrief answer in the report comes from those sessions. AI was not used to invent or edit any of it.
-- **Other work:** Alex's and Jonathan's HW #3 work is described under Contributions. **[TEAM: confirm and add any AI use for your parts.]**
+- **Other work:** Alex's and Jonathan's HW #3 and HW #4 work is described under Contributions.
+  - **Alex:** used Claude through the Blender MCP connection to create the HW #4 assets, and checked the models visually.
+  - **Jonathan:** used Claude Code to help write the tests for the Signal Jammer and the Laser Corridor, then ran the tests and checked the gadget and the room in play. He also used it to structure the playtest notes into `docs/hw4_playtest_log.csv`, and to draft the report's sections 5–8 and the README updates from them. Every tester, observation, number and debrief answer came from the team's own session notes. Claude Code didn't add any, and Jonathan reviewed what it wrote against the notes.
 
 ### Representative prompts (as typed)
 - "Create a doc plan where three developers can work concurrently with coding agents. State clearly the dependency between steps if necessary."
@@ -335,4 +337,4 @@ Claude Code did much more than give suggestions. Working from Eduardo's prompts,
 - Every change was made on its own branch and merged through a GitHub pull request, with a description of what changed and how it was tested.
 - Before each merge, Claude Code ran Godot's headless import and a 300-frame run and reported any errors. For multiplayer changes, it ran a host and a client over localhost and compared what each saw: the hotbar, the guard budget, and the loot and crowbar. It also rendered screenshots, which we looked at.
 - We played the merged builds ourselves and sent back what was wrong, such as the crowbar's grip, the stuck librarian and the sign's texture.
-- **[TEAM: confirm before submitting]** Each of us can explain the main systems and our own contributions, including the parts Claude Code wrote.
+- Each of us can explain the main systems and our own contributions, including the parts Claude Code wrote.
