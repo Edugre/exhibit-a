@@ -273,26 +273,45 @@ Jonathan Serrano (6524435)
 
 ## GenAI statement
 
-Tools used: Claude Code and Blender MCP Connection.
+This is a Category 2 assignment, so here is what we used, what it did, and how we checked it, as accurately as we can.
 
-Representative prompts:
-- "Review my noise and guard logic and identify edge cases I should test."
+### Tools
+- **Claude Code** (Anthropic's coding agent, with the Claude Opus model, in the Claude desktop app). Eduardo used it throughout HW #3 and HW #4. **[TEAM: Alex and Jonathan, add whether and how you used it for your HW #4 work.]**
+- **Claude through a Blender MCP connection.** Alex used it to make the 3D models.
 
-- "Why does a held RigidBody3D stutter and lag behind the player only on the client? The host positions it and a MultiplayerSynchronizer syncs it."
+### What Claude Code did in HW #4 (Eduardo's share)
+Claude Code did much more than give suggestions. Working from Eduardo's prompts, it:
+- **Planning:** drafted the HW #4 rooms, team and asset plans (`docs/`), which Eduardo shared with the team.
+- **Code:** wrote most of the code for the HW #4 work listed under Eduardo's contributions:
+  - the room contract, spawning the rooms from the host, the room-ordering rule, and the timer that scales with the run;
+  - the jammer pickup, the hotbar, and the guard budget;
+  - loot, the crowbar and breakable display cases;
+  - the objective and controls card, and fixes to bugs Eduardo found.
+- **Proposing rules:** proposed specific rule details, which Eduardo accepted or changed:
+  - the guard budget formula: one staff per two rooms, the vault's first;
+  - the loot values, and that the haul only counts on a win;
+  - that the librarian hears a case breaking anywhere in the museum.
+- **Assets:** wrote the Python and Blender scripts that generate the HW #4 props, textures and room sounds, and placed the props in the rooms.
+- **Testing:** ran Godot's headless import and run after every change, ran host and client instances over localhost, and rendered screenshots to check the work.
+- **Writing:** wrote the commit messages, the pull request descriptions, most of the README text, the playtest kit, the parts of the report that come from the build (not the results), and the submission zip script.
 
-- "Generate using the Blender  connection, model a guard character: an old librarian
-  with a grey bun, glasses on a chain, a cardigan, a long skirt, and sensible shoes, but very
-  muscular. She needs two poses: stooped and shuffling on patrol, holding a flashlight and a
-  heavy book, and standing tall  in a chase, with the book tucked under her arm
-  and her glasses flashing white." (through a Blender MCP connection)
+### What we did ourselves
+- **Direction:** we chose what to build, and in what order, and decided which proposals to keep. For example, we asked for a hotbar, fewer guards, a room seed field, and loot with a crowbar. We also rejected or redirected work, like how the crowbar is held and a separate PR for bug fixes.
+- **Bugs:** we found bugs by playing, such as the guards jamming and a sign showing the wrong print, and reported them.
+- **Playtesting:** we ran it with real people outside the team. Every tester, observation, measure and debrief answer in the report comes from those sessions. AI was not used to invent or edit any of it.
+- **Other work:** Alex's and Jonathan's HW #3 work is described under Contributions. **[TEAM: confirm and add any AI use for your parts.]**
 
-How it supported our workflow:
-- Assets: The Player, guard, artifact, throwable and vehicle models were generated with AI through Blender, then adjusted by hand (scale, materials, collision shapes).
-- Code: Claude gave us suggestions for each part of the project, pointed out possible errors before we tested, and explained unexpected results. All game rules were designed and written by us.
-- Not used for: game design decisions.
+### Representative prompts (as typed)
+- "Create a doc plan where three developers can work concurrently with coding agents. State clearly the dependency between steps if necessary."
+- "Add a hotbar where the player can hold the throwables and gadgets. When they have a gadget in hand keep it displayed"
+- "There are too many guards, we need to find a way to calculate a reduced number of guards inside the museum"
+- "Can we make other smaller artifacts around the museums pickable to get more money? We could add a crowbar item that can also open the displays. Plan their implementation"
+- "Two bugs I want to finish now, the texture in this sign is wrong and the librarian gets stuck with the guards"
+- HW #3, from the earlier statement: "Review my noise and guard logic and identify edge cases I should test." and "Why does a held RigidBody3D stutter and lag behind the player only on the client? The host positions it and a MultiplayerSynchronizer syncs it."
+- Blender MCP (Alex): "model a guard character: an old librarian with a grey bun, glasses on a chain, a cardigan, a long skirt, and sensible shoes, but very muscular. She needs two poses: stooped and shuffling on patrol, holding a flashlight and a heavy book, and standing tall in a chase, with the book tucked under her arm and her glasses flashing white."
 
-How we verified the output:
-- Every AI suggestion was read line by line before we kept it, and we rewrote parts we couldn't explain.
-- Each change went through a pull request that another teammate reviewed before merging.
-- We playtested each feature by hand after merging.
-- Each member can walk through the systems they own.
+### How we verified it
+- Every change was made on its own branch and merged through a GitHub pull request, with a description of what changed and how it was tested.
+- Before each merge, Claude Code ran Godot's headless import and a 300-frame run and reported any errors. For multiplayer changes, it ran a host and a client over localhost and compared what each saw: the hotbar, the guard budget, and the loot and crowbar. It also rendered screenshots, which we looked at.
+- We played the merged builds ourselves and sent back what was wrong, such as the crowbar's grip, the stuck librarian and the sign's texture.
+- **[TEAM: confirm before submitting]** Each of us can explain the main systems and our own contributions, including the parts Claude Code wrote.
