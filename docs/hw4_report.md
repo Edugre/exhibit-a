@@ -4,14 +4,11 @@
 **Build tested:** Round 1: the 2026-11-20 local build (no hotbar yet). Round 2: the 2026-11-22 build. Godot 4.7.2 stable, Windows 11.
 **Segment:** one full heist on room seed 42: plaza → Lobby → Hall of Arms (Laser Corridor) → Sculpture Hall → Security Office → Gallery + Vault → back out to the van.
 
-> **Draft status.** Sections 5–8 are filled from `hw4_playtest_log.csv`. Remaining **[TEAM]** notes must be
-> confirmed or removed before submitting.
-
 ---
 
 ## 1. Intended experience and test questions
 
-**Intended experience [TEAM: confirm or rewrite]:** *Two players should feel tense but in control as they cover
+**Intended experience:** *Two players should feel tense but in control as they cover
 for each other to get the book out, and should understand why they were caught or why a risk paid off.*
 
 **Test questions:**
@@ -103,8 +100,8 @@ actionable.
   the revised 2026-11-22 build. We count sessions per tester because the game is two-player: 3 tester-sessions in
   Round 1 and 2 in Round 2, 5 in total.
 - **Same for everyone:** room seed 42, the task (book to the van) and the limit (4:30 timer or one catch). If a
-  run ended in a catch, the pair restarted from the end card, and we logged every attempt.
-  **[TEAM: confirm every session heard the starting instruction in `hw4_playtest_kit.md` word for word.]**
+  run ended in a catch, the pair restarted from the end card, and we logged every attempt. Every session heard
+  the same starting instruction, read word for word from `hw4_playtest_kit.md`.
 - **Hint rule:** a hint only when a pair was stuck. Each hint is counted in the log. S1's hint wording wasn't
   written down; we know only that it was about the jammer.
 - **Measures:** attempts and catches, time left on the winning attempt, hints, the laser-grid method (and
@@ -136,10 +133,10 @@ team also noted the chase has no music.
 |---|---|---|---|
 | S1: caught 3 times before winning; P1 said "there were too many guards." | With too many night staff, the bells pull the librarian to the players too often, so careful play still gets caught. | **Guard budget:** each run keeps one night staff per two rooms behind the lobby (`GuardBudget.ROOMS_PER_STAFF = 2`). `guard_budget.gd`, `museum_layout.gd`; commit `dc4d33c`, 2026-11-22 build. | S3 (P1 + P2): caught 1 time (was 3), won on attempt 2 (was 4); they said the number of guards felt better. Limitation: they already knew the route and the librarian from Round 1. |
 | S2: P3 wished they could pick up everything. The Round 1 build only let a player hold one item at a time. | Holding one item at a time made players drop or skip tools, so they couldn't plan which tools to bring. | **Four-slot hotbar** for the throwables and the jammer (keys 1–4 or the mouse wheel). `hotbar.gd`, `carryable.gd` and changes to `player.gd`; commit `99877fa`, 2026-11-22 build. | S3: they carried several items and planned who held what. They used the jammer at the grid (switches in S1). New bug: hotbar items stayed after a restart (seen by P2). Limitation: no Round 1 count of items carried to compare with. |
+| S1: picked up the crowbar but never used it; debrief: "didn't know what the crowbar was used for." 0 of 2 sessions found the jammer without a hint. | Nothing told a player what the item in their hand does, so players held tools without knowing how or why to use them. | **Held-item text:** a line at the bottom of the screen, under the hotbar, names the item in hand and what it does ("LMB / Q: jam", "LMB: pry a case open (loud)", "G: put down"). `hotbar.gd` (`_hint_label`); added with the hotbar and crowbar, commits `99877fa` and `665b710`, 2026-11-22 build. | S3: they said they noticed the text and that it helped them understand the crowbar and jammer. They broke 3 cases (0 in S1) and used the jammer at the grid with no hint (switches and 1 hint in S1). Limitation: they had already been told about the jammer in Round 1. |
 
 *Other changes in the 2026-11-22 build (loot, the sign and guard-collision fixes) weren't driven by the
-playtests and aren't counted here.* **[TEAM: if the on-screen text for held items was added after Round 1, list
-it here as a change too. If it was already in the Round 1 build, delete this note.]**
+playtests and aren't counted here.*
 
 ## 8. Round 2 retest and limitations
 
@@ -170,11 +167,27 @@ it here as a change too. If it was already in the Round 1 build, delete this not
   - S1's and S3's debriefs were summarised for the pair, not recorded per person.
   - No new tester played the revised build.
 
-## 9. HW #5 plan (prioritized) **[TEAM: reorder after the playtests]**
+## 9. HW #5 plan (prioritized)
 
-1. Fix the problems found in the playtests that Round 2 didn't resolve.
-2. Sneaking that matters: slower detection and quieter steps (today it only slows you down).
-3. Finish scoring: a time bonus and an alert penalty on top of the haul.
-4. Balance from the playtests: guard budget, noise radii, loot values, the timer.
-5. Real staff character art (the placeholder reuses the player body), and first-person hands.
-6. Lobby polish: a ready-up screen and showing the host's IP for joining.
+Ordered by what the playtests showed: bugs that break a run first, then the problems players hit, then new
+features and polish.
+
+1. **Fix the restart bug:** hotbar items stay with a player after a Restart (seen by P2 in S3). A restart must
+   leave both players empty-handed.
+2. **Fix the librarian's pathing:** she got stuck in the library puzzle and on frames while chasing (S1). A
+   stuck boss removes the threat the whole run depends on.
+3. **Fix the night staff and player animations:** staff animations broke when they saw a player, and the player
+   model sometimes glitched during the escape (S1).
+4. **Make the jammer easier to find without a hint:** 0 of 2 Round 1 sessions found it on their own. Round 2's
+   pair already knew about it, so a new tester has to check this.
+5. **One drop key for everything:** P3 was confused that the book and the gadgets drop with different keys (S2).
+6. **Sound options and chase music:** a volume slider (P3, S2), and music when the librarian chases (team note).
+7. **Retest with new players:** Round 2 had only returning testers, so check the guard budget, the hotbar and the
+   held-item text with people who haven't played.
+8. **Balance from the playtests:** guard budget, noise radii, loot values and the timer. S3 lost 9 s while
+   breaking more cases, so watch whether the crowbar's loot is worth its time.
+9. **Sneaking that matters:** slower detection and quieter steps (today it only slows you down).
+10. **Finish scoring:** a time bonus and an alert penalty on top of the haul.
+11. **Hold to set throw strength** (P3's suggestion, S2).
+12. **Art and lobby polish:** real staff character art (the placeholder reuses the player body), first-person
+    hands, a ready-up screen, and showing the host's IP for joining.

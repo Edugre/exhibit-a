@@ -4,7 +4,7 @@ Two-player online co-op museum heist. Team: Eduardo Goncalvez, Alex Waisman, Jon
 **Engine:** Godot 4.7.2 (Standard, GDScript). Everyone must use this exact version.
 
 ## Gameplay video
-Youtube Link: https://youtu.be/Om2ZqEZNuqk
+Youtube Link: https://youtu.be/2FAsoiIHhYk
 
 ## Team
 - Eduardo Goncalvez (PID: 6526311)
@@ -68,7 +68,7 @@ You have **3 minutes, plus 30 seconds for every room between the lobby and the g
 - **Loot and the crowbar (stretch goal: scoring):** small valuables lie about every room (the Ring of Gyges, a lapis scarab, a victor's laurel, Charon's purse, the Owl of Athena, Brutus's dagger, $150 to $500). E pockets one into the team's shared haul, shown at the top of the screen; they don't take hotbar slots. Each room marks a few spots and half of them are filled from the run's seed, so the room seed replays the loot too. The display cases hold the big prizes (Coins of Troy $1,500, an amphora with a familiar wooden horse $2,500, the Shield of Achilles $5,000) behind their glass. One crowbar waits on the lobby's coat check: in hand, left click pries a case open. It creaks, the glass shatters on both screens, every guard within 10 m comes to look, and the librarian hears it anywhere and hurries over. The haul only counts if you get away with the book: the end card says "Non-refundable" or "left on the floor".
 - **Signal Jammer gadget (HW #4):** one jammer per heist, waiting on the lobby's ticket desk with its LED blinking. Either player picks it up (E) into their hotbar; G puts it down for the other. It has two charges for the whole heist, which go wherever it goes; fire it with the left mouse button while it's in hand, or Q from anywhere in the bar. A charge switches off every jammable thing within 6 m for 6 seconds, which right now means laser grids. The hotbar shows the charges left. Everyone can see it working: stowed, the jammer rides on its holder's belt; in hand, it stays up in your view and in your hand for your partner, and kicks when you fire it, a ring of light sweeps out to its range with a burst of radio static on both screens, and a jammed grid throws sparks while its beams sputter. A use that jams nothing just clicks.
 - **Artifact:** pick up, carry, drop, and deliver the book. Only one player can hold it at a time, and it takes both hands: whatever's in your hotbar stays stowed while you carry it.
-- **Guard AI:** patrols a waypoint loop, detects players with a flashlight vision cone blocked by walls, chases (through doorways into other rooms), investigates noises and last-seen positions, then returns to patrol. Catching a player ends the heist.
+- **Guard AI:** patrols a waypoint loop, detects players with a flashlight vision cone blocked by walls, chases (through doorways into other rooms), investigates noises and last-seen positions, then returns to patrol. The librarian and the night staff are both built on it: only the librarian chases and catches, and her catching a player ends the heist.
 - **The librarian and her staff:** there is one librarian, the boss. She walks a route through every room of the run, built after each build, and starts each heist in the vault. The rooms' night staff see exactly as she does but never chase or catch: when one is sure they've seen someone, they ring a hand bell (again every 3 s while they can still see them), every player gets "She's coming…" on screen, and she hurries to where the player was seen. Design: docs/boss_and_staff.md.
 - **Throwable and noise:** the Heel of Achilles can be thrown. Its impact makes a noise that sends any guard within 8 m to investigate. The Heel waits at the lobby's coat check, coins by the fountains outside, and more heels and coins in every guarded room.
 - **Heist rules:** a countdown of 3 minutes plus 30 seconds per pool room, win/lose outcomes, and a synchronized restart that builds a new run and resets the players, book, throwables and jammer charges.
@@ -89,6 +89,8 @@ You have **3 minutes, plus 30 seconds for every room between the lobby and the g
 - No addons, Asset Library plugins, or third-party packages.
 
 ## How to build / run
+**Tested on:** Windows 11, Godot 4.7.2 stable (Standard edition, GDScript). **Entry point:** `scenes/main.tscn`, set as the main scene in `project.godot`, so pressing F5 (or Run Project) starts it.
+
 1. Install **Godot 4.7.2 stable (Standard)** from godotengine.org.
 2. Extract the zip file and open `project.godot` from the Godot Project Manager (Import).
 3. **Two players on one machine:** Debug → Customize Run Instances → Enable Multiple Instances, set to 2, then press F5. Click **Host** in one window and **Join** in the other (leave the address blank for `127.0.0.1`).
@@ -110,7 +112,9 @@ on GitHub: https://github.com/Edugre/exhibit-a. We checked that a fresh import o
 that the game runs.
 
 ### Trying a specific run
-The host's Output panel prints each run as `Museum run N (seed S): room, room, …`. On `World/Museum` in `scenes/main.tscn`, set **Debug Seed** to replay a run, or **Debug Order** to pick the rooms yourself (0 Sculpture Hall, 1 Twin Archives, 2 Laser Corridor, 3 Security Office).
+**In the game:** before hosting, type a seed (a number, or any word) in the main menu's **Room seed** field. Every run that session, including after a Restart, gets the same rooms in the same order, with the same night staff and loot. Leave it empty for a new run each time. Our playtests all used seed `42`.
+
+**In the editor:** the host's Output panel prints each run as `Museum run N (seed S): room, room, …`. On `World/Museum` in `scenes/main.tscn`, set **Debug Seed** to replay a run, or **Debug Order** to pick the rooms yourself (0 Sculpture Hall, 1 Twin Archives, 2 Laser Corridor, 3 Security Office).
 
 ### Graphics levels
 The game picks Low, Medium or High for each computer and steps down by itself if it runs slowly. The Graphics option in the menu overrides that. Low is built for weak laptops: it draws at a lower resolution and scales up, and the floodlights and their shadows come from a baked texture instead of real lights.
@@ -204,10 +208,16 @@ The game picks Low, Medium or High for each computer and steps down by itself if
 
 ## Known limitations
 - Sneaking only slows the player down. It doesn't yet affect how quickly the guard notices you or make footsteps quieter.
-- Exactly two players. There is no lobby or matchmaking: the client must type the host's IP address, and playing across different networks needs port 7777 forwarded on the host's router.
+- Exactly two players. There is no lobby or matchmaking: the client must type the host's IP address. Playing across different networks needs UDP port 7777 forwarded on the host's router, or both players on the same VPN (for example Tailscale), joining with the host's VPN address.
 - If the host quits, the client is sent back to the main menu; the session can't continue without the host.
-- There are two throwables, the heel and the fountain coins. Laser grids are the only thing the Signal Jammer can switch off so far. The Laser Corridor's displays are the shared crates and cases until its own props are made.
+- There are two throwables, the heel and the fountain coins. Laser grids are the only thing the Signal Jammer can switch off so far.
 - The whole game takes place at night.
+- Bugs found in our playtests, to fix in HW #5:
+  - After a Restart, a player keeps the items that were in their hotbar.
+  - The librarian can get stuck in the library puzzle, and on frames while chasing.
+  - The night staff's animations break when they see a player.
+  - The player model sometimes glitches during the escape.
+- There is no volume setting, and no music during a chase.
 
 ## Asset credits
 - Player and guard characters (`assets/characters/`): made for this project in Blender. Editable sources are in `assets/characters/source/`.
@@ -262,13 +272,24 @@ Alex Waisman (PID: 6529880)
 - Artifact: Wrote the logic for the artifact, which handles picking it up and carrying it (`artifact.gd`, `artifact_model.gd`, `artifact.tscn`, `artifact_model.tscn`).
 - Win condition: Added the drop zone where players deliver the artifact, and the win scene (`drop_zone.gd`, `drop_zone.tscn`, `trojan_van.gd`, `trojan_van.tscn`, `getaway.tscn`).
 - Throwable sound: Added the throwable's landing sound (`assets/throwable/thud.wav`).
+- HW #4 interior kit: The shared sizes, surfaces and materials every room is built from: floors, walls, mouldings, skirting, ceiling and wear (`assets/interior/kit/`, `int_surface.gdshader`, `int_dims.py`, `make_kit.py`, `prop_template.tscn`).
+- HW #4 rooms: Built Sculpture Hall, Twin Archives and the Security Office (`sculpture_hall_room.tscn`, `twin_archives_room.tscn`, `security_office_room.tscn`).
+- HW #4 Twin Archives puzzle: The two-plate timing gate and the lamps over its exit (`gates/twin_plate_gate.gd`, `gates/twin_plate_lamps.gd`), and a fix so plate presses from a room being rebuilt are ignored.
+- HW #4 librarian and night staff: Made the librarian the one boss, with night staff who see players and ring a bell to call her (`boss.gd`, `staff.gd`, `staff_model.gd`, `staff.tscn`, `staff_model.tscn`, the bell sound, `docs/boss_and_staff.md`).
+- HW #4 props and set dressing: The conservation crates and draped statue, the glass display cases, the archive bookcases, the archive set (card catalogue, reading tables, lamps, chairs, rolling ladder, scroll rack), the office set (security desk, monitor wall, lockers, key board, chair), the Sculpture Hall statues (Venus, the Discus Thrower, Homer and Icarus's wings), framed paintings with labels and picture lights, doorway arches, exit jambs and room plaques, and ceiling fixtures, EXIT signs and wall vents (`assets/interior/`, `scenes/props/`, and the build scripts in `assets/interior/source/tools/`).
+- HW #4 ambience: The CCTV screens and the failing lights in the Security Office and Twin Archives (`cctv_screen.gdshader`, `ambient/failing_light.gd`).
+- HW #4 fixes: The alarm after a restart reads the new run's room lights (`exterior_alarm.gd`), and fixes from two code reviews (`guard.gd`, `player.gd`, `artifact.gd`, `vault_puzzle.gd`, `hud.gd`, `network_manager.gd` and others).
 
 
-Jonathan Serrano (6524435)
+Jonathan Serrano (PID: 6524435)
 - Interaction: Implemented the interact raycast on the player, an on-screen prompt, and interactions the host checks before applying (`player.gd`, `player.tscn`).
 - Co-op puzzle: Made the logic for the co-op puzzle where two pressure plates that must be held down at the same time to open the vault door. (`pressure_plate.gd`, `pressure_plate.tscn`, `vault_puzzle.gd`, `vault_door.gd`).
 - Noise: Added a reusable system that alerts guards when a noise is made, and worked on how the guards react to noise (`noise_system.gd`, `guard.gd`).
 - Throwing: Worked on the throwing logic that handles picking up, throwing, the impact noise, and resetting the object (`throwable.gd`, `throwable.tscn`).
+- HW #4 Signal Jammer: The gadget's core: its charges, firing it, and switching off jammable things within its range for a few seconds, with the host deciding every use, and its HUD (`gadget_jammer.gd`, `gadget_hud.gd`, `gadget_hud.tscn`, changes to `player.tscn`). Built and tested it against a temporary target, then removed the target once the laser grid replaced it.
+- HW #4 laser grid: The laser grid the jammer switches off, and the alarm it raises when a player walks through the beams (`laser_grid.gd`, `laser_grid.tscn`).
+- HW #4 Laser Corridor room: The Hall of Arms room around the laser grid, with its switch hand-off (`laser_corridor_room.tscn`, `laser_corridor.gd`).
+- HW #4 playtesting: Watched the Round 1 and Round 2 sessions, logged them, and wrote the report's test method, results, revisions and retest sections from them (`docs/hw4_playtest_log.csv`, `docs/hw4_report.md` sections 5–8).
 
 
 ## GenAI statement
